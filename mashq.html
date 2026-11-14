@@ -68,7 +68,16 @@ main{max-width:1240px;margin:0 auto;padding:14px 12px 130px}
 .gap:focus{background:#fff;outline:2px solid var(--ink);outline-offset:1px}
 .row{padding:9px 0;border-bottom:1px dashed var(--line)}
 .row:last-child{border-bottom:0}
+.row.one{display:flex;gap:10px;align-items:baseline}.row.one>.num{flex:none;transform:translateY(-2px)}.row.one .gapw{margin-left:1px}
 
+.paper h3.sub{margin:22px 0 8px;font-size:1em;font-weight:800;line-height:1.35;padding-top:16px;border-top:2px solid var(--mist)}
+.paper h3.sub:first-child{margin-top:0;padding-top:0;border-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.chips span,.chips s{padding:5px 11px;border-radius:999px;background:var(--mist);font-size:.88em;font-weight:700}
+.chips s{opacity:.5}
+.row.exm{color:var(--slate);font-size:.94em}.row.exm b{display:inline-block;margin-right:8px;font-size:.78em;color:var(--ok);background:var(--okbg);padding:2px 8px;border-radius:6px}
+.pick.in select{height:40px;min-width:0;font-size:max(16px,.95em);padding:0 32px 0 10px;border-width:2px}
+.pick.in::after{right:12px}
 /* question cards */
 .qs{display:grid;gap:10px}
 .note{font-size:14.5px;font-weight:700;color:var(--slate);padding:4px 4px 0}
@@ -169,7 +178,7 @@ async function decrypt(buf){
 async function load(name){const r=await fetch(name+'.bin',{cache:'no-cache'});if(!r.ok)throw new Error('net');return decrypt(new Uint8Array(await r.arrayBuffer()))}
 
 /* ---------- answer checking ---------- */
-const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’‘`]/g,"'").replace(/[£$€]/g,'').replace(/\s+/g,' ').trim().replace(/[.,;:!?]+$/,'').trim();
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’‘`]/g,"'").replace(/[£$€]/g,'').replace(/[.,;:!?]+$/,'').replace(/\bcan't\b/g,'cannot').replace(/won't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ve\b/g,' have').replace(/'re\b/g,' are').replace(/'m\b/g,' am').replace(/'ll\b/g,' will').replace(/\s+/g,' ').trim();
 const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 
 let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null;
@@ -178,14 +187,18 @@ function save(){lset(key(),JSON.stringify({a:ANS,r:DONE}))}
 function restore(){let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}ANS=(s&&s.a)||{};DONE=(s&&s.r)||null}
 
 function gapHTML(n){return `<span class="gapw" data-q="${n}"><span class="num">${n}</span><input class="gap" data-n="${n}" aria-label="Savol ${n}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next"></span>`}
-const fillGaps=x=>esc(x).replace(/\{\{(\d+)\}\}/g,(_,n)=>gapHTML(n));
-function pickHTML(n){const o=SEC.sel[n];const side=(SEC.side&&SEC.side.items)||[];
+const fillGaps=x=>esc(x).replace(/\{\{(\d+)(?::([^}]+))?\}\}/g,(_,n,o)=>o?`<span class="gapw" data-q="${n}"><span class="num">${n}</span><span class="pick in"><select data-n="${n}" aria-label="Savol ${n}"><option value="">…</option>${o.split('|').map(v=>`<option>${v}</option>`).join('')}</select></span></span>`:gapHTML(n));
+function sizeGaps(){document.querySelectorAll('input.gap').forEach(i=>{const a=(SEC.ans[i.dataset.n]||[''])[0];const L=Math.max(5,Math.min(30,a.length+2));i.style.width=L*.62+'em'})}
+function pickHTML(n){const o=SEC.sel[n];if(!o)return '';const side=(SEC.side&&SEC.side.items)||[];
   return `<span class="pick"><select data-n="${n}" aria-label="Savol ${n} uchun javob"><option value="">Tanlang</option>${o.map(L=>{const t=(side.find(s=>s[0]===L)||[])[1]||'';return `<option value="${L}">${L}${t?' — '+esc(t.length>58?t.slice(0,56)+'…':t):''}</option>`}).join('')}</select></span>`}
 
 function blockHTML(b){
   if(b.t==='h')return `<h2>${esc(b.x)}</h2>`;
   if(b.t==='p')return `<p>${fillGaps(b.x)}</p>`;
-  if(b.t==='row')return `<div class="row">${fillGaps(b.x)}</div>`;
+  if(b.t==='row'){const g=b.x.match(/\{\{(\d+)/g)||[];if(g.length===1){const n=g[0].slice(2);return `<div class="row one" data-q="${n}"><span class="num">${n}</span><span>${fillGaps(b.x).replace(/<span class="num">\d+<\/span>/,'')}</span></div>`}return `<div class="row">${fillGaps(b.x)}</div>`}
+  if(b.t==='sub')return `<h3 class="sub">${esc(b.x)}</h3>`;
+  if(b.t==='ex')return `<div class="row exm"><b>Namuna</b>${esc(b.x)}</div>`;
+  if(b.t==='chips')return `<div class="chips">${b.x.map(w=>w[0]==='~'?`<s>${esc(w.slice(1))}</s>`:`<span>${esc(w)}</span>`).join('')}</div>`;
   if(b.t==='box')return `<div class="box" data-q="${b.n}"><div class="boxh"><span class="num">${b.n}</span><strong>${esc(b.title)}</strong>${pickHTML(b.n)}</div><div>${esc(b.x)}</div></div>`;
   return '';
 }
@@ -203,13 +216,14 @@ function render(){
   const s=SEC,split=s.layout==='split';
   $('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.label;
   let left='',right='';
-  const paper=`<div class="paper">${s.blocks.map(blockHTML).join('')}${s.kind==='listen'?'<div id="scr"></div>':''}</div>`;
+  const paper=!s.blocks.length?'':`<div class="paper">${s.blocks.map(blockHTML).join('')}${s.kind==='listen'?'<div id="scr"></div>':''}</div>`;
   if(s.side){const side=`<div class="paper side"><h3>${esc(s.side.title)}</h3><ol>${s.side.items.map(i=>`<li data-l="${i[0]}"><i>${i[0]}</i><span>${esc(i[1])}</span></li>`).join('')}</ol></div>`;left=side;right=paper}
+  else if(s.qs.length&&!paper){left=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
   else if(s.qs.length){left=paper;right=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
   else{left=paper}
   $('#main').innerHTML=`<div id="res"></div>${s.kind==='listen'?'<div id="pl"></div>':''}<div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>
     <div class="grid ${split&&right?'split':''}"><div class="col" id="cA">${left}</div>${right?`<div class="col" id="cB">${right}</div>`:''}</div>`;
-  watermark();
+  watermark();sizeGaps();
   // restore answers
   document.querySelectorAll('.gap').forEach(i=>{i.value=ANS[i.dataset.n]||'';i.addEventListener('input',()=>{ANS[i.dataset.n]=i.value;armed=false;save();foot()});
     i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const all=[...document.querySelectorAll('.gap')];const nx=all[all.indexOf(i)+1];nx?nx.focus():i.blur()}})});

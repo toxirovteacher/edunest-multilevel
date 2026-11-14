@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>EDUNEST · Multi-Level Booster</title>
+<title>EDUNEST · Multi-Level</title><meta name="description" content="EDUNEST Multi-Level hamjamiyati: A'zamjon Toxirov (C1) bilan Milliy sertifikatga tayyorlaning. Listening’ni 1.5 oyda 7.5–8.0 ga chiqargan usul bepul."><meta property="og:title" content="EDUNEST Multi-Level · A'zamjon Toxirov, C1"><meta property="og:description" content="Listening’ni 1.5 oyda 5.0 dan 7.5–8.0 ga chiqargan usul. Bepul qo‘llanma va o‘quvchilar uchun mashqlar."><meta property="og:image" content="https://toxirovteacher.github.io/edunest-multilevel/c1-guide.png"><meta property="og:type" content="website">
 <link rel="icon" id="fav">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -835,6 +835,85 @@ body.dark .dots i.on{background:#E8ECF5}
 .mhere:after{top:50%;margin:-6px 0 0;left:auto;border:6px solid transparent}
 .mhere.r:after{right:100%;border-right-color:#141B2D}.mhere.l:after{left:100%;border-left-color:#141B2D}
 @keyframes bobx{50%{transform:translateY(-50%) translateX(3px)}}
+/* ===== banners ===== */
+.tcov{height:136px;background:linear-gradient(130deg,var(--c1) 0%,var(--c1) 45%,var(--c2) 130%)!important;align-items:flex-end}
+.tcov:before{display:none}
+.cart{position:absolute;right:-6px;top:10px;width:58%;height:70%;fill:rgba(255,255,255,.16);stroke:rgba(255,255,255,.28);opacity:1}
+.ck{position:absolute;left:16px;top:14px;font-size:12.5px;font-weight:700;opacity:.85;letter-spacing:.02em}
+.cw{position:absolute;left:14px;top:30px;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.25)}
+.tcov .tnum,.tcov .tbadge{z-index:1}
+.cvchips{display:flex;gap:8px;flex-wrap:wrap}
+.cvchip{border:2px solid transparent;border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;color:#fff;cursor:pointer;font-family:inherit;background:linear-gradient(130deg,var(--c1),var(--c2));opacity:.6}
+.cvchip.on{opacity:1;border-color:var(--head);box-shadow:0 0 0 3px var(--card) inset}
+/* login extras */
+.pin{letter-spacing:.5em!important;text-align:center}
+.pinnote{background:var(--red-l);color:var(--head);border-radius:12px;padding:12px 14px;font-weight:600;font-size:14.5px;margin-top:14px}
+.lerr{color:var(--red);font-weight:700;margin-top:12px}
+.nopin{color:var(--red);font-weight:700}
+/* teacher settings */
+.setg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.setg .muted{font-size:14.5px;margin:6px 0 12px}
+.gcode{font-size:40px;font-weight:800;letter-spacing:.2em;color:var(--red);margin:4px 0 12px}
+.setrow{display:flex;gap:8px;flex-wrap:wrap}.setrow input{flex:1;min-width:140px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:16px;font-family:inherit;background:var(--card);color:var(--ink)}
+/* landing promo */
+.lp-c1{background:#141B2D;color:#fff}
+.lp-c1 .lp-h2{color:#fff!important}.lp-c1 .lp-sub{color:#B9C1D3}
+.lp-c1g{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:center}
+.lp-tag{display:inline-block;margin:0 0 14px;font-size:14px;font-weight:700;color:#141B2D;background:#F5B700;padding:6px 12px;border-radius:999px}
+.lp-stat{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:22px 0 4px}
+.lp-stat b{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em}.lp-stat b.hi{color:#F5B700}
+.lp-stat i{font-style:normal;font-size:28px;color:#B9C1D3}.lp-stat span{color:#B9C1D3;font-weight:600}
+.lp-c1 .lp-btn-line{color:#fff!important;box-shadow:inset 0 0 0 2px #fff}.lp-c1 .lp-btn-line:hover{background:#fff;color:#141B2D!important}
+.lp-guide{display:block;justify-self:center;max-width:420px;width:100%;border-radius:14px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45);transform:rotate(2deg);transition:transform .2s}
+.lp-guide:hover{transform:rotate(0) scale(1.01)}.lp-guide img{display:block;width:100%;height:auto}
+.lp-show{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0 8px}
+.lp-sc{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 8px 24px rgba(20,27,45,.08)}
+.lp-sc .tcov{position:relative;display:flex;justify-content:flex-end;padding:14px 16px;color:#fff;overflow:hidden;height:150px}
+.lp-sc .tbadge{position:relative;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:999px}
+.lp-scb{padding:14px 16px 18px}.lp-scb b{display:block;font-size:18px;font-weight:800}.lp-scb small{color:var(--slate);font-size:14.5px}
+/* C1 article */
+.c1a{max-width:760px;margin:0 auto;padding:28px clamp(18px,5vw,40px) 70px}
+.c1back{display:inline-block;margin-bottom:18px;font-weight:700;color:var(--slate);text-decoration:none}
+.c1au{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.c1au img{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:center 18%;background:#fff;box-shadow:0 0 0 2px var(--line)}
+.c1au b{display:block;font-size:17px}.c1au span{color:var(--slate);font-size:14.5px}
+.c1a h1{font-family:inherit;font-weight:800;font-size:clamp(32px,5.4vw,52px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;color:var(--ink)}
+.c1a h2{font-family:inherit;font-weight:800;font-size:clamp(24px,3vw,30px);letter-spacing:-.02em;margin:40px 0 16px;color:var(--ink)}
+.c1res{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#141B2D;color:#fff;border-radius:20px;padding:20px 24px}
+.c1res small{display:block;font-size:13px;color:#B9C1D3;font-weight:600}.c1res b{font-size:clamp(28px,4vw,38px);font-weight:800;letter-spacing:-.02em}.c1res b.hi{color:#F5B700}
+.c1res i{font-style:normal;font-size:26px;color:#B9C1D3}.c1t{margin-left:auto;text-align:right}
+.c1steps{list-style:none;margin:0;padding:0;counter-reset:c}
+.c1steps li{counter-increment:c;position:relative;padding:16px 0 16px 64px;border-bottom:1px solid var(--line);font-size:18px;line-height:1.6}
+.c1steps li:before{content:counter(c);position:absolute;left:0;top:14px;width:42px;height:42px;border-radius:50%;background:var(--mist);color:var(--ink);font-weight:800;display:flex;align-items:center;justify-content:center}
+.c1steps li.big{font-size:26px;font-weight:800;color:var(--red);letter-spacing:-.01em}
+.c1steps li.big:before{background:var(--red);color:#fff}
+.c1q{margin:30px 0 0;padding:22px 24px;border-left:5px solid var(--red);background:var(--mist);border-radius:0 16px 16px 0;font-size:19px;line-height:1.6}
+.c1q b{display:block;margin-top:6px;font-size:22px}
+.c1cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 0}
+button.lp-btn{border:0;cursor:pointer;font-family:inherit}
+.c1more{margin-top:48px;padding-top:32px;border-top:1px solid var(--line)}
+.c1more h3{font-size:24px;font-weight:800;margin:0 0 8px}.c1more p{color:var(--slate);margin:0 0 18px}
+.lp-way-l{background:var(--mist)!important;border-color:var(--line)!important;color:var(--ink)!important}.lp-way-l small{color:var(--slate)!important}
+@media (max-width:860px){.lp-c1g{grid-template-columns:1fr}.lp-show{grid-template-columns:1fr}.lp-guide{max-width:320px;transform:none}}
+@media (max-width:520px){.c1steps li{font-size:16.5px;padding-left:56px}.c1res{padding:16px}.c1t{margin-left:0;text-align:left}}
+/* Telegram */
+.btn.tg{background:#229ED9;color:#fff;border-color:#229ED9;gap:10px}
+.btn.tg:hover{background:#1C8BC0}
+.tgi{width:22px;height:22px;fill:currentColor;flex:none}
+.ordiv{display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--mute);font-size:13.5px;font-weight:600}
+.ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
+.tgcard{border:1.5px solid #BFE3F5;background:#F1FAFE;border-radius:16px;padding:14px;margin-bottom:6px}
+.tgsteps{margin:0 0 12px;padding-left:20px;font-size:14.5px;line-height:1.55;color:var(--head)}
+.tgstat{display:flex;gap:8px;align-items:flex-start;margin:12px 0 0;font-size:14.5px;line-height:1.45;color:var(--head)}
+.tgstat .dot{flex:none;width:10px;height:10px;margin-top:5px;border-radius:50%;background:#229ED9;animation:tgp 1.2s ease-in-out infinite}
+@keyframes tgp{50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.tgstat .dot{animation:none}}
+.tglink{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px;padding:14px 16px;border-radius:18px;border:1.5px solid #BFE3F5;background:#F1FAFE;color:var(--head);text-align:left;font:inherit;cursor:pointer}
+.tglink .tgi{width:34px;height:34px;padding:7px;border-radius:50%;background:#229ED9;color:#fff;box-sizing:border-box}
+.tglink span{flex:1;min-width:0}.tglink b{display:block;font-size:16px}.tglink small{display:block;color:var(--mute);font-size:13.5px;margin-top:2px}
+.tglink em{font-style:normal;font-weight:800;color:#fff;background:#229ED9;border-radius:12px;padding:9px 14px}
+body.dark .tgcard,body.dark .tglink{background:#12283a;border-color:#1f4a66}
+.btn.tgb .tgi{width:18px;height:18px;color:#229ED9}
 
 </style>
 </head>
@@ -874,16 +953,28 @@ body.dark .dots i.on{background:#E8ECF5}
     </div>
   </div>
 
+  <section class="lp-sec lp-c1">
+    <div class="lp-in lp-c1g">
+      <div>
+        <p class="lp-tag">Bepul qo‘llanma, hamma uchun</p>
+        <h2 class="lp-h2">Listening’ni 1.5 oyda 5.0 dan 7.5–8.0 ga chiqargan usulim</h2>
+        <p class="lp-sub">O‘zim sinab ko‘rgan 10 qadam: savollarni tahlil qilish, transcript bilan qayta tinglash va audioni Readingga aylantirish. Hech qanday sir yo‘q, faqat sabr.</p>
+        <div class="lp-stat"><b>5.0–5.5</b><i aria-hidden="true">→</i><b class="hi">7.5–8.0</b><span>deyarli 1.5 oyda</span></div>
+        <div class="lp-actions">
+          <a class="lp-btn" href="#/c1">Qo‘llanmani o‘qish</a>
+          <a class="lp-btn lp-btn-line" href="EDUNEST-Listening-C1-yoli.pdf" download>PDF yuklab olish</a>
+        </div>
+      </div>
+      <a class="lp-guide" href="#/c1" aria-label="C1 Listening qo‘llanmasini ochish"><img src="c1-guide.png" alt="A'zamjon Toxirovning C1 Listening qo‘llanmasi" loading="lazy"></a>
+    </div>
+  </section>
+
   <section class="lp-sec lp-mist">
-    <div class="lp-in lp-split">
-      <div><h2 class="lp-h2">Platformada nimalar bor</h2>
-        <p class="lp-sub">Hozircha Reading bo‘limidan boshlaymiz. Qolgan qismlar navbat bilan qo‘shiladi.</p></div>
-      <ul class="lp-list">
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7h8M8 11h6"/></svg><div><b>Reading Part 1 Booster</b><p>30 ta matn, har biriga 5 xil mashq: bo‘sh joyni to‘ldirish, kalit so‘zlar, so‘z turlari, so‘z juftliklari va qisqa bayon.</p></div><em class="on">Ochiq</em></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><div><b>Shaxsiy profil</b><p>ID raqamingiz bilan kirasiz. Aniqlik, sarflangan vaqt va har bir test natijasi bir sahifada.</p></div><em class="on">Ochiq</em></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2.5h6V4"/><path d="m9 13 2 2 4-4"/></svg><div><b>Ustoz topshiriqlari</b><p>Yangi vazifa qo‘shilishi bilan profilingizda paydo bo‘ladi.</p></div><em class="on">Ochiq</em></li>
-        <li class="soon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg><div><b>Listening, Writing, Speaking</b><p>Imtihonning boshqa qismlari uchun mashqlar.</p></div><em>Tez orada</em></li>
-      </ul>
+    <div class="lp-in">
+      <h2 class="lp-h2">O‘quvchilarimiz nima bilan shug‘ullanadi</h2>
+      <p class="lp-sub">Har bir material qadam-baqadam xaritaga aylantirilgan. Bu materiallar faqat EDUNEST o‘quvchilari uchun ochiq.</p>
+      <div class="lp-show" id="lpShow"></div>
+      <div class="lp-actions"><a class="lp-btn" href="#/login">O‘quvchi sifatida kirish</a><a class="lp-btn lp-btn-line" href="#lp-enroll" data-scroll="lp-enroll">Darsga yozilish</a></div>
     </div>
   </section>
 
@@ -891,8 +982,8 @@ body.dark .dots i.on{background:#E8ECF5}
     <div class="lp-in">
       <h2 class="lp-h2">Qanday boshlanadi</h2>
       <ol class="lp-steps">
-        <li><b>ID raqamingizni oling</b><p>EDUNEST o‘quvchilari markazdagi ID raqamidan foydalanadi. Mehmonlar ism va telefon raqami bilan ro‘yxatdan o‘tadi.</p></li>
-        <li><b>Platformaga kiring</b><p>ID yoki telefon raqamingizni yozing. Parol kerak emas.</p></li>
+        <li><b>ID raqamingizni oling</b><p>EDUNEST o‘quvchilari markazdagi ID raqamidan foydalanadi. Darsga yangi kelganlar ustoz aytgan mehmon kodi bilan vaqtincha kiradi.</p></li>
+        <li><b>Platformaga kiring</b><p>ID raqamingiz va parolingizni yozing. Birinchi kirishda 4–8 xonali parolni o‘zingiz o‘ylab topasiz.</p></li>
         <li><b>Mashq qiling</b><p>Natijalaringiz profilingizda saqlanadi va ustozingiz ularni ko‘radi.</p></li>
       </ol>
     </div>
@@ -910,6 +1001,50 @@ body.dark .dots i.on{background:#E8ECF5}
     </div>
   </section>
 
+  <footer class="lp-foot"><div class="lp-in"><span>© EDUNEST Academy</span><span>A'zamjon Toxirov, C1 o‘qituvchi</span></div></footer>
+ </div>
+</section>
+
+<!-- ================= PUBLIC: C1 LISTENING GUIDE ================= -->
+<section id="c1page" class="hide">
+ <div class="lp">
+  <header class="lp-bar">
+    <a class="lp-brand" href="#/" aria-label="EDUNEST Multi-Level"><img class="lg" alt=""><span><b>EDUNEST</b><small>Multi-Level hamjamiyati</small></span></a>
+    <a class="lp-btn lp-btn-sm" href="#/login">Kirish</a>
+  </header>
+  <article class="c1a">
+    <a class="c1back" href="#/">← Bosh sahifa</a>
+    <div class="c1au"><img class="tph" alt=""><div><b>A'zamjon Toxirov</b><span>C1 o‘qituvchi, EDUNEST Academy</span></div></div>
+    <h1>Listening’imni 5.0–5.5 dan 7.5–8.0 ga qanday chiqardim</h1>
+    <div class="c1res"><div><small>Boshlanishi</small><b>5.0–5.5</b></div><i aria-hidden="true">→</i><div><small>Natija</small><b class="hi">7.5–8.0</b></div><div class="c1t"><small>Vaqt</small><b>~1.5 oy</b></div></div>
+    <h2>Mana men nima qilganman</h2>
+    <ol class="c1steps">
+      <li>Savol audiosini eshitishdan oldin albatta savollarni bittalab tahlil qilib chiqqanman.</li>
+      <li>Ana shu savol matnida notanish so‘zlar bo‘lsa, tarjimasini ko‘rib, eslab qolganman.</li>
+      <li>Audioni eshitib, chalg‘imasdan, focusni faqat o‘sha audioga berganman.</li>
+      <li>Audioni tinglab bo‘lgach, o‘sha audioning transcriptini, ya’ni matn qismini olib, audioni qayta qo‘yganman. Endi savolga emas, o‘sha matnga e’tibor berganman — matn bilan birga tinglaganman.</li>
+      <li>Savollarning javoblarini haqiqiy javoblardan emas, o‘sha audio matnidan izlaganman — Readingga aylantirib olganman.</li>
+      <li>Bilmagan so‘zlarimni yozmasdan, shunchaki tarjimasini ko‘rib ketganman va matnni tushunishga harakat qilganman.</li>
+      <li>Haqiqiy xatolar ana shunda ko‘rinadi.</li>
+      <li>Har bir material uchun 10–30 daqiqa vaqt ketgan.</li>
+      <li class="big">ERINCHOQ BO‘LMANG!</li>
+      <li>Bitta mashqning ham savol matni, ham audio matnidan boshida 100 ga yaqin yangi so‘z chiqishi mumkin — va bu narsa tobora kamayib boradi.</li>
+    </ol>
+    <blockquote class="c1q">Aynan shu yo‘l bilan Listeningimni 5.0–5.5 dan 7.5–8.0 ga olib chiqqanman — deyarli 1.5 oyda. <b>Sabrlilar uchun bu!</b></blockquote>
+    <div class="c1cta">
+      <a class="lp-btn" href="EDUNEST-Listening-C1-yoli.pdf" download>PDF yuklab olish</a>
+      <button class="lp-btn lp-btn-line" id="c1share" type="button">Do‘stlarga ulashish</button>
+    </div>
+    <div class="c1more">
+      <h3>Bu usulni men bilan birga qo‘llamoqchimisiz?</h3>
+      <p>EDUNEST o‘quvchilari Listening Part 2 Pack’da xuddi shu usul bilan 9 ta mashqni skript va javoblar bilan ishlaydi.</p>
+      <div class="lp-ways">
+        <div class="lp-way lp-way-l"><div><small>Markaz</small><b>Yangi Hayot filiali</b></div></div>
+        <a class="lp-way lp-way-l" href="https://t.me/teachertx" target="_blank" rel="noopener"><div><small>Telegram</small><b>@teachertx</b></div><em>Yozish</em></a>
+        <a class="lp-way lp-way-l" href="tel:+998507178400"><div><small>Telefon</small><b>+998 50 717 84 00</b></div><em>Qo‘ng‘iroq</em></a>
+      </div>
+    </div>
+  </article>
   <footer class="lp-foot"><div class="lp-in"><span>© EDUNEST Academy</span><span>A'zamjon Toxirov, C1 o‘qituvchi</span></div></footer>
  </div>
 </section>
@@ -953,7 +1088,6 @@ body.dark .dots i.on{background:#E8ECF5}
 /* =================== SETTINGS =================== */
 const CLOUD_URL = "https://script.google.com/macros/s/AKfycbyGlQel0xAg62m-yMubZRfQgFrz-p8B7AMnxp4JsN9fv8eUJzek_zg6GM17BIo9ZkHNrw/exec";
 const BOOSTER_URL = "https://toxirovteacher.github.io/edunest-multilevel/booster.html";
-const TEACHER_PASS_SHA256 = "968db91cba58c45b18f673c883481405c35ced82f2b84d4f23fb65421adb1891";
 const GROUPS = ["SHARKS","FARMERS","GUEST"];
 const BOOSTER_TESTS = 30;
 /* ================================================ */
@@ -1001,6 +1135,7 @@ function setTheme(d){document.body.classList.toggle('dark',d);document.querySele
 setTheme(store(ST+'dark')==='1'||(store(ST+'dark')==null&&matchMedia('(prefers-color-scheme: dark)').matches));
 document.querySelectorAll('#themeToggle,#themeToggle2,#themeToggle3').forEach(b=>b.onclick=()=>setTheme(!document.body.classList.contains('dark')));
 document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelectorAll('#tPhoto,img.tph').forEach(i=>i.src=PHOTO);
+$('#c1share').onclick=async()=>{const url=location.href.split('#')[0]+'#/c1';const d={title:'Listening 5.0 dan 7.5–8.0 ga: A\'zamjon Toxirovning usuli',text:'1.5 oyda Listening’ni 7.5–8.0 ga chiqargan 10 qadam',url};try{if(navigator.share){await navigator.share(d);return}await navigator.clipboard.writeText(url);toast('Havola nusxalandi')}catch(e){}};
 document.querySelectorAll('[data-scroll]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.scroll).scrollIntoView({behavior:'smooth'})});
 
 /* ---------- modal ---------- */
@@ -1013,79 +1148,142 @@ function closeModals(){document.querySelectorAll('.modal-bg').forEach(m=>m.remov
 /* ================= LOGIN ================= */
 function showLogin(role){
   document.body.classList.remove('st-mode');
-  $('#app').classList.add('hide');$('#landing').classList.add('hide');$('#login').classList.remove('hide');$('#themeFloat').classList.remove('hide');
-  role=role||ui.role||'student';ui.role=role;
+  $('#app').classList.add('hide');$('#landing').classList.add('hide');$('#c1page').classList.add('hide');$('#login').classList.remove('hide');$('#themeFloat').classList.remove('hide');
+  role=role||ui.role||'student';ui.role=role;ui.lstep=null;
   const last=store(ST+'lastId');
   $('#loginForm').innerHTML=`
     <a class="lback" href="#/">← Bosh sahifa</a>
     <h2>Kim kirmoqda?</h2>
     <div class="rolecards three">
-      <button class="role ${role==='student'?'on':''}" data-r="student"><span class="ri">🎓</span>O‘quvchi<small>Student ID</small></button>
-      <button class="role ${role==='guest'?'on':''}" data-r="guest"><span class="ri">👋</span>Mehmon<small>Guest</small></button>
-      <button class="role ${role==='teacher'?'on':''}" data-r="teacher"><span class="ri">👨‍🏫</span>Ustoz<small>Teacher</small></button>
+      <button class="role ${role==='student'?'on':''}" data-r="student"><span class="ri">🎓</span>O‘quvchi<small>ID + parol</small></button>
+      <button class="role ${role==='guest'?'on':''}" data-r="guest"><span class="ri">👋</span>Mehmon<small>Vaqtinchalik</small></button>
+      <button class="role ${role==='teacher'?'on':''}" data-r="teacher"><span class="ri">👨‍🏫</span>Ustoz<small>Panel</small></button>
     </div>
     ${role==='student'?`
-      <div class="field"><label for="inId">ID raqamingiz · Your ID</label><input id="inId" class="bigin" inputmode="text" autocomplete="off" placeholder="63001" value="${esc(last||'')}" enterkeyhint="go"></div>
-      <button class="btn red big block" style="margin-top:18px" id="btnGo">Kirish · Enter →</button>
-      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>ID raqamingizni EDUNEST o‘quv markazidan bilib olasiz. Mehmonlar o‘z ID yoki telefon raqamini yozishi mumkin.</p>`
+      <div id="tgBox"></div>
+      <div class="field"><label for="inId">ID raqamingiz</label><input id="inId" class="bigin" inputmode="numeric" autocomplete="username" placeholder="63001" value="${esc(last||'')}" enterkeyhint="next"></div>
+      <div id="pinBox"></div>
+      <button class="btn red big block" style="margin-top:18px" id="btnGo">Davom etish</button>
+      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>ID raqamingizni EDUNEST o‘quv markazidan bilib olasiz. Birinchi kirishda o‘zingizga 4–8 xonali parol o‘ylab topasiz.</p>`
     :role==='guest'?`
-      <div class="field"><label for="inName">Ism va familiya · Name and surname</label><input id="inName" autocomplete="name" placeholder="Qo'zivoy Qo'chqorov" enterkeyhint="next"></div>
-      <div class="field"><label for="inPhone">Telefon raqam · Phone</label>
-        <div class="phonebox"><span>+998</span><input id="inPhone" inputmode="numeric" autocomplete="tel-national" placeholder="90 123 45 67" maxlength="14" enterkeyhint="go"></div></div>
-      <button class="btn red big block" style="margin-top:18px" id="btnGo">Boshlash · Start →</button>
-      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>+998 ni yozmang — faqat 9 ta raqam. Keyingi safar shu raqam bilan qayta kirasiz.</p>`
+      <div class="field"><label for="inName">Ism va familiya</label><input id="inName" autocomplete="name" placeholder="Qo'zivoy Qo'chqorov" enterkeyhint="next"></div>
+      <div class="field"><label for="inPhone">Telefon raqam</label>
+        <div class="phonebox"><span>+998</span><input id="inPhone" inputmode="numeric" autocomplete="tel-national" placeholder="90 123 45 67" maxlength="14" enterkeyhint="next"></div></div>
+      <div class="field"><label for="inCode">Mehmon kodi</label><input id="inCode" class="bigin" inputmode="numeric" autocomplete="off" placeholder="Ustozdan so‘rang" enterkeyhint="go"></div>
+      <button class="btn red big block" style="margin-top:18px" id="btnGo">Kirish</button>
+      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>Mehmon kodini ustoz darsda aytadi. Mehmon sifatida ${3} kun kira olasiz. +998 ni yozmang, faqat 9 ta raqam.</p>`
     :`
-      <div class="field"><label for="inPass">Ustoz paroli · Teacher login</label><input id="inPass" type="password" autocomplete="current-password" enterkeyhint="go"></div>
-      <button class="btn navy big block" style="margin-top:18px" id="btnGo">Ustoz paneliga kirish →</button>`}
+      <div class="field"><label for="inPass">Ustoz paroli</label><input id="inPass" type="password" autocomplete="current-password" enterkeyhint="go"></div>
+      <button class="btn navy big block" style="margin-top:18px" id="btnGo">Ustoz paneliga kirish</button>`}
     <div id="loginMsg"></div>`;
   document.querySelectorAll('.role').forEach(b=>b.onclick=()=>showLogin(b.dataset.r));
   const go_=role==='student'?studentLogin:role==='guest'?guestLogin:teacherLogin;
   $('#btnGo').onclick=go_;
-  document.querySelectorAll('#loginForm input').forEach((i,k,all)=>i.onkeydown=e=>{if(e.key==='Enter'){if(all[k+1])all[k+1].focus();else go_()}});
+  bindEnter(go_);
   if(role==='guest')$('#inPhone').oninput=e=>{let p=e.target.value.replace(/\D/g,'');if(p.startsWith('998')&&p.length>9)p=p.slice(3);p=p.slice(0,9);
     e.target.value=[p.slice(0,2),p.slice(2,5),p.slice(5,7),p.slice(7)].filter(Boolean).join(' ')};
+  if(role==='student')tgOffer();
+  if(role==='student')$('#inId').oninput=()=>{if(ui.lstep){ui.lstep=null;$('#pinBox').innerHTML='';$('#btnGo').textContent='Davom etish'}};
 }
-function busy(on,msg){const b=$('#btnGo');if(b)b.disabled=on;$('#loginMsg').innerHTML=on?`<div class="loading"><div class="spin"></div>${msg||'Yuklanmoqda… · Loading…'}</div>`:''}
+function bindEnter(go_){document.querySelectorAll('#loginForm input').forEach((i,k,all)=>i.onkeydown=e=>{if(e.key==='Enter'){if(all[k+1])all[k+1].focus();else go_()}})}
+function busy(on,msg){const b=$('#btnGo');if(b)b.disabled=on;$('#loginMsg').innerHTML=on?`<div class="loading"><div class="spin"></div>${msg||'Yuklanmoqda…'}</div>`:''}
+const pinIn=(id,label)=>`<div class="field"><label for="${id}">${label}</label><input id="${id}" class="bigin pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="${id==='inPin'?'current-password':'new-password'}" placeholder="••••"></div>`;
 async function studentLogin(){
   const q=$('#inId').value.trim();if(!q){$('#inId').focus();return}
-  busy(true);let j=null;try{j=await cget({action:'login',q})}catch(e){}
+  const body={action:'login',q};
+  if(ui.lstep==='pin'){const p=$('#inPin').value.trim();if(!/^\d{4,8}$/.test(p)){toast('Parol 4–8 ta raqam');$('#inPin').focus();return}body.pin=p}
+  if(ui.lstep==='setup'){const a=$('#inPin1').value.trim(),b=$('#inPin2').value.trim();
+    if(!/^\d{4,8}$/.test(a)){toast('Parol 4–8 ta raqamdan iborat bo‘lsin');$('#inPin1').focus();return}
+    if(a!==b){toast('Parollar bir xil emas');$('#inPin2').select();return}
+    if(/^(\d)\1+$/.test(a)||'0123456789'.includes(a)||'9876543210'.includes(a)){toast('Bu parol juda oson. Boshqasini tanlang.');$('#inPin1').select();return}
+    body.pin=a}
+  busy(true);let j=null;try{j=await cpost(body)}catch(e){}
   busy(false);
-  if(!j){toast('⚠️ Internet yo‘q · No connection');return}
-  if(!j.ok){toast('ID topilmadi · ID not found');$('#inId').select();return}
-  enter(j);
+  if(!j){toast('Internet yo‘q. Qayta urining.');return}
+  if(j.ok){store(ST+'lastId',q);enter(j);return}
+  if(j.error==='not found'){toast('Bu ID topilmadi. Ustozga murojaat qiling.');$('#inId').select();return}
+  if(j.error==='locked'){$('#loginMsg').innerHTML='<p class="lerr">Ko‘p marta noto‘g‘ri parol kiritildi. 15 daqiqadan keyin urinib ko‘ring yoki ustozdan parolni yangilashni so‘rang.</p>';return}
+  if(j.error==='setup'){ui.lstep='setup';$('#pinBox').innerHTML=`<div class="pinnote">Birinchi kirish. O‘zingizga 4–8 xonali raqamli parol o‘ylab toping va uni hech kimga aytmang.</div>${pinIn('inPin1','Yangi parol (4–8 raqam)')}${pinIn('inPin2','Parolni takrorlang')}`;$('#btnGo').textContent='Parolni saqlash va kirish';bindEnter(studentLogin);$('#inPin1').focus();return}
+  if(j.error==='pin'){ui.lstep='pin';$('#pinBox').innerHTML=pinIn('inPin','Parol');$('#btnGo').textContent='Kirish';bindEnter(studentLogin);$('#inPin').focus();return}
+  if(j.error==='badpin'){$('#inPin').value='';$('#inPin').focus();toast(`Parol noto‘g‘ri. Yana ${j.left} ta urinish qoldi.`);return}
+  toast('Xatolik. Qayta urining.');
 }
 async function guestLogin(){
-  const name=title($('#inName').value);const phone=phone9($('#inPhone').value);
-  if(name.split(' ').filter(w=>w.replace(/[^A-Za-z]/g,'').length>=2).length<2){toast('Ism va familiyani yozing · Name + surname');$('#inName').focus();return}
-  if(phone.length!==9){toast('9 ta raqam yozing · Write 9 digits');$('#inPhone').focus();return}
-  busy(true);let j=null;try{j=await cpost({action:'guest',name,phone})}catch(e){}
+  const name=title($('#inName').value);const phone=phone9($('#inPhone').value);const code=$('#inCode').value.trim();
+  if(name.split(' ').filter(w=>w.replace(/[^A-Za-z]/g,'').length>=2).length<2){toast('Ism va familiyani yozing');$('#inName').focus();return}
+  if(phone.length!==9){toast('9 ta raqam yozing');$('#inPhone').focus();return}
+  if(!code){toast('Mehmon kodini yozing');$('#inCode').focus();return}
+  busy(true);let j=null;try{j=await cpost({action:'guest',name,phone,code})}catch(e){}
   busy(false);
-  if(!j||!j.ok){toast('⚠️ Xatolik · Try again');return}
+  if(!j){toast('Internet yo‘q. Qayta urining.');return}
+  if(!j.ok){toast(j.error==='code'?'Mehmon kodi noto‘g‘ri':'Ma’lumotlarni tekshiring');(j.error==='code'?$('#inCode'):$('#inName')).select();return}
   enter(j,true);
 }
-function enter(j,isNewGuest){
-  P=j;U={role:'student',id:j.student.id};
-  store(ST+'session',JSON.stringify(U));store(ST+'lastId',j.student.id);store(ST+'p:'+j.student.id,JSON.stringify(j));
+/* ---------- Telegram login ---------- */
+const TGI='<svg class="tgi" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.4 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>';
+async function tgBot(){let b=sstore(ST+'tgbot');if(b!==null)return b;try{const j=await cget({action:'cfg'},8000);b=(j&&j.tgBot)||'';sstore(ST+'tgbot',b)}catch(e){b=''}return b}
+async function tgOffer(){const bot=await tgBot();const box=$('#tgBox');if(!bot||!box)return;
+  box.innerHTML=`<button class="btn tg big block" id="tgGo">${TGI}Telegram orqali kirish</button><div class="ordiv"><span>yoki ID va parol bilan</span></div>`;
+  $('#tgGo').onclick=()=>tgFlow('login',box)}
+const TGST={wait:'Telegram’da botni oching va <b>START</b> tugmasini bosing.',contact:'Botda <b>«📱 Raqamni yuborish»</b> tugmasini bosing.',
+  nomatch:'Bu raqam ro‘yxatda topilmadi. ID va parolingiz bilan kiring, keyin profilingizda <b>«Telegram’ni ulash»</b> ni bosing.',
+  taken:'Bu Telegram boshqa o‘quvchiga ulangan. Ustozga murojaat qiling.',expired:'Vaqt tugadi. Tugmani qayta bosing.'};
+async function tgFlow(mode,box){
+  clearInterval(ui.tgT);box.innerHTML=`<div class="tgcard"><div class="loading"><div class="spin"></div>Tayyorlanmoqda…</div></div>`;
+  let j=null;try{j=await cpost(mode==='link'?{action:'tgStart',mode,id:U.id,t:U.t}:{action:'tgStart',mode})}catch(e){}
+  if(!j||!j.ok){box.innerHTML=`<p class="lerr">Telegram orqali ulanib bo‘lmadi. Keyinroq urinib ko‘ring.</p>`;return}
+  const url=`https://t.me/${j.bot}?start=${j.nonce}`;
+  box.innerHTML=`<div class="tgcard"><ol class="tgsteps"><li>Pastdagi tugma bilan botni oching</li><li><b>START</b> ni bosing</li><li>«Raqamni yuborish» ni bosing va shu sahifaga qayting</li></ol>
+    <a class="btn tg big block" href="${url}" target="_blank" rel="noopener" id="tgOpen">${TGI}Botni ochish</a>
+    <p class="tgstat" id="tgStat" aria-live="polite"><span class="dot"></span><span>${TGST.wait}</span></p></div>`;
+  let n=0,busyP=false;const end=Date.now()+14*60e3;
+  const poll=async()=>{if(busyP||!document.body.contains(box))return;if(Date.now()>end){clearInterval(ui.tgT);$('#tgStat').innerHTML=TGST.expired;return}
+    busyP=true;let r=null;try{r=await cpost({action:'tgPoll',nonce:j.nonce})}catch(e){}busyP=false;if(!r||!document.body.contains(box))return;
+    if(!r.ok){clearInterval(ui.tgT);$('#tgStat').innerHTML=TGST.expired;return}
+    if(r.st==='done'||r.student){clearInterval(ui.tgT);sfx('done');
+      if(mode==='link'){closeModals();toast('Telegram ulandi'+(r.tgu?': '+r.tgu:''));lastFetch=0;P=null;route();return}
+      store(ST+'lastId',r.uid);enter(r);return}
+    const st=$('#tgStat');if(st)st.innerHTML=(['nomatch','taken'].includes(r.st)?'':'<span class="dot"></span>')+'<span>'+(TGST[r.st]||TGST.wait)+'</span>';
+    if(['nomatch','taken'].includes(r.st))clearInterval(ui.tgT)};
+  ui.tgT=setInterval(poll,2500);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
+}
+function tgLinkModal(){modal(`<h3>Telegram’ni ulang</h3><p class="muted" style="margin:6px 0 12px">Shunda saytga parolsiz, Telegram orqali bir bosishda kirasiz.</p><div id="tgLinkBox"></div>`,[{t:'Yopish',f:()=>clearInterval(ui.tgT)}]);tgFlow('link',$('#tgLinkBox'))}
+function keepKey(k){if(!k)return;store(ST+'k',k);store('edunest_booster_p1:code',String(k).toUpperCase())}
+function dropKey(){store(ST+'k',null);store('edunest_booster_p1:code',null);store('edunest_booster_p1:session',null);store('edunest_booster_p1:back',null)}
+function enter(j,isGuest){
+  P=j;U={role:'student',id:j.uid,t:j.t,guest:j.student.type==='guest'};keepKey(j.k);
+  store(ST+'session',JSON.stringify(U));store(ST+'p:'+j.uid,JSON.stringify(j));lastFetch=Date.now();
   enterApp();go('#/me',true);
-  if(isNewGuest&&j.student.type==='guest')modal(`<div style="text-align:center"><div style="font-size:48px">🎉</div><h3>Xush kelibsiz, ${esc(j.student.name.split(' ')[0])}!</h3>
-    <p class="muted" style="margin-top:6px">Sizning ID raqamingiz · Your ID:</p><div class="idbig">${esc(j.student.id)}</div>
-    <p class="uz" style="text-align:left"><span class="flag">UZ</span>Keyingi safar shu ID yoki telefon raqamingiz bilan kirasiz.</p></div>`,[{t:'Tushunarli · OK',cls:'red'}]);
+  if(isGuest){const days=Math.max(1,Math.round((+String(j.t).split('.')[0]-Date.now())/864e5));
+    modal(`<div style="text-align:center"><div style="font-size:48px">👋</div><h3>Xush kelibsiz, ${esc(j.student.name.split(' ')[0])}!</h3>
+    <p class="muted" style="margin-top:6px">Siz mehmon sifatida ${days} kun davomida materiallardan foydalana olasiz. Keyin yana ism, telefon va mehmon kodi bilan kirasiz.</p></div>`,[{t:'Tushunarli',cls:'red'}])}
 }
-function teacherLogin(){
-  const p=$('#inPass').value.trim().toUpperCase();
-  if(sha256(p)!==TEACHER_PASS_SHA256){toast('Parol noto‘g‘ri · Wrong password');$('#inPass').select();return}
-  U={role:'teacher',pass:p};sstore(ST+'t',p);TD=null;enterApp();go('#/teacher',true);
+async function teacherLogin(){
+  const typed=$('#inPass').value.trim();if(!typed){$('#inPass').focus();return}
+  busy(true);let j=null,pass=typed;
+  try{j=await cpost({action:'tauth',key:typed});if(j&&!j.ok&&typed!==typed.toUpperCase()){pass=typed.toUpperCase();j=await cpost({action:'tauth',key:pass})}}catch(e){}
+  busy(false);
+  if(!j){toast('Internet yo‘q. Qayta urining.');return}
+  if(!j.ok){toast('Parol noto‘g‘ri');$('#inPass').select();return}
+  keepKey(j.k);U={role:'teacher',pass};sstore(ST+'t',pass);TD=null;enterApp();go('#/teacher',true);
 }
-function enterApp(){$('#login').classList.add('hide');$('#landing').classList.add('hide');$('#themeFloat').classList.add('hide');$('#app').classList.remove('hide');
+function enterApp(){$('#login').classList.add('hide');$('#landing').classList.add('hide');$('#c1page').classList.add('hide');$('#themeFloat').classList.add('hide');$('#app').classList.remove('hide');
   $('#brandSub').textContent=U.role==='teacher'?'Ustoz paneli':'Multi-Level';$('#homeBtn').classList.toggle('hide',U.role!=='teacher')}
-$('#logoutBtn').onclick=()=>modal(`<h3>Hisobdan chiqasizmi?</h3>`,[{t:'Yo‘q'},{t:'Ha, chiqish',cls:'red',f:()=>{
-  if(U.role==='teacher')sstore(ST+'t',null);else store(ST+'session',null);U=null;P=null;history.replaceState(null,'','#/');showLanding()}}]);
+function logout(silent){if(U&&U.role==='teacher')sstore(ST+'t',null);else{store(ST+'session',null);if(U)store(ST+'p:'+U.id,null)}dropKey();U=null;P=null;TD=null;
+  history.replaceState(null,'','#/');if(silent)showLogin('student');else showLanding()}
+$('#logoutBtn').onclick=()=>modal(`<h3>Hisobdan chiqasizmi?</h3>`,[{t:'Yo‘q'},{t:'Ha, chiqish',cls:'red',f:()=>logout()}]);
 $('#homeBtn').onclick=()=>go(U&&U.role==='teacher'?'#/teacher/students':'#/me');
 $('#brandHome').onclick=()=>$('#homeBtn').click();
 $('#backBtn').onclick=()=>go(ui.parent||'#/');
 
 addEventListener('scroll',()=>{const x=document.querySelector('.lp-bar');if(x)x.classList.toggle('stuck',scrollY>8)},{passive:true});
-function showLanding(){document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
+function showLanding(){document.title='EDUNEST · Multi-Level';renderShow();document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
+function showC1(){document.body.classList.remove('st-mode');['#app','#login','#landing'].forEach(x=>$(x).classList.add('hide'));$('#themeFloat').classList.add('hide');$('#c1page').classList.remove('hide');scrollTo(0,0);
+  document.title='C1 Listening yo‘li · A\'zamjon Toxirov · EDUNEST'}
+function renderShow(){const box=$('#lpShow');if(!box||box.dataset.done)return;box.dataset.done=1;
+  const items=[['booster','Reading Part 1 Booster','30 ta matn, har birida 5 xil mashq'],['reading','Reading Full Mock Test','5 qism, real imtihon formatida'],['listening','Listening Part 2 Pack','9 ta mashq, skript va javoblar bilan']];
+  box.innerHTML=items.map(([k,t,d],i)=>`<div class="lp-sc">${coverHTML(k,i,'<span class="tbadge">🔒 O‘quvchilar uchun</span>')}<div class="lp-scb"><b>${t}</b><small>${d}</small></div></div>`).join('')}
 /* ================= ROUTER ================= */
 function go(h,replace){if(location.hash===h){route();return}if(replace){history.replaceState(null,'',h);route()}else location.hash=h}
 addEventListener('hashchange',route);
@@ -1093,6 +1291,7 @@ function setBack(parent,label){ui.parent=parent;const b=$('#backBtn');b.classLis
 const view=()=>$('#view');
 function route(){
   closeModals();scrollTo(0,0);
+  if(location.hash.startsWith('#/c1')){showC1();return}
   if(!U){if(location.hash.startsWith('#/login'))showLogin();else showLanding();return}
   const h=location.hash.replace(/^#\/?/,'').split('/');
   if(U.role==='teacher'){
@@ -1147,17 +1346,36 @@ function bstats(D){
 }
 function boosterLink(p,test){
   const s=p.student;
-  return BOOSTER_URL+'#sso='+encodeURIComponent(JSON.stringify({id:s.id,name:s.name,group:s.group,code:p.code,test:test||null,back:location.href.split('#')[0]+'#/me/a/'+BOOSTER_AID}));
+  keepKey(p.k);return BOOSTER_URL+'#sso='+encodeURIComponent(JSON.stringify({id:p.uid||U.id,name:s.name,group:s.group,test:test||null,back:location.href.split('#')[0]+'#/me/a/'+BOOSTER_AID}));
 }
 const bxp=(p,score)=>((p.rules&&p.rules.base)||10)+((p.rules&&p.rules.perOk)||2)*score;
 
+
+/* ---------- assignment banners ---------- */
+const COVERS={
+  booster:{k:'Reading · Part 1',w:'BOOSTER',c1:'#141B2D',c2:'#E3101F',art:'book',l:'Booster'},
+  reading:{k:'Reading',w:'MOCK TEST',c1:'#0A2E3A',c2:'#178A8E',art:'lines',l:'Reading'},
+  listening:{k:'Listening',w:'PART 2',c1:'#221640',c2:'#7B3FE4',art:'wave',l:'Listening'},
+  vocab:{k:'Vocabulary',w:'SO‘ZLAR',c1:'#3D2A00',c2:'#D99A00',art:'dots',l:'Lug‘at'},
+  writing:{k:'Writing',w:'ESSAY',c1:'#0E3322',c2:'#1E9A56',art:'lines',l:'Writing'},
+  speaking:{k:'Speaking',w:'GAPIR',c1:'#3A0E22',c2:'#D8336A',art:'wave',l:'Speaking'}};
+function coverArt(a){
+  if(a==='wave')return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">${Array.from({length:34},(_,i)=>{const h=8+Math.abs(Math.sin(i*.55)*Math.cos(i*.21))*62;return `<rect x="${i*6}" y="${40-h/2}" width="3" height="${h}" rx="1.5"/>`}).join('')}</svg>`;
+  if(a==='lines')return `<svg class="cart cart-r" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMid meet" aria-hidden="true"><rect x="70" y="4" width="110" height="74" rx="6" fill="none" stroke-width="3"/>${Array.from({length:7},(_,i)=>`<rect x="${i%3?90:84}" y="${14+i*9}" width="${60+((i*29)%30)}" height="3" rx="1.5"/>`).join('')}</svg>`;
+  if(a==='dots')return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">${Array.from({length:40},(_,i)=>`<circle cx="${(i%10)*20+10}" cy="${Math.floor(i/10)*20+10}" r="${2+(i*7)%5}"/>`).join('')}</svg>`;
+  return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMid meet" aria-hidden="true"><path d="M110 18c22-8 44-8 66 0v52c-22-8-44-8-66 0zM110 18c-22-8-44-8-66 0v52c22-8 44-8 66 0z" fill="none" stroke-width="4"/><path d="M60 30h36M60 42h36M124 30h36M124 42h36" stroke-width="3"/></svg>`;
+}
+function coverHTML(key,i,extra){
+  const c=COVERS[key]||{k:'Topshiriq',w:'MASHQ',c1:`hsl(${(i*53+200)%360} 45% 22%)`,c2:`hsl(${(i*53+230)%360} 60% 46%)`,art:'dots'};
+  return `<div class="tcov" style="--c1:${c.c1};--c2:${c.c2}">${coverArt(c.art)}<span class="ck">${esc(c.k)}</span><b class="cw">${esc(c.w)}</b>${extra||''}</div>`;
+}
 /* ================= ASSIGNMENT MODEL (Booster + teacher maps) ================= */
 function tracks(p){
   const st=bstats(p.booster);
-  const b={aid:BOOSTER_AID,title:'Reading Part 1 Booster',sub:'30 ta matn, har birida A–E mashqlari',booster:true,
+  const b={aid:BOOSTER_AID,title:'Reading Part 1 Booster',sub:'30 ta matn, har birida A–E mashqlari',booster:true,cover:'booster',
     steps:Array.from({length:BOOSTER_TESTS},(_,i)=>{const t=st.tests[i+1];const done=!!(t&&t.kwt&&t.res);
       return{t:'Test '+(i+1),done,score:t&&t.res?t.res.score:null,xp:done?bxp(p,t.res.score):null,pack:Math.floor(i/10)+1}})};
-  const own=(p.assignments||[]).map(a=>({aid:a.aid,title:a.title,sub:a.note||'',xpEach:a.xp,
+  const own=(p.assignments||[]).map(a=>({aid:a.aid,title:a.title,sub:a.note||'',xpEach:a.xp,cover:a.cover||'',
     steps:a.steps.map((s,i)=>({t:s.t||('Bosqich '+(i+1)),l:s.l,done:((p.progress||{})[a.aid+':'+i])==='done',xp:a.xp}))}));
   return [b,...own].map(t=>{const d=t.steps.filter(s=>s.done).length;const cur=t.steps.findIndex(s=>!s.done);return{...t,done:d,total:t.steps.length,cur,finished:d===t.steps.length}});
 }
@@ -1166,39 +1384,43 @@ function tracks(p){
 const STABS=[['home','Topshiriqlar',IC.map],['liga','Reyting',IC.cup]];
 let lastFetch=0;
 async function me(h){
-  const tab=h[1]==='liga'?'liga':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2];
+  if(h[1]==='a'&&h[3]==='done'&&h[4]!=null){ui.pendingDone={aid:decodeURIComponent(h[2]),i:+h[4]};history.replaceState(null,'','#/me/a/'+h[2]);h=h.slice(0,3)}
+  const tab=h[1]==='liga'?'liga':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2]&&decodeURIComponent(h[2]);
   document.body.classList.add('st-mode');setBack(tab==='map'?'#/me':null,'Topshiriqlar');
   if(!P){try{P=JSON.parse(store(ST+'p:'+U.id)||'null')}catch(e){}}
   if(P&&!P.xp)P=null;
   if(P)drawMe();else view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
   if(Date.now()-lastFetch<15000&&P)return;
-  try{const j=await cget({action:'login',q:U.id});lastFetch=Date.now();
-    if(j&&j.ok){P=j;store(ST+'p:'+U.id,JSON.stringify(j));if(location.hash.startsWith('#/me'))drawMe()}
-    else if(j&&!j.ok&&!P){store(ST+'session',null);U=null;showLogin();toast('ID topilmadi')}}
+  try{const j=await cget({action:'me',id:U.id,t:U.t});lastFetch=Date.now();
+    if(j&&j.ok){P=j;keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(j));if(location.hash.startsWith('#/me'))drawMe()}
+    else if(j&&!j.ok){toast(U.guest?'Mehmon muddati tugadi. Qaytadan kiring.':'Qaytadan kiring');logout(true)}}
   catch(e){if(!P)view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Internet aloqasi yo‘q</h3><p class="muted">Aloqani tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="lastFetch=0;route()">Qayta urinish</button></div></div>`}
 }
 function stNav(tab){return `<nav class="stnav two" aria-label="Bo‘limlar">${STABS.map(([k,l,ic])=>`<a href="#/me${k==='home'?'':'/'+k}" class="${k===tab||(tab==='map'&&k==='home')?'on':''}">${ic}<span>${l}</span></a>`).join('')}</nav>`}
 function drawMe(){
   const tab=ui.stab;
-  if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);return}
+  if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);
+    const pd=ui.pendingDone;if(pd&&pd.aid===t.aid){ui.pendingDone=null;const st=t.steps[pd.i];if(st&&!st.done&&!t.booster&&pd.i===t.cur)stepMark(P,t,pd.i,'done')}return}
   view().innerHTML=`<div class="wrap st anim">${tab==='liga'?ligaHTML(P):homeHTML(P)}</div>`+stNav(tab);
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
+  const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
 }
 function myRank(p){const rows=p.board||[];const me=rows.find(r=>r.me);if(!me)return null;const better=rows.filter(r=>r.t>me.t);return{me,n:rows.length,gap:better.length?Math.min(...better.map(r=>r.t))-me.t:0}}
 function homeHTML(p){
   const s=p.student,rk=myRank(p),T=tracks(p);
   return `
   <div class="st-hello"><div class="pav">${esc(initials(s.name))}</div><div><h1>Salom, ${esc(s.name.split(' ')[0])}</h1>
-    <div class="st-meta"><span>ID ${esc(s.id)}</span><span>${s.type==='guest'?'Mehmon':esc(s.group)}</span></div></div></div>
+    <div class="st-meta">${s.type==='guest'?'<span>Mehmon</span><span>vaqtinchalik kirish</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}</div></div></div>
   <a class="st-rank" href="#/me/liga">
     <div class="st-rk"><b>${rk?rk.me.r:'–'}</b><small>o‘rin</small></div>
     <div class="st-rt"><span>${s.type==='guest'?'Mehmonlar':esc(s.group)} reytingi${rk?', '+rk.n+' kishi':''}</span>
       <strong>${p.xp.T} XP</strong>
       <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
   </a>
+  ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
   <h2 class="sech">Topshiriqlar</h2>
-  <div class="tgrid">${T.map((t,i)=>`<button class="tcard ${t.booster?'tb':''} ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}" style="--h:${(i*47)%360}">
-      <div class="tcov"><span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}</div>
+  <div class="tgrid">${T.map((t,i)=>`<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
+      ${coverHTML(t.cover,i,`<span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}`)}
       <div class="tbody"><b>${esc(t.title)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:''}
         <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
         <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
@@ -1264,6 +1486,7 @@ function bindMap(p,t){
     setTimeout(()=>{t.finished?sfx('grand'):sfx('win');confetti();xpPop(gained,t.finished)},350);
     const last=document.querySelector(`#map .mnode[data-i="${t.done-1}"]`);if(last)last.classList.add('pop')}
 }
+function stepHref(l,aid,i){return /^(viewer|mashq)\.html/.test(l)?`${l}&a=${encodeURIComponent(aid)}&s=${i}`:l}
 function xpPop(n,fin){const d=document.createElement('div');d.className='xppop';d.innerHTML=`<b>+${n} XP</b><span>${fin?'Hammasi tugadi! Sertifikat tayyor':'Keyingi bosqich ochildi'}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 function openSheet(p,t,i){
   const s=t.steps[i];const sh=$('#sheet'),bg=$('#sheetBg');
@@ -1275,7 +1498,7 @@ function openSheet(p,t,i){
   else{
     body=`<div class="shk">${i+1}-bosqich / ${t.total}</div><h3>${esc(s.t)}</h3>
       <p class="muted">${s.done?'Bu bosqich bajarilgan.':`Topshiriqni oching, bajaring va qaytib “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
-      <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(s.l)}" target="_blank" rel="noopener" id="shOpen">Ochish</a>`:''}
+      <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(stepHref(s.l,t.aid,i))}" ${/^(viewer|mashq)\.html/.test(s.l)?'':'target="_blank" rel="noopener"'} id="shOpen">Ochish</a>`:''}
         ${s.done?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
   sh.innerHTML=`<div class="grab"></div>${body}<button class="btn ghost block" id="shClose">Yopish</button>`;
   sh.classList.add('on');sh.setAttribute('aria-hidden','false');bg.classList.remove('hide');
@@ -1292,7 +1515,7 @@ async function stepMark(p,t,i,status){
   if(status==='done'){P.xp.A+=t.xpEach;P.xp.an++;P.xp.T+=t.xpEach;const me=(P.board||[]).find(r=>r.me);if(me)me.t=P.xp.T}
   store(ST+'p:'+U.id,JSON.stringify(P));
   if(status==='done')drawMe();
-  try{await cpost({action:'mark',id:U.id,aid,status});if(status==='done')lastFetch=0}catch(e){}
+  try{await cpost({action:'mark',id:U.id,t:U.t,aid,status});if(status==='done')lastFetch=0}catch(e){}
 }
 
 /* ---------- certificate (PNG to keep or share) ---------- */
@@ -1333,8 +1556,9 @@ async function certificate(p,t){
 async function loadT(force){
   if(TD&&!force)return TD;
   const j=await cget({action:'tlist',key:U.pass},25000);
+  if(j&&!j.ok&&/key/.test(j.error||'')){logout(true);toast('Parol o‘zgargan. Qaytadan kiring.');throw new Error('auth')}
   if(!j||!j.ok)throw new Error(j&&j.error||'error');
-  TD=j;return TD;
+  keepKey(j.k);TD=j;return TD;
 }
 const xpOf=id=>((TD.xp||{})[id])||{B:0,bn:0,A:0,an:0,T:0};
 const forGroup=(a,g)=>a.groups.toUpperCase()==='ALL'||a.groups.toUpperCase().split(/[,\s]+/).includes(String(g).toUpperCase());
@@ -1351,7 +1575,7 @@ function tRows(){
     const sdone=mine.reduce((n,a)=>n+a.steps.filter((_,i)=>pr[a.aid+':'+i]==='done').length,0);
     return{s,done:+b.done||0,last:b.last||0,sdone,stot,xp:xpOf(s.id).T,rank:rk[s.id]}});
 }
-const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],['guests','Mehmonlar']];
+const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],['guests','Mehmonlar'],['settings','Sozlamalar']];
 async function teacherHome(tab){
   document.body.classList.remove('st-mode');
   tab=TTABS.some(t=>t[0]===tab)?tab:'students';ui.ttab=tab;setBack(null);
@@ -1372,7 +1596,7 @@ async function teacherHome(tab){
     <div id="tBody"></div></div>`;
   document.querySelectorAll('.ttabs [data-t]').forEach(b=>b.onclick=()=>go('#/teacher/'+b.dataset.t));
   $('#tRef').onclick=()=>{TD=null;teacherHome(tab)};
-  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else tList(tab==='guests'?gu:st,tab==='guests');
+  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else if(tab==='settings')tSettings();else tList(tab==='guests'?gu:st,tab==='guests');
 }
 function tList(rows,guests){
   ui.tf=ui.tf||{q:'',g:'ALL',sort:'xp'};const f=ui.tf;if(guests)f.g='ALL';
@@ -1381,7 +1605,7 @@ function tList(rows,guests){
     r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
     $('#tTbl').innerHTML=r.length?r.map(x=>`<div class="card srow">
       <div class="sav">${esc(initials(x.s.name))}</div>
-      <div class="sn"><b>${esc(x.s.name)}</b><small>ID ${esc(x.s.id)}${guests?'':', '+esc(x.s.group)}</small></div>
+      <div class="sn"><b>${esc(x.s.name)}</b><small>${guests?(x.s.joined?'kelgan: '+new Date(x.s.joined).toLocaleDateString('en-GB'):'mehmon'):`ID ${esc(x.s.id)}, ${esc(x.s.group)}, ${x.s.hasPin?'parol bor':x.s.tg?'Telegram':'<span class="nopin">parol yo‘q</span>'}${x.s.tgu?', '+esc(x.s.tgu):x.s.tg?', Telegram ✓':''}`}</small></div>
       <div class="sp2"><b>${x.xp} XP</b><small>${x.rank?x.rank+'-o‘rin':''}</small></div>
       <div class="sp2"><b>${x.done}/${BOOSTER_TESTS}</b><div class="minibar"><b style="width:${x.done/BOOSTER_TESTS*100}%"></b></div><small>Booster</small></div>
       <div class="sp2"><b>${x.sdone}/${x.stot}</b><small>bosqichlar</small></div>
@@ -1419,6 +1643,35 @@ function importBox(){
     $('#impInfo').textContent=ui.impRows.length?`${ui.impRows.length} ta qator: ${nw} ta yangi, ${ui.impRows.length-nw} ta bor`:''};
   t.focus();
 }
+function tSettings(){
+  $('#tBody').innerHTML=`<div class="setg">
+    <div class="card sec"><h3>Mehmon kodi</h3>
+      <p class="muted">Yangi kelgan o‘quvchilarga darsda ayting. Kodsiz hech kim mehmon sifatida kira olmaydi. Mehmonlar 3 kun foydalanadi.</p>
+      <div class="gcode">${esc(TD.guestCode||'')}</div>
+      <div class="setrow"><input id="gcNew" inputmode="numeric" placeholder="Yangi kod (kamida 4 belgi)" maxlength="12"><button class="btn red" id="gcSave">Almashtirish</button></div></div>
+    <div class="card sec"><h3>Ustoz paroli</h3>
+      <p class="muted">Kamida 8 belgi: harf, raqam va belgi aralash bo‘lsin. Almashtirgandan keyin barcha qurilmalarda yangi parol bilan kirasiz.</p>
+      <div class="setrow"><input id="tpNew" type="password" autocomplete="new-password" placeholder="Yangi parol"><input id="tpNew2" type="password" autocomplete="new-password" placeholder="Takrorlang"></div>
+      <button class="btn navy" id="tpSave" style="margin-top:10px">Parolni almashtirish</button></div>
+    <div class="card sec"><h3>Telegram bot</h3>
+      ${TD.tgBot?`<p class="muted">Ulangan: <a href="https://t.me/${esc(TD.tgBot)}" target="_blank" rel="noopener"><b>@${esc(TD.tgBot)}</b></a>. O‘quvchilar saytga Telegram orqali kiradi; ularning Telegram raqami va @username’i ro‘yxatda ko‘rinadi.</p>
+        <p><b>${TD.roster.filter(r=>r.type!=='guest'&&r.tg).length}</b> / ${TD.roster.filter(r=>r.type!=='guest').length} o‘quvchi Telegram ulagan.</p>`
+      :`<p class="muted">BotFather bergan tokenni shu yerga qo‘ying. Token faqat sizning Google skriptingizda saqlanadi, saytda ko‘rinmaydi.</p>`}
+      <div class="setrow"><input id="tgTok" type="password" autocomplete="off" placeholder="${TD.tgBot?'Yangi token (almashtirish uchun)':'123456789:AA…'}"><button class="btn red" id="tgSave">${TD.tgBot?'Almashtirish':'Ulash'}</button></div></div>
+    <div class="card sec"><h3>O‘quvchi parollari</h3>
+      <p class="muted">Har bir o‘quvchi birinchi kirishda o‘ziga 4–8 xonali parol o‘ylab topadi. Parolni unutgan o‘quvchining profilini oching va “Parolni yangilash” ni bosing: keyingi kirishda u yangi parol o‘ylab topadi.</p>
+      <p><b>${TD.roster.filter(r=>r.type!=='guest'&&r.hasPin).length}</b> / ${TD.roster.filter(r=>r.type!=='guest').length} o‘quvchi parol o‘rnatgan.</p></div>
+  </div>`;
+  $('#tgSave').onclick=async()=>{const t=$('#tgTok').value.trim();if(!/^\d{6,12}:[\w-]{30,}$/.test(t)){toast('Token noto‘g‘ri ko‘rinishda');return}
+    $('#tgSave').disabled=true;try{const j=await cpost({action:'setBotToken',key:U.pass,token:t});if(!j.ok)throw j;sstore(ST+'tgbot',null);toast('Bot ulandi: @'+j.bot);TD=null;teacherHome('settings')}
+    catch(e){$('#tgSave').disabled=false;toast(e&&e.error==='token'?'Telegram bu tokenni qabul qilmadi':'Ulab bo‘lmadi. Skriptga ruxsat berilganini tekshiring.')}};
+  $('#gcSave').onclick=async()=>{const c=$('#gcNew').value.trim();if(c.length<4){toast('Kamida 4 belgi');return}
+    try{const j=await cpost({action:'setGuestCode',key:U.pass,code:c});if(!j.ok)throw 0;toast('Mehmon kodi almashtirildi');TD=null;teacherHome('settings')}catch(e){toast('Saqlanmadi')}};
+  $('#tpSave').onclick=()=>{const a=$('#tpNew').value,b=$('#tpNew2').value;
+    if(a.length<8){toast('Kamida 8 belgi');return}if(a!==b){toast('Parollar bir xil emas');return}
+    modal('<h3>Parolni almashtirasizmi?</h3><p class="muted" style="margin-top:6px">Yangi parolni eslab qoling yoki xavfsiz joyga yozib qo‘ying.</p>',[{t:'Bekor qilish'},{t:'Almashtirish',cls:'red',f:async()=>{
+      try{const j=await cpost({action:'setTeacherKey',key:U.pass,newKey:a});if(!j.ok)throw 0;U.pass=a;sstore(ST+'t',a);toast('Parol almashtirildi')}catch(e){toast('Saqlanmadi')}}}])};
+}
 function tLeague(){
   ui.lg=ui.lg||{g:GROUPS.find(g=>TD.roster.some(s=>s.group===g))||'SHARKS'};const L=ui.lg;
   const groups=GROUPS.filter(g=>TD.roster.some(s=>s.group===g));const rows=groupRank(L.g);
@@ -1449,6 +1702,7 @@ function tAssign(){
       <div class="field"><label for="aX">Har bir bosqich uchun XP</label><input id="aX" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
       <div class="field"><label>Kimlarga</label><div class="gchips">${['ALL',...GROUPS].map(g=>`<button class="gchip ${g==='ALL'?'on':''}" data-g="${g}">${g==='ALL'?'Hammaga':g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
     </div>
+    <div class="field"><label>Banner</label><div class="cvchips">${Object.entries(COVERS).filter(([k])=>k!=='booster').map(([k,c],j)=>`<button class="cvchip ${j?'':'on'}" data-cv="${k}" style="--c1:${c.c1};--c2:${c.c2}">${c.l}</button>`).join('')}</div></div>
     <button class="btn red big" id="aAdd" style="margin-top:14px">E’lon qilish</button>
   </div>
   <h2 class="sech">Barcha topshiriqlar</h2>
@@ -1464,6 +1718,7 @@ function tAssign(){
   const sync=()=>{ui.steps=[...document.querySelectorAll('.steprow')].map(r=>({t:r.querySelector('.stT').value,l:r.querySelector('.stL').value}))};
   const redraw=()=>{$('#stList').innerHTML=ui.steps.map((s,i)=>stepRow(i,s)).join('')};
   $('#stList').oninput=sync;
+  document.querySelectorAll('.cvchip').forEach(b=>b.onclick=()=>document.querySelectorAll('.cvchip').forEach(x=>x.classList.toggle('on',x===b)));
   $('#stList').onclick=e=>{const b=e.target.closest('.stX');if(!b)return;sync();ui.steps.splice(+b.closest('.steprow').dataset.k,1);if(!ui.steps.length)ui.steps=[{t:'',l:''}];redraw()};
   $('#stAdd').onclick=()=>{sync();ui.steps.push({t:'',l:''});redraw();const r=document.querySelectorAll('.steprow');r[r.length-1].querySelector('.stT').focus()};
   document.querySelectorAll('.gchip').forEach(b=>b.onclick=()=>{const all=b.dataset.g==='ALL';
@@ -1473,7 +1728,8 @@ function tAssign(){
     const steps=ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
     const g=[...document.querySelectorAll('.gchip.on')].map(x=>x.dataset.g).join(',');
     $('#aAdd').disabled=true;$('#aAdd').textContent='E’lon qilinmoqda…';
-    try{const j=await cpost({action:'addAssign',key:U.pass,title:t,note:$('#aN').value.trim(),steps,xp:+$('#aX').value||10,groups:g});if(!j.ok)throw 0;
+    const cover=(document.querySelector('.cvchip.on')||{}).dataset?.cv||'';
+    try{const j=await cpost({action:'addAssign',key:U.pass,title:t,note:$('#aN').value.trim(),steps,xp:+$('#aX').value||10,groups:g,cover});if(!j.ok)throw 0;
       ui.steps=null;toast('E’lon qilindi');TD=null;await loadT();teacherHome('assign')}catch(e){toast('E’lon qilinmadi. Qayta urining.');$('#aAdd').disabled=false;$('#aAdd').textContent='E’lon qilish'}};
   document.querySelectorAll('[data-hide]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await cpost({action:'editAssign',key:U.pass,aid:b.dataset.hide,hidden:b.dataset.h==='1'});TD=null;await loadT();teacherHome('assign')}catch(e){toast('Xatolik')}});
   document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>modal('<h3>Topshiriqni o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchilar uni boshqa ko‘rmaydi va bu topshiriq uchun olingan XP hisobdan chiqadi.</p>',
@@ -1483,19 +1739,27 @@ async function teacherStudent(id){
   document.body.classList.remove('st-mode');
   setBack('#/teacher/'+(ui.ttab||'students'),'Orqaga');
   view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
-  let j=null;try{await loadT();j=await cget({action:'login',q:id})}catch(e){}
+  let j=null;try{await loadT();j=await cget({action:'tprofile',key:U.pass,id})}catch(e){}
   if(!j||!j.ok){view().innerHTML='<div class="wrap"><div class="card sec"><h3>O‘quvchi topilmadi</h3></div></div>';return}
   const r=TD.roster.find(x=>x.id===id)||{};const rk=myRank(j);const T=tracks(j);const st=bstats(j.booster);
   view().innerHTML=`<div class="wrap st anim">
     <div class="st-hello"><div class="pav">${esc(initials(j.student.name))}</div><div><h1>${esc(j.student.name)}</h1>
       <div class="st-meta"><span>ID ${esc(j.student.id)}</span><span>${esc(j.student.group)}</span><span>${j.xp.T} XP</span>${rk?`<span>${rk.me.r}-o‘rin</span>`:''}</div></div>
-      ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}</div>
+      ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}
+      ${r.tgu?`<a class="btn ghost tgb" href="https://t.me/${esc(r.tgu.slice(1))}" target="_blank" rel="noopener">${TGI}<span>${esc(r.tgu)}</span></a>`:''}
+      ${r.tg?`<button class="btn ghost" id="tgUn">Telegramni uzish</button>`:''}
+      ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}</div>
     <h2 class="sech">Topshiriqlar</h2>
     <div class="alist">${T.map(t=>`<div class="card asg ${t.booster?'main':''}"><div class="aic">${t.finished?'🏆':t.booster?'📖':'🗺️'}</div>
       <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP</div>
       <div class="dots">${t.steps.map(s=>`<i class="${s.done?'on':''}" title="${esc(s.t)}"></i>`).join('')}</div></div></div>`).join('')}</div>
     ${st.read?`<h2 class="sech">Booster natijalari</h2><div class="card sec">${testBars(st)}</div>`:''}
     <a class="btn navy big" style="margin-top:16px" href="${BOOSTER_URL}" target="_blank" rel="noopener">Booster bo‘yicha batafsil hisobot</a></div>`;
+  const tu=$('#tgUn');if(tu)tu.onclick=()=>modal(`<h3>${esc(j.student.name)} Telegramini uzasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchi keyin profilidan qaytadan ulashi mumkin.${r.tgp?' Telegram raqami: '+phoneNice(r.tgp)+'.':''}</p>`,
+    [{t:'Bekor qilish'},{t:'Uzish',cls:'red',f:async()=>{try{const x=await cpost({action:'tgUnlink',key:U.pass,id});if(!x.ok)throw 0;toast('Uzildi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}]);
+  const pr=$('#pinReset');if(pr)pr.onclick=()=>{if(!r.hasPin){toast('O‘quvchi hali parol o‘rnatmagan');return}
+    modal(`<h3>${esc(j.student.name)} uchun parolni yangilaysizmi?</h3><p class="muted" style="margin-top:6px">Eski parol ishlamay qoladi. Keyingi kirishda o‘quvchi yangi parol o‘ylab topadi.</p>`,
+      [{t:'Bekor qilish'},{t:'Yangilash',cls:'red',f:async()=>{try{const x=await cpost({action:'resetPin',key:U.pass,id});if(!x.ok)throw 0;toast('Parol yangilandi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}])};
 }
 function testBars(st){
   const W=600,H=110,bw=W/BOOSTER_TESTS;const m=Object.fromEntries(st.res);
@@ -1508,9 +1772,11 @@ addEventListener('resize',()=>{clearTimeout(ui.rz);ui.rz=setTimeout(()=>{if(ui.s
 /* ================= START ================= */
 (function start(){
   const t=sstore(ST+'t');
-  if(t&&sha256(t)===TEACHER_PASS_SHA256){U={role:'teacher',pass:t};enterApp();route();return}
+  if(t){U={role:'teacher',pass:t};enterApp();route();return}
   try{U=JSON.parse(store(ST+'session')||'null')}catch(e){U=null}
-  if(U&&U.role==='student'&&U.id){enterApp();if(!location.hash||location.hash==='#/'||location.hash.startsWith('#/login'))history.replaceState(null,'','#/me');route();return}
+  if(U&&U.role==='student'&&U.id&&U.t){const exp=+String(U.t).split('.')[0]||0;
+    if(!exp||exp>Date.now()){enterApp();if(!location.hash||location.hash==='#/'||location.hash.startsWith('#/login'))history.replaceState(null,'','#/me');route();return}}
+  if(U){store(ST+'session',null);dropKey()}
   U=null;route();
 })();
 </script>

@@ -1227,9 +1227,9 @@ async function tgOffer(){const bot=await tgBot();const box=$('#tgBox');if(!bot||
   $('#tgGo').onclick=()=>tgFlow('login',box)}
 const TGST={wait:'Telegram’da botni oching va <b>START</b> tugmasini bosing.',contact:'Botda <b>«📱 Raqamni yuborish»</b> tugmasini bosing.',
   nomatch:'Bu raqam ro‘yxatda topilmadi. ID va parolingiz bilan kiring, keyin profilingizda <b>«Telegram’ni ulash»</b> ni bosing.',
-  taken:'Bu Telegram boshqa o‘quvchiga ulangan. Ustozga murojaat qiling.',expired:'Vaqt tugadi. Tugmani qayta bosing.'};
+  taken:'Bu ID yoki Telegram boshqa akkauntga ulangan. Ustozga murojaat qiling.',askid:'Botga <b>EDUNEST ID raqamingizni</b> yozib yuboring.',haspin:'Bu ID uchun parol bor. Pastda ID va parol bilan kiring, keyin profilda <b>«Telegram’ni ulash»</b> ni bosing.',expired:'Vaqt tugadi. Tugmani qayta bosing.'};
 async function tgFlow(mode,box){
-  clearInterval(ui.tgT);box.innerHTML=`<div class="tgcard"><div class="loading"><div class="spin"></div>Tayyorlanmoqda…</div></div>`;
+  (ui.tgStop=true);box.innerHTML=`<div class="tgcard"><div class="loading"><div class="spin"></div>Tayyorlanmoqda…</div></div>`;
   let j=null;try{j=await cpost(mode==='link'?{action:'tgStart',mode,id:U.id,t:U.t}:{action:'tgStart',mode})}catch(e){}
   if(!j||!j.ok){box.innerHTML=`<p class="lerr">Telegram orqali ulanib bo‘lmadi. Keyinroq urinib ko‘ring.</p>`;return}
   const url=`https://t.me/${j.bot}?start=${j.nonce}`;
@@ -1237,18 +1237,18 @@ async function tgFlow(mode,box){
     <a class="btn tg big block" href="${url}" target="_blank" rel="noopener" id="tgOpen">${TGI}Botni ochish</a>
     <p class="tgstat" id="tgStat" aria-live="polite"><span class="dot"></span><span>${TGST.wait}</span></p></div>`;
   let n=0,busyP=false;const end=Date.now()+14*60e3;
-  const poll=async()=>{if(busyP||!document.body.contains(box))return;if(Date.now()>end){clearInterval(ui.tgT);$('#tgStat').innerHTML=TGST.expired;return}
+  const poll=async()=>{if(busyP||!document.body.contains(box))return;if(Date.now()>end){(ui.tgStop=true);$('#tgStat').innerHTML=TGST.expired;return}
     busyP=true;let r=null;try{r=await cpost({action:'tgPoll',nonce:j.nonce})}catch(e){}busyP=false;if(!r||!document.body.contains(box))return;
-    if(!r.ok){clearInterval(ui.tgT);$('#tgStat').innerHTML=TGST.expired;return}
-    if(r.st==='done'||r.student){clearInterval(ui.tgT);sfx('done');
+    if(!r.ok){(ui.tgStop=true);$('#tgStat').innerHTML=TGST.expired;return}
+    if(r.st==='done'||r.student){(ui.tgStop=true);sfx('done');
       if(mode==='link'){closeModals();toast('Telegram ulandi'+(r.tgu?': '+r.tgu:''));lastFetch=0;P=null;route();return}
       store(ST+'lastId',r.uid);enter(r);return}
-    const st=$('#tgStat');if(st)st.innerHTML=(['nomatch','taken'].includes(r.st)?'':'<span class="dot"></span>')+'<span>'+(TGST[r.st]||TGST.wait)+'</span>';
-    if(['nomatch','taken'].includes(r.st))clearInterval(ui.tgT)};
-  ui.tgT=setInterval(poll,2500);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
+    const st=$('#tgStat');if(st)st.innerHTML=(['nomatch','taken','haspin'].includes(r.st)?'':'<span class="dot"></span>')+'<span>'+(TGST[r.st]||TGST.wait)+'</span>';
+    if(['nomatch','taken','haspin'].includes(r.st))(ui.tgStop=true)};
+  const fid=ui.tgId=(ui.tgId||0)+1;const loop=async()=>{while(document.body.contains(box)&&!ui.tgStop&&ui.tgId===fid&&Date.now()<end){await poll();if(ui.tgStop)break;await new Promise(r=>setTimeout(r,400))}};
+  ui.tgStop=false;ui.tgT=0;loop();
 }
-function tgLinkModal(){modal(`<h3>Telegram’ni ulang</h3><p class="muted" style="margin:6px 0 12px">Shunda saytga parolsiz, Telegram orqali bir bosishda kirasiz.</p><div id="tgLinkBox"></div>`,[{t:'Yopish',f:()=>clearInterval(ui.tgT)}]);tgFlow('link',$('#tgLinkBox'))}
+function tgLinkModal(){modal(`<h3>Telegram’ni ulang</h3><p class="muted" style="margin:6px 0 12px">Shunda saytga parolsiz, Telegram orqali bir bosishda kirasiz.</p><div id="tgLinkBox"></div>`,[{t:'Yopish',f:()=>(ui.tgStop=true)}]);tgFlow('link',$('#tgLinkBox'))}
 function keepKey(k){if(!k)return;store(ST+'k',k);store('edunest_booster_p1:code',String(k).toUpperCase())}
 function dropKey(){store(ST+'k',null);store('edunest_booster_p1:code',null);store('edunest_booster_p1:session',null);store('edunest_booster_p1:back',null)}
 function enter(j,isGuest){

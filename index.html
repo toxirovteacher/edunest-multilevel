@@ -746,6 +746,95 @@ body.st-mode .pfoot{display:none}
  .ttabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.ttabs button[data-t]{white-space:nowrap}
 }
 @media (max-width:760px){.tab-marks .kpis,.tab-marks .pgh{display:none}.mksave{padding:8px}.mksave span{font-size:13px}.mksave .btn{padding:0 12px}}
+/* ===== XP cabinet ===== */
+.ic{display:inline-flex}.ic svg,.mnode svg,.sndb svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stnav.two{grid-template-columns:1fr 1fr;width:min(360px,calc(100% - 20px))}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.tcard{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--line);border-radius:20px;background:var(--card);overflow:hidden;cursor:pointer;font-family:inherit;color:inherit;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+.tcard:hover{transform:translateY(-2px)}.tcard:focus-visible{outline:3px solid var(--head);outline-offset:3px}
+.tcov{position:relative;height:112px;background:linear-gradient(135deg,hsl(var(--h) 55% 30%),hsl(calc(var(--h) + 40) 60% 45%));display:flex;align-items:flex-end;justify-content:space-between;padding:14px 16px;color:#fff;overflow:hidden}
+.tcov:before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 85% 20%,rgba(255,255,255,.12) 0 2px,transparent 2px 22px)}
+.tcard.tb .tcov{background:linear-gradient(135deg,#141B2D 0%,#27324d 55%,#E3101F 160%)}
+.tnum{position:relative;font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}.tnum small{font-size:18px;opacity:.8}
+.tbadge{position:relative;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:999px}
+.tbody{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tbody>b{font-size:17.5px;color:var(--head)}.tbody>small{color:var(--mute);font-size:13.5px;font-weight:500}
+.tbody .track{height:8px;margin-top:4px}
+.tgo{margin-top:6px;font-weight:800;color:var(--red);font-size:15px}
+.tcard.fin .tgo{color:#0E7A3B}
+.xprule{padding:16px 18px;margin-top:14px;font-size:14.5px}.xprule b{color:var(--head)}.xprule p{margin:6px 0 0;color:var(--ink2)}
+.lgt small{font-size:12px;color:var(--mute)}
+/* map */
+body.st-mode .topbar{position:sticky}
+.mapwrap{max-width:560px;margin:0 auto;padding:16px 16px 140px}
+.maphead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.maphead h1{font-size:clamp(22px,5vw,28px);font-weight:800;letter-spacing:-.02em;margin:0}
+.maphead p{margin:2px 0 0;color:var(--mute);font-weight:600}
+.sndb{flex:none}.sndb svg{width:22px;height:22px}
+.mapprog{height:10px;border-radius:9px;background:var(--track);margin:12px 0 4px;overflow:hidden}.mapprog b{display:block;height:100%;background:linear-gradient(90deg,#E3101F,#ff6a73);border-radius:9px}
+.map{position:relative;margin:0 auto;max-width:460px}
+.mapsvg{position:absolute;left:0;top:0;overflow:visible}
+.mapsvg path{fill:none;stroke-width:12;stroke-linecap:round}
+.mapsvg .pdone{stroke:#141B2D}
+.mapsvg .plock{stroke:var(--line);stroke-dasharray:2 20}
+body.dark .mapsvg .pdone{stroke:#E8ECF5}
+.mregion{position:absolute;left:50%;transform:translateX(-50%);background:var(--paper);border:1px solid var(--line);color:var(--head);font-weight:800;font-size:13px;padding:6px 14px;border-radius:999px;white-space:nowrap;z-index:1}
+.mnode{position:absolute;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;z-index:2;
+  background:var(--card);color:var(--mute);box-shadow:0 0 0 6px var(--paper),0 6px 0 #c9cfdb;transition:transform .12s}
+.mnode:active{transform:translate(-50%,-46%)}
+.mnode svg{width:28px;height:28px}
+.mnode .mn{font-size:24px;font-weight:800}
+.mnode.done{background:#141B2D;color:#fff;box-shadow:0 0 0 6px var(--paper),0 6px 0 #05080f}
+.mnode.done svg{stroke-width:3}
+.mnode.cur{width:84px;height:84px;background:#E3101F;color:#fff;box-shadow:0 0 0 7px var(--paper),0 7px 0 #9e0a15}
+.mnode.cur .mn{font-size:30px}
+.mnode.cur:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:3px solid #E3101F;opacity:0;animation:ring 1.8s ease-out infinite}
+@keyframes ring{0%{transform:scale(.85);opacity:.7}100%{transform:scale(1.25);opacity:0}}
+.mnode.lock{background:var(--paper);color:#9aa2b4;box-shadow:0 0 0 6px var(--paper),0 6px 0 var(--line)}
+.mhere{position:absolute;bottom:calc(100% + 14px);left:50%;transform:translateX(-50%);background:#141B2D;color:#fff;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:10px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
+.mhere:after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#141B2D}
+@keyframes bob{50%{transform:translate(-50%,-4px)}}
+.mlbl{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:var(--head);white-space:nowrap;background:var(--card);padding:2px 8px;border-radius:8px}
+.mnode.lock .mlbl{color:var(--mute)}
+.mnode.goal{width:92px;height:92px;border-radius:28px;background:var(--paper);color:#9aa2b4}
+.mnode.goal svg{width:42px;height:42px}
+.mnode.goal.done{background:#F5B700;color:#141B2D;box-shadow:0 0 0 7px var(--paper),0 7px 0 #b38600}
+.mnode.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translate(-56%,-50%)}75%{transform:translate(-44%,-50%)}}
+.mnode.pop{animation:pop .7s .35s both}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.6)}60%{transform:translate(-50%,-50%) scale(1.18)}100%{transform:translate(-50%,-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){.mnode.cur:after,.mhere,.mnode.pop{animation:none}}
+/* bottom sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(20,27,45,.45);z-index:80}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,110%);width:min(560px,100%);background:var(--card);border-radius:24px 24px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));z-index:81;transition:transform .25s cubic-bezier(.2,.8,.2,1);box-shadow:0 -10px 40px rgba(20,27,45,.2)}
+.sheet.on{transform:translate(-50%,0)}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.shk{font-size:13.5px;font-weight:700;color:var(--red)}
+.sheet h3{font-size:22px;margin:4px 0 6px}
+.shb{display:grid;gap:10px;margin:16px 0 10px}
+.xppop{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:95;background:#141B2D;color:#fff;border-radius:22px;padding:18px 26px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:xpin 2.6s both}
+.xppop b{display:block;font-size:40px;font-weight:800;color:#F5B700}.xppop span{font-weight:700}
+@keyframes xpin{0%{opacity:0;transform:translate(-50%,-40%) scale(.8)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}
+.confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:94}
+.certimg{width:100%;border-radius:10px;border:1px solid var(--line);margin-top:12px}
+.modal:has(.certimg){max-width:680px}
+/* teacher bits */
+.steprow{display:grid;grid-template-columns:32px 1fr 1.3fr 46px;gap:8px;align-items:center;margin-bottom:8px}
+.stn{width:32px;height:32px;border-radius:50%;background:var(--solid);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.steprow input{border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font-size:15.5px;font-family:inherit;background:var(--card);color:var(--ink);min-width:0}
+.steprow .btn{min-height:46px;padding:0}
+.imptxt{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:15px;font-family:ui-monospace,Menlo,monospace;background:var(--card);color:var(--ink);resize:vertical}
+.dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.dots i{width:12px;height:12px;border-radius:4px;background:var(--track)}.dots i.on{background:#141B2D}
+body.dark .dots i.on{background:#E8ECF5}
+@media (max-width:760px){.steprow{grid-template-columns:28px 1fr 46px;grid-template-areas:"n t x" "n l l"}.steprow .stn{grid-area:n;width:28px;height:28px}.steprow .stT{grid-area:t}.steprow .stL{grid-area:l}.steprow .stX{grid-area:x}}
+.mnode.lock{background:var(--card);color:#8C94A6;box-shadow:0 0 0 6px var(--paper),0 0 0 8px var(--line),0 6px 0 8px var(--line)}
+.mnode.goal.lock{background:var(--card)}
+.mhere{bottom:calc(100% + 16px)}
+.mhere{bottom:auto;top:50%;transform:translateY(-50%);animation:bobx 1.6s ease-in-out infinite}
+.mhere.r{left:calc(100% + 18px)}.mhere.l{right:calc(100% + 18px);left:auto}
+.mhere:after{top:50%;margin:-6px 0 0;left:auto;border:6px solid transparent}
+.mhere.r:after{right:100%;border-right-color:#141B2D}.mhere.l:after{left:100%;border-left-color:#141B2D}
+@keyframes bobx{50%{transform:translateY(-50%) translateX(3px)}}
 
 </style>
 </head>
@@ -1011,177 +1100,233 @@ function route(){
     else teacherHome(h[1]||'students');
     return;
   }
-  me(h[0]==='me'?h[1]:'home');
+  me(h[0]==='me'?h:['me']);
 }
 
-/* ================= MARKS · LEAGUE (EDUNEST criteria) ================= */
-const LV={3:['✅','A’lo'],2:['🟢','Yaxshi'],1:['🟡','Rivojlanmoqda'],0:['🔴','Hali emas']};
-const CARD={G:['🟩','Faol',+1],Y:['🟨','Sust',-1],R:['🟥','Ikkinchi sariq',-2]};
-const MON=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-const monName=m=>{const s=MON[+String(m).slice(5,7)-1]||'';return s.charAt(0).toUpperCase()+s.slice(1)};
-const prevM=m=>{const y=+m.slice(0,4),mo=+m.slice(5,7);return mo===1?(y-1)+'-12':y+'-'+String(mo-1).padStart(2,'0')};
-const dLabel=d=>`${+d.slice(8,10)}-${MON[+d.slice(5,7)-1]}`;
-const todayStr=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
-const sgn=n=>n>0?'+'+n:n<0?'−'+Math.abs(n):'0';
-const cardNet=o=>o.G-o.Y-o.R;
+/* ================= COMMON ================= */
+const BOOSTER_AID='booster';
 const IC={
- home:'<svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>',
+ map:'<svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
  cup:'<svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/><path d="M12 14v4M8 21h8M9 18h6"/></svg>',
- star:'<svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
- book:'<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>'};
+ lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+ check:'<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg>',
+ sound:'<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
+ mute:'<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="m17 9 5 6M22 9l-5 6"/></svg>',
+ trophy:'<svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/><path d="M12 14v4M8 21h8M9 18h6"/></svg>'};
+const icon=(k,c)=>`<span class="ic ${c||''}">${IC[k]}</span>`;
 
-/* ================= BOOSTER STATS ================= */
+/* ---------- sound (tiny synth, no files) ---------- */
+const SND={ctx:null,on:store(ST+'snd')!=='0'};
+function tone(f,t0,d,type,vol){const c=SND.ctx;const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,c.currentTime+t0);
+  g.gain.setValueAtTime(0.0001,c.currentTime+t0);g.gain.exponentialRampToValueAtTime(vol||0.18,c.currentTime+t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t0+d);
+  o.connect(g).connect(c.destination);o.start(c.currentTime+t0);o.stop(c.currentTime+t0+d+0.02)}
+function sfx(k){if(!SND.on)return;try{SND.ctx=SND.ctx||new (window.AudioContext||window.webkitAudioContext)();if(SND.ctx.state==='suspended')SND.ctx.resume();
+  if(k==='tap')tone(740,0,.07,'triangle',.12);
+  else if(k==='open'){tone(523,0,.12,'triangle');tone(784,.08,.16,'triangle')}
+  else if(k==='lock'){tone(196,0,.12,'square',.06);tone(165,.1,.14,'square',.05)}
+  else if(k==='win'){[523,659,784,1047].forEach((f,i)=>tone(f,i*.11,.28,'triangle',.16));tone(1568,.48,.35,'sine',.08)}
+  else if(k==='grand'){[392,523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.12,.4,'triangle',.15));[523,659,784].forEach(f=>tone(f,.8,.9,'sine',.07))}
+}catch(e){}}
+function sndBtn(){return `<button class="iconbtn sndb" id="sndBtn" aria-label="${SND.on?'Ovozni o‘chirish':'Ovozni yoqish'}" aria-pressed="${SND.on}">${SND.on?IC.sound:IC.mute}</button>`}
+function bindSnd(){const b=$('#sndBtn');if(b)b.onclick=()=>{SND.on=!SND.on;store(ST+'snd',SND.on?'1':'0');b.outerHTML=sndBtn();bindSnd();if(SND.on)sfx('tap')}}
+
+/* ---------- confetti ---------- */
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cv=document.createElement('canvas');cv.className='confetti';document.body.appendChild(cv);const W=cv.width=innerWidth*devicePixelRatio,H=cv.height=innerHeight*devicePixelRatio;const x=cv.getContext('2d');
+  const cols=['#E3101F','#141B2D','#F5B700','#1FA35C','#FFFFFF'];const P=Array.from({length:120},()=>({x:W/2+(Math.random()-.5)*W*.2,y:H*.38,vx:(Math.random()-.5)*W*.022,vy:-Math.random()*H*.02-H*.006,s:(6+Math.random()*8)*devicePixelRatio,c:cols[Math.random()*cols.length|0],r:Math.random()*6,vr:(Math.random()-.5)*.3}));
+  let f=0;(function tick(){x.clearRect(0,0,W,H);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=H*.0009;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(++f<110)requestAnimationFrame(tick);else cv.remove()})()}
+
+/* ================= BOOSTER ================= */
 function bstats(D){
   const tests=(D&&D.tests)||{};const res=[],kw=[];
-  for(let i=1;i<=BOOSTER_TESTS;i++){const t=tests[i];if(t&&t.res)res.push([i,t.res]);if(t&&t.kwt)kw.push(i)}
+  for(let i=1;i<=BOOSTER_TESTS;i++){const t=tests[i];if(t&&t.res)res.push([i,t.res]);if(t&&t.kwt&&t.res)kw.push(i)}
   const score=res.reduce((s,[,r])=>s+r.score,0),time=res.reduce((s,[,r])=>s+(r.time||0),0);
-  const next=Array.from({length:BOOSTER_TESTS},(_,i)=>i+1).find(i=>!(tests[i]&&tests[i].kwt))||null;
-  return{read:res.length,complete:kw.length,score,max:res.length*6,acc:res.length?Math.round(score/(res.length*6)*100):null,time,res,next,updated:D&&D.updated};
+  const next=Array.from({length:BOOSTER_TESTS},(_,i)=>i+1).find(i=>!(tests[i]&&tests[i].kwt&&tests[i].res))||null;
+  return{read:res.length,complete:kw.length,kw,score,max:res.length*6,acc:res.length?Math.round(score/(res.length*6)*100):null,time,res,next,updated:D&&D.updated,tests};
 }
-function boosterLink(p){
+function boosterLink(p,test){
   const s=p.student;
-  return BOOSTER_URL+'#sso='+encodeURIComponent(JSON.stringify({id:s.id,name:s.name,group:s.group,code:p.code,back:location.href.split('#')[0]+'#/me/mashq'}));
+  return BOOSTER_URL+'#sso='+encodeURIComponent(JSON.stringify({id:s.id,name:s.name,group:s.group,code:p.code,test:test||null,back:location.href.split('#')[0]+'#/me/a/'+BOOSTER_AID}));
 }
-function testBars(st){
-  const W=600,H=110,bw=W/BOOSTER_TESTS;const m=Object.fromEntries(st.res);
-  return `<svg class="chart" viewBox="0 0 ${W} ${H+26}" role="img" aria-label="Har bir test natijasi">${Array.from({length:BOOSTER_TESTS},(_,k)=>{const i=k+1,r=m[i];
-    const h=r?Math.max(5,r.score/6*H):H;const c=!r?'var(--track)':r.score>=5?'#159947':r.score>=3?'#D98A06':'#E3101F';
-    return `<rect x="${k*bw+3}" y="${H-h+2}" width="${bw-6}" height="${h}" rx="4" style="fill:${c}" ${r?'':'opacity=".5"'}/><text x="${k*bw+bw/2}" y="${H+20}" text-anchor="middle" font-size="9" font-weight="700" style="fill:var(--mute)">${i}</text>`}).join('')}</svg>`;
+const bxp=(p,score)=>((p.rules&&p.rules.base)||10)+((p.rules&&p.rules.perOk)||2)*score;
+
+/* ================= ASSIGNMENT MODEL (Booster + teacher maps) ================= */
+function tracks(p){
+  const st=bstats(p.booster);
+  const b={aid:BOOSTER_AID,title:'Reading Part 1 Booster',sub:'30 ta matn, har birida A–E mashqlari',booster:true,
+    steps:Array.from({length:BOOSTER_TESTS},(_,i)=>{const t=st.tests[i+1];const done=!!(t&&t.kwt&&t.res);
+      return{t:'Test '+(i+1),done,score:t&&t.res?t.res.score:null,xp:done?bxp(p,t.res.score):null,pack:Math.floor(i/10)+1}})};
+  const own=(p.assignments||[]).map(a=>({aid:a.aid,title:a.title,sub:a.note||'',xpEach:a.xp,
+    steps:a.steps.map((s,i)=>({t:s.t||('Bosqich '+(i+1)),l:s.l,done:((p.progress||{})[a.aid+':'+i])==='done',xp:a.xp}))}));
+  return [b,...own].map(t=>{const d=t.steps.filter(s=>s.done).length;const cur=t.steps.findIndex(s=>!s.done);return{...t,done:d,total:t.steps.length,cur,finished:d===t.steps.length}});
 }
 
 /* ================= STUDENT ================= */
-const STABS=[['home','Asosiy',IC.home],['liga','Reyting',IC.cup],['baho','Baholar',IC.star],['mashq','Mashqlar',IC.book]];
-function statusOf(p,aid){return (p.progress||{})[aid]||''}
+const STABS=[['home','Topshiriqlar',IC.map],['liga','Reyting',IC.cup]];
 let lastFetch=0;
-async function me(tab){
-  tab=STABS.some(t=>t[0]===tab)?tab:'home';ui.stab=tab;setBack(null);
-  document.body.classList.add('st-mode');
+async function me(h){
+  const tab=h[1]==='liga'?'liga':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2];
+  document.body.classList.add('st-mode');setBack(tab==='map'?'#/me':null,'Topshiriqlar');
   if(!P){try{P=JSON.parse(store(ST+'p:'+U.id)||'null')}catch(e){}}
-  if(P&&!P.league)P=null;
-  if(P)drawMe(tab);else view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>'+stNav(tab);
-  if(Date.now()-lastFetch<20000&&P)return;
+  if(P&&!P.xp)P=null;
+  if(P)drawMe();else view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
+  if(Date.now()-lastFetch<15000&&P)return;
   try{const j=await cget({action:'login',q:U.id});lastFetch=Date.now();
-    if(j&&j.ok){P=j;store(ST+'p:'+U.id,JSON.stringify(j));if(location.hash.startsWith('#/me'))drawMe(ui.stab)}
+    if(j&&j.ok){P=j;store(ST+'p:'+U.id,JSON.stringify(j));if(location.hash.startsWith('#/me'))drawMe()}
     else if(j&&!j.ok&&!P){store(ST+'session',null);U=null;showLogin();toast('ID topilmadi')}}
-  catch(e){if(!P)view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Internet aloqasi yo‘q</h3><p class="muted">Aloqani tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="lastFetch=0;me(ui.stab)">Qayta urinish</button></div></div>`}
+  catch(e){if(!P)view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Internet aloqasi yo‘q</h3><p class="muted">Aloqani tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="lastFetch=0;route()">Qayta urinish</button></div></div>`}
 }
-function stNav(tab){return `<nav class="stnav" aria-label="Bo‘limlar">${STABS.map(([k,l,ic])=>`<a href="#/me${k==='home'?'':'/'+k}" class="${k===tab?'on':''}" ${k===tab?'aria-current="page"':''}>${ic}<span>${l}</span></a>`).join('')}</nav>`}
-function drawMe(tab){
-  const p=P;const body=tab==='liga'?ligaHTML(p):tab==='baho'?bahoHTML(p,{}):tab==='mashq'?mashqHTML(p,{}):homeHTML(p);
-  view().innerHTML=`<div class="wrap st anim">${body}</div>`+stNav(tab);
-  bindStudent();
+function stNav(tab){return `<nav class="stnav two" aria-label="Bo‘limlar">${STABS.map(([k,l,ic])=>`<a href="#/me${k==='home'?'':'/'+k}" class="${k===tab||(tab==='map'&&k==='home')?'on':''}">${ic}<span>${l}</span></a>`).join('')}</nav>`}
+function drawMe(){
+  const tab=ui.stab;
+  if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);return}
+  view().innerHTML=`<div class="wrap st anim">${tab==='liga'?ligaHTML(P):homeHTML(P)}</div>`+stNav(tab);
+  document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
 }
-function myRank(p){const rows=p.league||[];const me=rows.find(r=>r.me);if(!me)return null;
-  const better=rows.filter(r=>r.t>me.t);const gap=better.length?Math.min(...better.map(r=>r.t))-me.t:0;return{me,n:rows.length,gap}}
+function myRank(p){const rows=p.board||[];const me=rows.find(r=>r.me);if(!me)return null;const better=rows.filter(r=>r.t>me.t);return{me,n:rows.length,gap:better.length?Math.min(...better.map(r=>r.t))-me.t:0}}
 function homeHTML(p){
-  const s=p.student,o=p.pts||{},rk=myRank(p),st=bstats(p.booster),m=p.month;
-  const open=(p.assignments||[]).filter(a=>statusOf(p,a.aid)!=='done');
-  const nextA=open[0];
-  const items=(o.items||[]).slice().sort((a,b)=>a.d<b.d?1:-1).slice(0,4);
+  const s=p.student,rk=myRank(p),T=tracks(p);
   return `
   <div class="st-hello"><div class="pav">${esc(initials(s.name))}</div><div><h1>Salom, ${esc(s.name.split(' ')[0])}</h1>
     <div class="st-meta"><span>ID ${esc(s.id)}</span><span>${s.type==='guest'?'Mehmon':esc(s.group)}</span></div></div></div>
-  ${rk?`<a class="st-rank" href="#/me/liga">
-    <div class="st-rk"><b>${rk.me.r}</b><small>o‘rin</small></div>
-    <div class="st-rt"><span>${monName(m)} reytingi, ${s.type==='guest'?'mehmonlar':esc(s.group)} (${rk.n} kishi)</span>
-      <strong>${o.T||0} ball</strong>
-      <em>${rk.me.r===1?(o.T?'Siz birinchisiz. O‘rningizni saqlang!':'Birinchi ballni hozir oling.'):`Keyingi o‘ringa ${rk.gap} ball qoldi`}</em></div>
-  </a>`:''}
-  <h2 class="sech">Keyingi qadam</h2>
-  <div class="alist">
-    ${nextA?`<div class="card asg"><div class="aic">📝</div><div class="atx"><div class="at">${esc(nextA.title)}</div><div class="as">${nextA.due?'Muddat: '+dLabel(nextA.due)+' · ':''}o‘z vaqtida bajarsangiz 🏠 +1</div></div>
-      <div class="abtns">${nextA.link?`<a class="btn red" href="${esc(nextA.link)}" target="_blank" rel="noopener" data-open="${nextA.aid}">Ochish</a>`:''}<button class="btn ghost" data-done="${nextA.aid}">Bajardim</button></div></div>`:''}
-    <div class="card asg main"><div class="aic">📖</div><div class="atx"><div class="at">Reading Part 1 Booster</div>
-      <div class="as">${st.next?`Test ${st.next} sizni kutmoqda. Har bir tugatilgan test baho beradi.`:'Barcha 30 test tugatildi.'}</div>
-      <div class="track"><b style="width:${st.complete/BOOSTER_TESTS*100}%"></b></div></div>
-      <a class="btn red big" href="${esc(boosterLink(p))}">${st.complete?'Davom etish':'Boshlash'}<small>${st.complete}/${BOOSTER_TESTS}</small></a></div>
-  </div>
-  <h2 class="sech">${monName(m)} natijalari</h2>
-  ${breakdown(o)}
-  <div class="sechrow"><h2 class="sech">Oxirgi baholar</h2>${items.length?'<a href="#/me/baho">Barchasi</a>':''}</div>
-  ${items.length?`<div class="card mlist">${items.map(itemRow).join('')}</div>`:`<div class="card empty">Bu oy hali baho yo‘q. Darsda faol bo‘ling yoki Booster testini tugating.</div>`}`;
-}
-function breakdown(o){
-  o=o||{};const net=cardNet({G:o.G||0,Y:o.Y||0,R:o.R||0});
-  return `<div class="bd">
-    <div class="card bdc"><span>Darslar</span><b>${sgn(o.L||0)}</b><small>${o.n||0} ta dars</small></div>
-    <div class="card bdc"><span>Kartalar</span><b class="${net<0?'neg':''}">${sgn(net)}</b><small>🟩${o.G||0} 🟨${(o.Y||0)-(o.R||0)} 🟥${o.R||0}</small></div>
-    <div class="card bdc"><span>Uy vazifa</span><b>${sgn(o.H||0)}</b><small>🏠 ${o.H||0} marta</small></div>
-    <div class="card bdc"><span>Booster</span><b>${sgn(o.B||0)}</b><small>${o.bn||0} ta test</small></div>
-  </div>`;
-}
-function itemRow(it){
-  if(it.k==='booster')return `<div class="mrow"><div class="md">${dLabel(it.d)}</div><div class="mt"><b>Booster, Test ${it.test}</b><small>O‘qish: ${it.sc}/6 to‘g‘ri</small></div><div class="mc"><span class="lv lv${it.lv}">${LV[it.lv][0]} ${LV[it.lv][1]}</span></div><div class="mp">${sgn(it.lv)}</div></div>`;
-  if(it.k==='task')return `<div class="mrow"><div class="md">${dLabel(it.d)}</div><div class="mt"><b>${esc(it.title||'Topshiriq')}</b><small>Platformadagi topshiriq, o‘z vaqtida</small></div><div class="mc"><span class="lv hw">🏠 Uy vazifa</span></div><div class="mp">+1</div></div>`;
-  const pts=(it.lv!=null?it.lv:0)+(it.c?CARD[it.c][2]:0)+(it.hw?1:0);
-  return `<div class="mrow"><div class="md">${dLabel(it.d)}</div><div class="mt"><b>Dars</b><small>${it.lv!=null?LV[it.lv][1]:'Daraja qo‘yilmagan'}${it.c?', '+CARD[it.c][1].toLowerCase()+' karta':''}${it.hw?', uy vazifa bajarilgan':''}</small></div>
-    <div class="mc">${it.lv!=null?`<span class="lv lv${it.lv}">${LV[it.lv][0]}</span>`:''}${it.c?`<span class="lv">${CARD[it.c][0]}</span>`:''}${it.hw?'<span class="lv hw">🏠</span>':''}</div><div class="mp ${pts<0?'neg':''}">${sgn(pts)}</div></div>`;
+  <a class="st-rank" href="#/me/liga">
+    <div class="st-rk"><b>${rk?rk.me.r:'–'}</b><small>o‘rin</small></div>
+    <div class="st-rt"><span>${s.type==='guest'?'Mehmonlar':esc(s.group)} reytingi${rk?', '+rk.n+' kishi':''}</span>
+      <strong>${p.xp.T} XP</strong>
+      <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
+  </a>
+  <h2 class="sech">Topshiriqlar</h2>
+  <div class="tgrid">${T.map((t,i)=>`<button class="tcard ${t.booster?'tb':''} ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}" style="--h:${(i*47)%360}">
+      <div class="tcov"><span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}</div>
+      <div class="tbody"><b>${esc(t.title)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:''}
+        <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
+        <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
+    </button>`).join('')}</div>`;
 }
 function podium(rows){
   const top=rows.filter(r=>r.r<=3&&r.t>0).slice(0,3);if(!top.length)return '';
   const order=[top[1],top[0],top[2]].filter(Boolean);
-  return `<div class="pod">${order.map(r=>`<div class="pd p${Math.min(r.r,3)} ${r.me?'me':''}"><div class="pav">${esc(initials(r.n))}</div><b>${esc(r.n)}</b><span>${r.t} ball</span><i>${r.r}</i></div>`).join('')}</div>`;
+  return `<div class="pod">${order.map(r=>`<div class="pd p${Math.min(r.r,3)} ${r.me?'me':''}"><div class="pav">${esc(initials(r.n))}</div><b>${esc(r.n)}</b><span>${r.t} XP</span><i>${r.r}</i></div>`).join('')}</div>`;
 }
 function ligaHTML(p){
-  const cur=(ui.lm||'cur')==='cur';const rows=cur?(p.league||[]):(p.leaguePrev||[]);const m=cur?p.month:prevM(p.month);
-  let up=null;if(cur){rows.forEach(r=>{const d=r.t-r.p;if(d>0&&(!up||d>up.t-up.p))up=r})}
-  return `<div class="lghead"><h1>Reyting</h1><div class="seg" role="tablist">
-    <button class="${cur?'on':''}" data-lm="cur">${monName(p.month)}</button><button class="${cur?'':'on'}" data-lm="prev">${monName(prevM(p.month))}</button></div></div>
-  <p class="muted lgsub">${esc(p.student.type==='guest'?'Mehmonlar':p.student.group)} guruhi, ${monName(m).toLowerCase()} oyi. Reyting har oy boshidan yangidan hisoblanadi.</p>
+  const rows=p.board||[];
+  return `<h1 class="pgh">Reyting</h1>
+  <p class="muted lgsub">${esc(p.student.type==='guest'?'Mehmonlar':p.student.group)} guruhi. XP Booster testlari va topshiriqlar uchun beriladi.</p>
   ${podium(rows)}
-  <div class="card lglist">${rows.map(r=>`<div class="lgr ${r.me?'me':''}"><span class="lgn">${r.r}</span><div class="sav sm">${esc(initials(r.n))}</div><b>${esc(r.n)}${r.me?' <small>(siz)</small>':''}</b>${up===r?'<em class="upb">Eng ko‘p o‘sgan</em>':''}<span class="lgt">${r.t}</span></div>`).join('')||'<div class="empty">Hali hech kim ball olmagan.</div>'}</div>`;
+  <div class="card lglist">${rows.map(r=>`<div class="lgr ${r.me?'me':''}"><span class="lgn">${r.r}</span><div class="sav sm">${esc(initials(r.n))}</div><b>${esc(r.n)}${r.me?' <small>(siz)</small>':''}</b><span></span><span class="lgt">${r.t}<small> XP</small></span></div>`).join('')||'<div class="empty">Hali hech kim XP olmagan.</div>'}</div>
+  <div class="card xprule"><b>XP qanday olinadi</b><p>Booster testini A–E bilan tugatsangiz: ${(p.rules&&p.rules.base)||10} XP va har bir to‘g‘ri javob uchun yana ${(p.rules&&p.rules.perOk)||2} XP.</p><p>Ustoz topshirig‘ining har bir bosqichini “Bajardim” desangiz: o‘sha topshiriq uchun belgilangan XP.</p></div>`;
 }
-function criteriaHTML(){
-  return `<details class="card crit"><summary>Baholash mezonlari</summary>
-    <div class="critg">
-      <div><h4>Dars darajasi</h4>${[3,2,1,0].map(l=>`<p><span class="lv lv${l}">${LV[l][0]} ${LV[l][1]}</span><b>${sgn(l)}</b></p>`).join('')}</div>
-      <div><h4>Faollik kartasi</h4><p><span class="lv">🟩 Faol</span><b>+1</b></p><p><span class="lv">🟨 Sust</span><b>−1</b></p><p><span class="lv">🟥 Oydagi ikkinchi 🟨</span><b>−2</b></p>
-        <h4>Uy vazifa</h4><p><span class="lv hw">🏠 O‘z vaqtida</span><b>+1</b></p></div>
-      <div><h4>Platformada</h4><p class="cx">Booster testini A–E bilan to‘liq tugatsangiz, o‘qish natijangizga qarab dars darajasi beriladi: 6/6 ✅, 5/6 🟢, 3–4 🟡, 0–2 🔴.</p>
-        <p class="cx">Ustoz topshirig‘ini muddatida “Bajardim” desangiz: 🏠 +1.</p></div>
-    </div></details>`;
-}
-function bahoHTML(p,opt){
-  const o=p.pts||{};const items=(o.items||[]).slice().sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:0);
-  return `${opt.teacher?'':'<h1 class="pgh">Baholar</h1>'}
-  <div class="card tot"><div><span>${monName(p.month)} oyi jami</span><b>${o.T||0} ball</b></div><small>O‘tgan oy: ${(p.prev&&p.prev.T)||0} ball</small></div>
-  ${breakdown(o)}
-  ${criteriaHTML()}
-  <h2 class="sech">Barcha baholar</h2>
-  ${items.length?`<div class="card mlist">${items.map(itemRow).join('')}</div>`:'<div class="card empty">Bu oy hali baho yo‘q.</div>'}`;
-}
-function mashqHTML(p,opt){
-  const st=bstats(p.booster),as=p.assignments||[];const today=todayStr();
-  return `${opt.teacher?'':'<h1 class="pgh">Mashqlar</h1>'}
-  <div class="alist">
-    <div class="card asg main"><div class="aic">📖</div>
-      <div class="atx"><div class="at">Reading Part 1 Booster</div>
-        <div class="as">30 ta test, har birida A–E mashqlari${st.updated?', oxirgi faollik '+ago(st.updated):''}</div>
-        <div class="track"><b style="width:${st.complete/BOOSTER_TESTS*100}%"></b></div></div>
-      ${opt.teacher?`<span class="tag ${st.complete?'ok':''}">${st.complete}/${BOOSTER_TESTS}</span>`:`<a class="btn red big" href="${esc(boosterLink(p))}">${st.complete?'Davom etish':'Boshlash'}<small>${st.next?'Test '+st.next:'Hammasi tugadi'}</small></a>`}
+
+/* ---------- the journey map ---------- */
+function mapHTML(p,t){
+  const earned=t.steps.reduce((s,x)=>s+(x.done?x.xp||0:0),0);
+  return `<div class="mapwrap">
+    <div class="maphead">
+      <div><h1>${esc(t.title)}</h1><p>${t.done}/${t.total} bosqich · ${earned} XP</p></div>${sndBtn()}
     </div>
-    ${as.map(a=>{const stt=statusOf(p,a.aid);const late=a.due&&a.due<today&&stt!=='done';
-      return `<div class="card asg ${stt==='done'?'done':''}"><div class="aic">${stt==='done'?'✅':'📝'}</div>
-        <div class="atx"><div class="at">${esc(a.title)}</div>
-          <div class="as">${a.note?esc(a.note):''}${a.note&&a.due?' · ':''}${a.due?`<span class="${late?'late':''}">Muddat: ${dLabel(a.due)}${late?', kechikdi':''}</span>`:''}</div>
-          <div><span class="tag ${stt==='done'?'ok':stt?'warn':''}">${stt==='done'?'Bajarildi':stt?'Ochilgan':'Yangi'}</span></div></div>
-        ${opt.teacher?'':`<div class="abtns">${a.link?`<a class="btn red" href="${esc(a.link)}" target="_blank" rel="noopener" data-open="${a.aid}">Ochish</a>`:''}${stt!=='done'?`<button class="btn ghost" data-done="${a.aid}">Bajardim</button>`:''}</div>`}
-      </div>`}).join('')}
-    ${as.length?'':`<div class="muted empty">Ustoz yangi topshiriq qo‘shsa, shu yerda paydo bo‘ladi.</div>`}
+    <div class="mapprog"><b style="width:${t.done/t.total*100}%"></b></div>
+    <div class="map" id="map" aria-label="Yo‘l xaritasi"></div>
   </div>
-  ${st.read?`<h2 class="sech">Booster natijalari</h2><div class="card sec">${testBars(st)}<div class="legend"><span><i style="background:#159947"></i>5–6</span><span><i style="background:#D98A06"></i>3–4</span><span><i style="background:#E3101F"></i>0–2</span><span><i style="background:var(--track)"></i>bajarilmagan</span></div></div>`:''}`;
+  <div class="sheet-bg hide" id="sheetBg"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true"></div>`;
 }
-function bindStudent(){
-  document.querySelectorAll('[data-lm]').forEach(b=>b.onclick=()=>{ui.lm=b.dataset.lm;drawMe('liga')});
-  document.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',()=>mark(a.dataset.open,'opened')));
-  document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>modal(`<h3>Topshiriqni bajardingizmi?</h3><p class="muted" style="margin-top:6px">Muddatida bajarilgan topshiriq 🏠 +1 ball beradi.</p>`,
-    [{t:'Yo‘q'},{t:'Ha, bajardim',cls:'red',f:()=>mark(b.dataset.done,'done')}]));
+function layoutMap(p,t){
+  const box=$('#map');if(!box)return;const W=Math.min(box.clientWidth,460);const n=t.steps.length;
+  const gap=t.booster?118:128,top=84;const amp=W*0.30,cx=W/2;
+  const pos=i=>({x:cx+Math.sin(i*1.05)*amp,y:top+i*gap});
+  const endY=top+n*gap+40;
+  const pts=[...t.steps.map((_,i)=>pos(i)),{x:cx,y:endY}];
+  const seg=(a,b)=>{const my=(a.y+b.y)/2;return `M${a.x},${a.y} C${a.x},${my} ${b.x},${my} ${b.x},${b.y}`};
+  let paths='';for(let i=0;i<pts.length-1;i++){const done=i<t.steps.length&&t.steps[i].done&&(i+1>=t.steps.length||t.steps[i+1].done||i+1===t.cur);paths+=`<path d="${seg(pts[i],pts[i+1])}" class="${t.steps[i].done?'pdone':'plock'}"/>`}
+  let html=`<svg class="mapsvg" width="${W}" height="${endY+110}" viewBox="0 0 ${W} ${endY+110}" aria-hidden="true">${paths}</svg>`;
+  if(t.booster)[0,10,20].forEach((k,j)=>{if(k<n)html+=`<div class="mregion" style="top:${pos(k).y-62}px">${j+1}-to‘plam · Test ${k+1}–${Math.min(k+10,n)}</div>`});
+  t.steps.forEach((s,i)=>{const q=pos(i);const st=s.done?'done':i===t.cur?'cur':'lock';
+    html+=`<button class="mnode ${st}" data-i="${i}" style="left:${q.x}px;top:${q.y}px" aria-label="${esc(s.t)}${s.done?', bajarilgan':i===t.cur?', joriy bosqich':', yopiq'}">
+      ${s.done?IC.check:st==='lock'?IC.lock:`<span class="mn">${i+1}</span>`}
+      ${st==='cur'?`<span class="mhere ${q.x>cx?'l':'r'}">Siz shu yerdasiz</span>`:''}
+      ${st==='cur'&&t.booster?'':`<span class="mlbl">${esc(t.booster?String(i+1):s.t)}${s.done&&s.score!=null?` · ${s.score}/6`:''}</span>`}</button>`});
+  const fin=t.finished;
+  html+=`<button class="mnode goal ${fin?'done':'lock'}" data-goal="1" style="left:${cx}px;top:${endY}px" aria-label="Sertifikat">${IC.trophy}<span class="mlbl">${fin?'Sertifikat':'Oxirida: sertifikat'}</span></button>`;
+  box.style.height=(endY+110)+'px';box.style.width=W+'px';box.innerHTML=html;
 }
-async function mark(aid,status){
-  if(!P)return;const cur=statusOf(P,aid);if(cur==='done'||cur===status)return;
-  P.progress=P.progress||{};P.progress[aid]=status;store(ST+'p:'+U.id,JSON.stringify(P));
-  if(status==='done'){drawMe(ui.stab);toast('Barakalla! Bajarildi')}
-  try{await cpost({action:'mark',id:U.id,aid,status});if(status==='done'){lastFetch=0;me(ui.stab)}}catch(e){}
+function bindMap(p,t){
+  bindSnd();layoutMap(p,t);
+  ui.onResize=()=>layoutMap(p,t);
+  const key=ST+'seen:'+p.student.id+':'+t.aid;const raw=store(key);const seen=raw==null?null:+raw;const fresh=seen!=null&&t.done>seen;store(key,String(t.done));
+  $('#map').onclick=e=>{const b=e.target.closest('.mnode');if(!b)return;
+    if(b.dataset.goal){if(t.finished){sfx('grand');certificate(p,t)}else{sfx('lock');toast('Avval barcha bosqichlarni tugating')}return}
+    const i=+b.dataset.i,s=t.steps[i];
+    if(!s.done&&i!==t.cur){sfx('lock');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');toast('Avval oldingi bosqichni tugating');return}
+    sfx('tap');openSheet(p,t,i)};
+  const cur=$('#map .mnode.cur')||$('#map .mnode.goal');
+  if(cur)setTimeout(()=>cur.scrollIntoView({block:'center',behavior:fresh?'smooth':'auto'}),fresh?500:50);
+  if(fresh){const gained=t.steps.slice(seen,t.done).reduce((s,x)=>s+(x.xp||0),0);
+    setTimeout(()=>{t.finished?sfx('grand'):sfx('win');confetti();xpPop(gained,t.finished)},350);
+    const last=document.querySelector(`#map .mnode[data-i="${t.done-1}"]`);if(last)last.classList.add('pop')}
+}
+function xpPop(n,fin){const d=document.createElement('div');d.className='xppop';d.innerHTML=`<b>+${n} XP</b><span>${fin?'Hammasi tugadi! Sertifikat tayyor':'Keyingi bosqich ochildi'}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function openSheet(p,t,i){
+  const s=t.steps[i];const sh=$('#sheet'),bg=$('#sheetBg');
+  let body;
+  if(t.booster){const n=i+1;
+    body=`<div class="shk">${n}-test · ${s.pack}-to‘plam</div><h3>Reading Part 1, Test ${n}</h3>
+      <p class="muted">${s.done?`Bajarilgan: o‘qish ${s.score}/6, ${s.xp} XP. Xohlasangiz qayta ishlashingiz mumkin.`:`Matnni o‘qing, bo‘sh joylarni to‘ldiring, so‘ng A–E mashqlarini bajaring. Tugatsangiz ${bxp(p,0)}–${bxp(p,6)} XP olasiz.`}</p>
+      <div class="shb"><a class="btn red big block" href="${esc(boosterLink(p,n))}" id="shGo">${s.done?'Qayta ishlash':'Boshlash'}</a></div>`}
+  else{
+    body=`<div class="shk">${i+1}-bosqich / ${t.total}</div><h3>${esc(s.t)}</h3>
+      <p class="muted">${s.done?'Bu bosqich bajarilgan.':`Topshiriqni oching, bajaring va qaytib “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
+      <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(s.l)}" target="_blank" rel="noopener" id="shOpen">Ochish</a>`:''}
+        ${s.done?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
+  sh.innerHTML=`<div class="grab"></div>${body}<button class="btn ghost block" id="shClose">Yopish</button>`;
+  sh.classList.add('on');sh.setAttribute('aria-hidden','false');bg.classList.remove('hide');
+  const close=()=>{sh.classList.remove('on');sh.setAttribute('aria-hidden','true');bg.classList.add('hide')};
+  bg.onclick=close;$('#shClose').onclick=close;
+  const go_=$('#shGo');if(go_)go_.onclick=()=>sfx('open');
+  const op=$('#shOpen');if(op)op.onclick=()=>{sfx('open');stepMark(p,t,i,'opened')};
+  const dn=$('#shDone');if(dn)dn.onclick=()=>{close();stepMark(p,t,i,'done')};
+  setTimeout(()=>{const f=sh.querySelector('.btn.red,.btn');if(f)f.focus()},60);
+}
+async function stepMark(p,t,i,status){
+  const aid=t.aid+':'+i;const cur=(P.progress||{})[aid];if(cur==='done'||cur===status)return;
+  P.progress=P.progress||{};P.progress[aid]=status;
+  if(status==='done'){P.xp.A+=t.xpEach;P.xp.an++;P.xp.T+=t.xpEach;const me=(P.board||[]).find(r=>r.me);if(me)me.t=P.xp.T}
+  store(ST+'p:'+U.id,JSON.stringify(P));
+  if(status==='done')drawMe();
+  try{await cpost({action:'mark',id:U.id,aid,status});if(status==='done')lastFetch=0}catch(e){}
+}
+
+/* ---------- certificate (PNG to keep or share) ---------- */
+async function certificate(p,t){
+  const s=p.student,st=bstats(p.booster);
+  const W=2000,H=1414,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  try{await document.fonts.load('800 80px Onest');await document.fonts.load('500 40px Onest')}catch(e){}
+  const F=(w,sz)=>`${w} ${sz}px Onest, system-ui, sans-serif`;
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);
+  x.fillStyle='#141B2D';x.fillRect(0,0,W,26);x.fillRect(0,H-26,W,26);
+  x.fillStyle='#E3101F';x.fillRect(0,26,W,10);x.fillRect(0,H-36,W,10);
+  x.strokeStyle='#DCE1EA';x.lineWidth=3;x.strokeRect(70,90,W-140,H-180);
+  const logo=new Image();logo.src=LOGO;await new Promise(r=>{logo.onload=r;logo.onerror=r});
+  try{x.drawImage(logo,W/2-70,150,140,140)}catch(e){}
+  x.textAlign='center';x.fillStyle='#E3101F';x.font=F(800,40);x.fillText('EDUNEST ACADEMY · MULTI-LEVEL',W/2,350);
+  x.fillStyle='#141B2D';x.font=F(800,150);x.fillText('SERTIFIKAT',W/2,510);
+  x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('Ushbu sertifikat',W/2,610);
+  let nm=s.name,sz=120;x.font=F(800,sz);while(x.measureText(nm).width>W-360&&sz>60){sz-=6;x.font=F(800,sz)}
+  x.fillStyle='#141B2D';x.fillText(nm,W/2,750);
+  x.fillStyle='#E3101F';x.fillRect(W/2-260,785,520,6);
+  x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('ga',W/2,860);
+  x.fillStyle='#141B2D';x.font=F(800,58);x.fillText(`“${t.title}”`,W/2,950);
+  x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('dasturini to‘liq tugatgani uchun beriladi.',W/2,1020);
+  const stats=t.booster?[`${BOOSTER_TESTS} test`,`O‘qish aniqligi ${st.acc||0}%`,`${t.steps.reduce((a,b)=>a+(b.xp||0),0)} XP`]:[`${t.total} bosqich`,`${t.total*t.xpEach} XP`];
+  x.fillStyle='#141B2D';x.font=F(700,40);x.fillText(stats.join('   ·   '),W/2,1105);
+  x.textAlign='left';x.fillStyle='#141B2D';x.font=F(800,44);x.fillText("A'zamjon Toxirov",150,1250);
+  x.fillStyle='#5A6378';x.font=F(500,34);x.fillText('C1 o‘qituvchi, EDUNEST Academy',150,1298);
+  x.strokeStyle='#141B2D';x.lineWidth=3;x.beginPath();x.moveTo(150,1195);x.lineTo(620,1195);x.stroke();
+  x.textAlign='right';x.fillStyle='#5A6378';x.font=F(500,34);x.fillText('Sertifikat raqami',W-150,1250);
+  x.fillStyle='#141B2D';x.font=F(800,44);x.fillText(`EDN-${s.id}-${t.aid==='booster'?'RB30':t.aid.slice(-4).toUpperCase()}`,W-150,1298);
+  const url=cv.toDataURL('image/png');
+  modal(`<h3>Tabriklaymiz!</h3><p class="muted" style="margin-top:4px">Sertifikatingiz tayyor. Uni yuklab oling yoki do‘stlaringizga ulashing.</p><img class="certimg" src="${url}" alt="Sertifikat">`,
+    [{t:'Yopish'},{t:'Yuklab olish',cls:'red',f:()=>{const a=document.createElement('a');a.href=url;a.download=`EDUNEST-sertifikat-${s.id}.png`;document.body.appendChild(a);a.click();a.remove()}}]);
+  confetti();
 }
 
 /* ================= TEACHER ================= */
@@ -1191,9 +1336,10 @@ async function loadT(force){
   if(!j||!j.ok)throw new Error(j&&j.error||'error');
   TD=j;return TD;
 }
-const ptsOf=(id,w)=>((TD.pts||{})[id]||{})[w||'cur']||{L:0,n:0,G:0,Y:0,R:0,H:0,B:0,bn:0,T:0};
-function groupRank(group,w){
-  const rows=TD.roster.filter(s=>s.group===group).map(s=>({s,o:ptsOf(s.id,w)}));
+const xpOf=id=>((TD.xp||{})[id])||{B:0,bn:0,A:0,an:0,T:0};
+const forGroup=(a,g)=>a.groups.toUpperCase()==='ALL'||a.groups.toUpperCase().split(/[,\s]+/).includes(String(g).toUpperCase());
+function groupRank(group){
+  const rows=TD.roster.filter(s=>s.group===group).map(s=>({s,o:xpOf(s.id)}));
   rows.sort((a,b)=>b.o.T-a.o.T||a.s.name.localeCompare(b.s.name));
   rows.forEach((r,i)=>{r.r=i&&rows[i-1].o.T===r.o.T?rows[i-1].r:i+1});return rows;
 }
@@ -1201,10 +1347,11 @@ function tRows(){
   const as=TD.assignments.filter(a=>!a.hidden);const rk={};
   [...new Set(TD.roster.map(s=>s.group))].forEach(g=>groupRank(g).forEach(r=>rk[r.s.id]=r.r));
   return TD.roster.map(s=>{const b=TD.booster[s.id]||{};const pr=TD.progress[s.id]||{};
-    const mine=as.filter(a=>a.groups.toUpperCase()==='ALL'||a.groups.toUpperCase().split(/[,\s]+/).includes(String(s.group).toUpperCase()));
-    return{s,b,done:+b.done||0,last:b.last||0,adone:mine.filter(a=>pr[a.aid]==='done').length,atot:mine.length,pts:ptsOf(s.id).T,rank:rk[s.id]}});
+    const mine=as.filter(a=>forGroup(a,s.group));const stot=mine.reduce((n,a)=>n+a.steps.length,0);
+    const sdone=mine.reduce((n,a)=>n+a.steps.filter((_,i)=>pr[a.aid+':'+i]==='done').length,0);
+    return{s,done:+b.done||0,last:b.last||0,sdone,stot,xp:xpOf(s.id).T,rank:rk[s.id]}});
 }
-const TTABS=[['students','O‘quvchilar'],['marks','Baholash'],['league','Reyting'],['guests','Mehmonlar'],['assign','Topshiriqlar']];
+const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],['guests','Mehmonlar']];
 async function teacherHome(tab){
   document.body.classList.remove('st-mode');
   tab=TTABS.some(t=>t[0]===tab)?tab:'students';ui.ttab=tab;setBack(null);
@@ -1218,27 +1365,26 @@ async function teacherHome(tab){
       <div class="card kpi"><div class="l">O‘quvchilar</div><div class="v">${st.length}</div><div class="muted ks">${GROUPS.filter(g=>g!=='GUEST').map(g=>g+' '+st.filter(r=>r.s.group===g).length).join(', ')}</div></div>
       <div class="card kpi"><div class="l">Mehmonlar</div><div class="v">${gu.length}</div><div class="muted ks">${gu.filter(r=>r.s.joined&&new Date(r.s.joined).getTime()>week).length} ta shu hafta</div></div>
       <div class="card kpi"><div class="l">Shu hafta faol</div><div class="v">${rows.filter(r=>r.last>week).length}</div><div class="muted ks">Booster ochganlar</div></div>
-      <div class="card kpi"><div class="l">${monName(TD.month)} ballari</div><div class="v">${rows.reduce((s,r)=>s+Math.max(0,r.pts),0)}</div><div class="muted ks">hammasi birga</div></div>
+      <div class="card kpi"><div class="l">Jami XP</div><div class="v">${rows.reduce((s,r)=>s+r.xp,0)}</div><div class="muted ks">hamma o‘quvchilar</div></div>
     </div>
-    <div class="ttabs">${TTABS.map(([k,l])=>`<button class="${tab===k?'on':''}" data-t="${k}">${l}${k==='guests'?` <b>${gu.length}</b>`:k==='assign'?` <b>${TD.assignments.filter(a=>!a.hidden).length}</b>`:''}</button>`).join('')}
+    <div class="ttabs">${TTABS.map(([k,l])=>`<button class="${tab===k?'on':''}" data-t="${k}">${l}${k==='guests'?` <b>${gu.length}</b>`:k==='assign'?` <b>${TD.assignments.filter(a=>!a.hidden).length+1}</b>`:''}</button>`).join('')}
       <div style="flex:1"></div><button class="btn ghost" id="tRef">Yangilash</button></div>
     <div id="tBody"></div></div>`;
-  document.querySelectorAll('.ttabs [data-t]').forEach(b=>b.onclick=()=>{if(ui.mkDirty&&ui.ttab==='marks'&&b.dataset.t!=='marks'){confirmLeave(()=>go('#/teacher/'+b.dataset.t))}else go('#/teacher/'+b.dataset.t)});
+  document.querySelectorAll('.ttabs [data-t]').forEach(b=>b.onclick=()=>go('#/teacher/'+b.dataset.t));
   $('#tRef').onclick=()=>{TD=null;teacherHome(tab)};
-  if(tab==='assign')tAssign();else if(tab==='marks')tMarks();else if(tab==='league')tLeague();else tList(tab==='guests'?gu:st,tab==='guests');
+  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else tList(tab==='guests'?gu:st,tab==='guests');
 }
-function confirmLeave(f){modal('<h3>Saqlanmagan baholar bor</h3><p class="muted" style="margin-top:6px">Chiqib ketsangiz, ular yo‘qoladi.</p>',[{t:'Qolish'},{t:'Saqlamasdan chiqish',cls:'red',f:()=>{ui.mkDirty=false;f()}}])}
 function tList(rows,guests){
-  ui.tf=ui.tf||{q:'',g:'ALL',sort:'pts'};const f=ui.tf;if(guests)f.g='ALL';
+  ui.tf=ui.tf||{q:'',g:'ALL',sort:'xp'};const f=ui.tf;if(guests)f.g='ALL';
   const draw=()=>{
     let r=rows.filter(x=>(f.g==='ALL'||x.s.group===f.g)&&(!f.q||(x.s.name+' '+x.s.id+' '+x.s.phone).toLowerCase().includes(f.q.toLowerCase())));
-    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):(a,b)=>b.pts-a.pts||a.s.name.localeCompare(b.s.name));
+    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
     $('#tTbl').innerHTML=r.length?r.map(x=>`<div class="card srow">
       <div class="sav">${esc(initials(x.s.name))}</div>
-      <div class="sn"><b>${esc(x.s.name)}</b><small>ID ${esc(x.s.id)}${guests?'':', '+esc(x.s.group)}${guests&&x.s.joined?', '+new Date(x.s.joined).toLocaleDateString('en-GB'):''}</small></div>
-      <div class="sp2"><b>${x.pts} ball</b><small>${x.rank?x.rank+'-o‘rin':''}</small></div>
+      <div class="sn"><b>${esc(x.s.name)}</b><small>ID ${esc(x.s.id)}${guests?'':', '+esc(x.s.group)}</small></div>
+      <div class="sp2"><b>${x.xp} XP</b><small>${x.rank?x.rank+'-o‘rin':''}</small></div>
       <div class="sp2"><b>${x.done}/${BOOSTER_TESTS}</b><div class="minibar"><b style="width:${x.done/BOOSTER_TESTS*100}%"></b></div><small>Booster</small></div>
-      <div class="sp2"><b>${x.last?ago(x.last):'—'}</b><small>oxirgi faollik</small></div>
+      <div class="sp2"><b>${x.sdone}/${x.stot}</b><small>bosqichlar</small></div>
       <div class="sbtns">${x.s.phone&&x.s.phone.length===9?`<a class="btn ghost call" href="${tel(x.s.phone)}" aria-label="Qo‘ng‘iroq ${phoneNice(x.s.phone)}">📞<span>${phoneNice(x.s.phone)}</span></a>`:''}<button class="btn navy" data-s="${esc(x.s.id)}">Profil</button></div>
     </div>`).join(''):'<p class="muted empty">Bu yerda hali hech kim yo‘q.</p>';
     document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
@@ -1246,99 +1392,91 @@ function tList(rows,guests){
   $('#tBody').innerHTML=`<div class="tfil">
     <input id="tQ" placeholder="Ism, ID yoki telefon" value="${esc(f.q)}" aria-label="Qidirish">
     ${guests?'':`<select id="tG" aria-label="Guruh"><option value="ALL">Barcha guruhlar</option>${GROUPS.filter(g=>g!=='GUEST').map(g=>`<option ${f.g===g?'selected':''}>${g}</option>`).join('')}</select>`}
-    <select id="tS" aria-label="Tartib"><option value="pts">Ball bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option></select>
+    <select id="tS" aria-label="Tartib"><option value="xp">XP bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option></select>
+    ${guests?'':'<button class="btn red" id="tImp">O‘quvchi qo‘shish</button>'}
   </div><div id="tTbl" class="slist"></div>`;
   $('#tQ').oninput=e=>{f.q=e.target.value;draw()};if($('#tG'))$('#tG').onchange=e=>{f.g=e.target.value;draw()};$('#tS').onchange=e=>{f.sort=e.target.value;draw()};
+  if($('#tImp'))$('#tImp').onclick=importBox;
   draw();
 }
-/* ---- Baholash: one tap per pupil ---- */
-async function tMarks(){
-  ui.mk=ui.mk||{g:'SHARKS',d:todayStr()};const mk=ui.mk;
-  const groups=GROUPS.filter(g=>TD.roster.some(s=>s.group===g));if(!groups.includes(mk.g))mk.g=groups[0]||'SHARKS';
-  const pupils=TD.roster.filter(s=>s.group===mk.g).sort((a,b)=>a.name.localeCompare(b.name));
-  $('#tBody').innerHTML=`<div class="mkbar">
-      <div class="seg">${groups.map(g=>`<button class="${g===mk.g?'on':''}" data-mg="${g}">${g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div>
-      <div class="mkdate"><button class="btn ghost" data-dd="-1" aria-label="Oldingi kun">‹</button><input type="date" id="mkD" value="${mk.d}" max="${todayStr()}"><button class="btn ghost" data-dd="1" aria-label="Keyingi kun">›</button></div>
-    </div>
-    <div class="card mkhelp">Har bir o‘quvchiga bitta daraja: ✅ A’lo 3 · 🟢 Yaxshi 2 · 🟡 Rivojlanmoqda 1 · 🔴 Hali emas 0. Kelmaganlarni bo‘sh qoldiring. Karta faqat alohida holatlarda: 🟩 faol +1, 🟨 sust −1 (oydagi ikkinchisi 🟥 −2). 🏠 uy vazifa o‘z vaqtida +1.</div>
-    <div id="mkList"><div class="loading"><div class="spin"></div>Yuklanmoqda…</div></div>
-    <div class="mksave"><span id="mkCount"></span><button class="btn ghost" id="mkHw" title="Darajasi bor hammaga uy vazifa">🏠 Kelganlarga</button><button class="btn red big" id="mkSave">Saqlash</button></div>`;
-  document.querySelectorAll('[data-mg]').forEach(b=>b.onclick=()=>{const f=()=>{mk.g=b.dataset.mg;ui.mkDirty=false;tMarks()};ui.mkDirty?confirmLeave(f):f()});
-  const setDate=d=>{const f=()=>{mk.d=d;ui.mkDirty=false;tMarks()};ui.mkDirty?confirmLeave(f):f()};
-  $('#mkD').onchange=e=>{if(e.target.value)setDate(e.target.value)};
-  document.querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{const t=new Date(mk.d+'T12:00:00');t.setDate(t.getDate()+(+b.dataset.dd));const s=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');if(s<=todayStr())setDate(s)});
-  let ex={};try{const j=await cget({action:'marks',key:U.pass,date:mk.d,group:mk.g});if(j&&j.ok)j.rows.forEach(r=>ex[r.id]=r)}catch(e){toast('Baholar yuklanmadi');}
-  const S={};pupils.forEach(s=>{const r=ex[s.id]||{};S[s.id]={lv:r.lv===''||r.lv==null?'':+r.lv,c:r.c||'',hw:+r.hw||0}});
-  ui.mkState=S;ui.mkDirty=false;
-  const row=s=>{const x=S[s.id];return `<div class="card mkrow" data-id="${esc(s.id)}">
-      <div class="mkn"><div class="sav sm">${esc(initials(s.name))}</div><div><b>${esc(s.name)}</b><small>ID ${esc(s.id)}</small></div></div>
-      <div class="mklv" role="group" aria-label="Dars darajasi">${[3,2,1,0].map(l=>`<button class="lvb ${x.lv===l?'on lv'+l:''}" data-lv="${l}" aria-pressed="${x.lv===l}" title="${LV[l][1]}">${LV[l][0]}<span>${l}</span></button>`).join('')}</div>
-      <div class="mkx"><button class="cb ${x.c==='G'?'on':''}" data-c="G" aria-pressed="${x.c==='G'}" title="Faol +1">🟩</button><button class="cb ${x.c==='Y'?'on':''}" data-c="Y" aria-pressed="${x.c==='Y'}" title="Sust −1">🟨</button><button class="cb ${x.hw?'on':''}" data-hw="1" aria-pressed="${!!x.hw}" title="Uy vazifa +1">🏠</button></div>
-    </div>`};
-  const count=()=>{const n=pupils.filter(s=>S[s.id].lv!=='').length;$('#mkCount').textContent=`${n}/${pupils.length} ta baholandi`};
-  $('#mkList').innerHTML=pupils.length?pupils.map(row).join(''):'<p class="muted empty">Bu guruhda o‘quvchi yo‘q.</p>';count();
-  $('#mkList').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('.mkrow').dataset.id;const x=S[id];
-    if(b.dataset.lv!=null){const l=+b.dataset.lv;x.lv=x.lv===l?'':l}
-    else if(b.dataset.c){x.c=x.c===b.dataset.c?'':b.dataset.c}
-    else if(b.dataset.hw){x.hw=x.hw?0:1}
-    ui.mkDirty=true;b.closest('.mkrow').outerHTML=row(pupils.find(s=>s.id===id));count()};
-  $('#mkHw').onclick=()=>{const pres=pupils.filter(s=>S[s.id].lv!=='');if(!pres.length){toast('Avval darajalarni qo‘ying: 🏠 faqat kelganlarga beriladi');return}const all=pres.every(s=>S[s.id].hw);pres.forEach(s=>S[s.id].hw=all?0:1);ui.mkDirty=true;$('#mkList').innerHTML=pupils.map(row).join('');count()};
-  $('#mkSave').onclick=async()=>{const b=$('#mkSave');b.disabled=true;b.textContent='Saqlanmoqda…';
-    try{const j=await cpost({action:'saveMarks',key:U.pass,date:mk.d,group:mk.g,rows:pupils.map(s=>({id:s.id,...S[s.id]}))});if(!j.ok)throw 0;
-      ui.mkDirty=false;toast(`Saqlandi: ${dLabel(mk.d)}, ${mk.g}`);TD=null;await loadT();b.disabled=false;b.textContent='Saqlash'}
-    catch(e){toast('Saqlanmadi. Internetni tekshiring.');b.disabled=false;b.textContent='Saqlash'}};
+function parseRoster(txt){
+  return txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^(\S*?\d{3,}\S*)[\s,;|\t]+(.*)$/)||l.match(/^(\S*?\d{3,}\S*)$/);if(!m)return null;
+    const name=cleanName((m[2]||'').replace(/[\t|;]+/g,' ').replace(/\+?\d[\d\s-]{8,}$/,'')).trim();return{id:m[1].replace(/[^\w-]/g,''),name}}).filter(Boolean);
 }
-/* ---- League ---- */
+function importBox(){
+  modal(`<h3>O‘quvchi qo‘shish</h3>
+    <p class="muted" style="margin:6px 0 10px">Har bir qatorda: ID va to‘liq ism familiya. Ro‘yxatda allaqachon bor o‘quvchilar o‘zgarmaydi, faqat yangilari qo‘shiladi.</p>
+    <div class="seg" id="impG" style="margin-bottom:10px">${GROUPS.filter(g=>g!=='GUEST').map((g,i)=>`<button class="${i?'':'on'}" data-g="${g}">${g}</button>`).join('')}</div>
+    <textarea id="impT" class="imptxt" rows="7" placeholder="63050 Ali Valiyev&#10;63051 Vali Aliyev"></textarea>
+    <p class="muted" id="impInfo" style="font-size:14px;margin:8px 0 0"></p>`,
+    [{t:'Bekor qilish'},{t:'Qo‘shish',cls:'red',f:async()=>{const g=ui.impG||'SHARKS';const rows=ui.impRows||[];if(!rows.length){toast('Ro‘yxat bo‘sh');return}
+      const known=new Set(TD.roster.map(s=>s.id));const bad=rows.filter(r=>!r.name&&!known.has(r.id));
+      if(bad.length){toast(`${bad.length} ta yangi ID uchun ism yo‘q`);return}
+      try{const j=await cpost({action:'importRoster',key:U.pass,rows:rows.map(r=>[r.id,r.name,known.has(r.id)?'':g,''])});if(!j.ok)throw 0;toast(`Qo‘shildi: ${j.added}, yangilandi: ${j.updated}`);TD=null;teacherHome('students')}catch(e){toast('Saqlanmadi')}}}]);
+  ui.impRows=[];ui.impG=GROUPS[0];
+  document.querySelectorAll('#impG button').forEach(b=>b.onclick=()=>{ui.impG=b.dataset.g;document.querySelectorAll('#impG button').forEach(x=>x.classList.toggle('on',x===b))});
+  const t=$('#impT');t.oninput=()=>{ui.impRows=parseRoster(t.value);const known=new Set(TD.roster.map(s=>s.id));const nw=ui.impRows.filter(r=>!known.has(r.id)).length;
+    $('#impInfo').textContent=ui.impRows.length?`${ui.impRows.length} ta qator: ${nw} ta yangi, ${ui.impRows.length-nw} ta bor`:''};
+  t.focus();
+}
 function tLeague(){
-  ui.lg=ui.lg||{g:GROUPS.find(g=>TD.roster.some(s=>s.group===g))||'SHARKS',w:'cur'};const L=ui.lg;
-  const groups=GROUPS.filter(g=>TD.roster.some(s=>s.group===g));
-  const rows=groupRank(L.g,L.w);const m=L.w==='cur'?TD.month:prevM(TD.month);
-  let up=null;if(L.w==='cur')rows.forEach(r=>{const d=r.o.T-ptsOf(r.s.id,'prev').T;if(d>0&&(!up||d>up.d))up={r,d}});
-  $('#tBody').innerHTML=`<div class="mkbar"><div class="seg">${groups.map(g=>`<button class="${g===L.g?'on':''}" data-lg="${g}">${g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div>
-    <div class="seg"><button class="${L.w==='cur'?'on':''}" data-lw="cur">${monName(TD.month)}</button><button class="${L.w==='prev'?'on':''}" data-lw="prev">${monName(prevM(TD.month))}</button></div></div>
-    ${up?`<div class="card mkhelp">Eng ko‘p o‘sgan: <b>${esc(up.r.s.name)}</b>, o‘tgan oyga nisbatan ${sgn(up.d)} ball.</div>`:''}
-    <div class="card lgtab"><table><thead><tr><th>O‘rin</th><th>O‘quvchi</th><th title="Dars darajalari">Darslar</th><th>Kartalar</th><th>🏠</th><th>Booster</th><th>Jami</th></tr></thead>
-    <tbody>${rows.map(r=>{const o=r.o,net=o.G-o.Y-o.R;return `<tr><td><b>${r.r}</b></td><td><button class="lnk" data-s="${esc(r.s.id)}">${esc(r.s.name)}</button></td><td>${o.L}<small> / ${o.n} dars</small></td><td class="${net<0?'neg':''}">${sgn(net)}<small> 🟩${o.G} 🟨${o.Y-o.R} 🟥${o.R}</small></td><td>${o.H}</td><td>${o.B}<small> / ${o.bn}</small></td><td><b>${o.T}</b></td></tr>`}).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:14px;margin-top:10px">${monName(m)} oyi. Jami = darslar + kartalar + uy vazifa + Booster.</p>`;
+  ui.lg=ui.lg||{g:GROUPS.find(g=>TD.roster.some(s=>s.group===g))||'SHARKS'};const L=ui.lg;
+  const groups=GROUPS.filter(g=>TD.roster.some(s=>s.group===g));const rows=groupRank(L.g);
+  $('#tBody').innerHTML=`<div class="mkbar"><div class="seg">${groups.map(g=>`<button class="${g===L.g?'on':''}" data-lg="${g}">${g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
+    <div class="card lgtab"><table><thead><tr><th>O‘rin</th><th>O‘quvchi</th><th>Booster</th><th>Topshiriqlar</th><th>Jami XP</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td><b>${r.r}</b></td><td><button class="lnk" data-s="${esc(r.s.id)}">${esc(r.s.name)}</button></td><td>${r.o.B}<small> / ${r.o.bn} test</small></td><td>${r.o.A}<small> / ${r.o.an} bosqich</small></td><td><b>${r.o.T}</b></td></tr>`).join('')}</tbody></table></div>`;
   document.querySelectorAll('[data-lg]').forEach(b=>b.onclick=()=>{L.g=b.dataset.lg;tLeague()});
-  document.querySelectorAll('[data-lw]').forEach(b=>b.onclick=()=>{L.w=b.dataset.lw;tLeague()});
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
 }
+function stepRow(i,s){return `<div class="steprow" data-k="${i}"><span class="stn">${i+1}</span><input class="stT" placeholder="Bosqich nomi, masalan: Test ${i+1}" value="${esc(s.t||'')}" aria-label="Bosqich ${i+1} nomi"><input class="stL" placeholder="Havola (ixtiyoriy)" value="${esc(s.l||'')}" inputmode="url" aria-label="Bosqich ${i+1} havolasi"><button class="btn ghost stX" aria-label="Bosqichni o‘chirish">✕</button></div>`}
 function tAssign(){
   const rows=tRows();
-  const cnt=a=>{const who=rows.filter(x=>a.groups.toUpperCase()==='ALL'||a.groups.toUpperCase().split(/[,\s]+/).includes(String(x.s.group).toUpperCase()));
-    return{tot:who.length,done:who.filter(x=>(TD.progress[x.s.id]||{})[a.aid]==='done').length,open:who.filter(x=>(TD.progress[x.s.id]||{})[a.aid]).length}};
+  const cnt=a=>{const who=rows.filter(x=>forGroup(a,x.s.group));const pr=id=>TD.progress[id]||{};
+    const fin=who.filter(x=>a.steps.every((_,i)=>pr(x.s.id)[a.aid+':'+i]==='done')).length;
+    const st=who.filter(x=>a.steps.some((_,i)=>pr(x.s.id)[a.aid+':'+i])).length;return{tot:who.length,fin,st}};
+  const bRows=rows.filter(x=>x.s.type!=='guest');
+  ui.steps=ui.steps||[{t:'',l:''}];
   $('#tBody').innerHTML=`<div class="card sec">
-    <h3>Yangi topshiriq</h3>
+    <h3>Yangi topshiriq (xarita)</h3>
+    <p class="muted" style="font-size:14px;margin:4px 0 6px">Har bir bosqich o‘quvchi xaritasida bitta nuqta bo‘ladi. Bosqichlar ketma-ket ochiladi.</p>
     <div class="agrid">
-      <div class="field"><label for="aT">Nomi</label><input id="aT" placeholder="Listening Part 2, Test 3"></div>
-      <div class="field"><label for="aL">Havola (GitHub’dagi HTML, Google Form, PDF)</label><input id="aL" placeholder="https://toxirovteacher.github.io/…" inputmode="url"></div>
-      <div class="field"><label for="aD">Muddat (ixtiyoriy)</label><input id="aD" type="date"></div>
-      <div class="field"><label for="aN">Izoh (ixtiyoriy)</label><input id="aN" placeholder="Jumagacha bajaring"></div>
+      <div class="field"><label for="aT">Nomi</label><input id="aT" placeholder="Listening Part 2 Booster"></div>
+      <div class="field"><label for="aN">Qisqa izoh (ixtiyoriy)</label><input id="aN" placeholder="9 ta test, har biri skript bilan"></div>
     </div>
-    <div class="field"><label>Kimlarga</label><div class="gchips">${['ALL',...GROUPS].map(g=>`<button class="gchip ${g==='ALL'?'on':''}" data-g="${g}">${g==='ALL'?'Hammaga':g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
-    <p class="muted" style="font-size:14px;margin:10px 0 0">Muddatida bajarganlar avtomatik 🏠 +1 oladi.</p>
+    <div class="field"><label>Bosqichlar</label><div id="stList">${ui.steps.map((s,i)=>stepRow(i,s)).join('')}</div>
+      <button class="btn ghost" id="stAdd" style="margin-top:8px">+ Bosqich qo‘shish</button></div>
+    <div class="agrid">
+      <div class="field"><label for="aX">Har bir bosqich uchun XP</label><input id="aX" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
+      <div class="field"><label>Kimlarga</label><div class="gchips">${['ALL',...GROUPS].map(g=>`<button class="gchip ${g==='ALL'?'on':''}" data-g="${g}">${g==='ALL'?'Hammaga':g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
+    </div>
     <button class="btn red big" id="aAdd" style="margin-top:14px">E’lon qilish</button>
   </div>
   <h2 class="sech">Barcha topshiriqlar</h2>
-  <div class="alist">${TD.assignments.length?TD.assignments.slice().reverse().map(a=>{const c=cnt(a);return `<div class="card asg ${a.hidden?'hid':''}">
-    <div class="aic">${a.hidden?'🙈':'📌'}</div>
-    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${esc(a.groups==='ALL'?'Hammaga':a.groups)}${a.due?', muddat '+dLabel(a.due):''}${a.note?', '+esc(a.note):''}</div>
-      <div class="as">${a.link?`<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.link.replace(/^https?:\/\//,'').slice(0,60))}</a>`:'<i>havola yo‘q</i>'}</div>
-      <div><span class="tag ok">${c.done}/${c.tot} bajardi</span> <span class="tag">${c.open} ochdi</span></div></div>
+  <div class="alist">
+    <div class="card asg main"><div class="aic">📖</div><div class="atx"><div class="at">Reading Part 1 Booster</div><div class="as">30 bosqich, har doim hammaga ko‘rinadi. XP avtomatik.</div>
+      <div><span class="tag ok">${bRows.filter(x=>x.done>=BOOSTER_TESTS).length}/${bRows.length} tugatdi</span> <span class="tag">${bRows.filter(x=>x.done).length} boshladi</span></div></div></div>
+    ${TD.assignments.slice().reverse().map(a=>{const c=cnt(a);return `<div class="card asg ${a.hidden?'hid':''}">
+    <div class="aic">${a.hidden?'🙈':'🗺️'}</div>
+    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${a.steps.length} bosqich, har biri ${a.xp} XP, ${esc(a.groups==='ALL'?'hammaga':a.groups)}${a.note?', '+esc(a.note):''}</div>
+      <div><span class="tag ok">${c.fin}/${c.tot} tugatdi</span> <span class="tag">${c.st} boshladi</span></div></div>
     <div class="abtns"><button class="btn ghost" data-hide="${a.aid}" data-h="${a.hidden?0:1}">${a.hidden?'Ko‘rsatish':'Yashirish'}</button><button class="btn ghost" data-del="${a.aid}" aria-label="O‘chirish">🗑</button></div>
-  </div>`}).join(''):'<p class="muted empty">Hali topshiriq yo‘q. Reading Part 1 Booster har doim hamma o‘quvchiga ko‘rinadi.</p>'}</div>`;
+  </div>`}).join('')}</div>`;
+  const sync=()=>{ui.steps=[...document.querySelectorAll('.steprow')].map(r=>({t:r.querySelector('.stT').value,l:r.querySelector('.stL').value}))};
+  const redraw=()=>{$('#stList').innerHTML=ui.steps.map((s,i)=>stepRow(i,s)).join('')};
+  $('#stList').oninput=sync;
+  $('#stList').onclick=e=>{const b=e.target.closest('.stX');if(!b)return;sync();ui.steps.splice(+b.closest('.steprow').dataset.k,1);if(!ui.steps.length)ui.steps=[{t:'',l:''}];redraw()};
+  $('#stAdd').onclick=()=>{sync();ui.steps.push({t:'',l:''});redraw();const r=document.querySelectorAll('.steprow');r[r.length-1].querySelector('.stT').focus()};
   document.querySelectorAll('.gchip').forEach(b=>b.onclick=()=>{const all=b.dataset.g==='ALL';
     document.querySelectorAll('.gchip').forEach(x=>{if(all)x.classList.toggle('on',x===b);else if(x.dataset.g==='ALL')x.classList.remove('on')});
     if(!all)b.classList.toggle('on');if(!document.querySelector('.gchip.on'))document.querySelector('.gchip[data-g="ALL"]').classList.add('on')});
-  $('#aAdd').onclick=async()=>{const t=$('#aT').value.trim();if(!t){toast('Nomini yozing');$('#aT').focus();return}
-    let l=$('#aL').value.trim();if(l&&!/^https?:\/\//.test(l))l='https://'+l;
+  $('#aAdd').onclick=async()=>{sync();const t=$('#aT').value.trim();if(!t){toast('Nomini yozing');$('#aT').focus();return}
+    const steps=ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
     const g=[...document.querySelectorAll('.gchip.on')].map(x=>x.dataset.g).join(',');
     $('#aAdd').disabled=true;$('#aAdd').textContent='E’lon qilinmoqda…';
-    try{const j=await cpost({action:'addAssign',key:U.pass,title:t,link:l,groups:g,due:$('#aD').value,note:$('#aN').value.trim()});if(!j.ok)throw 0;
-      toast('E’lon qilindi');TD=null;await loadT();teacherHome('assign')}catch(e){toast('E’lon qilinmadi. Qayta urining.');$('#aAdd').disabled=false;$('#aAdd').textContent='E’lon qilish'}};
+    try{const j=await cpost({action:'addAssign',key:U.pass,title:t,note:$('#aN').value.trim(),steps,xp:+$('#aX').value||10,groups:g});if(!j.ok)throw 0;
+      ui.steps=null;toast('E’lon qilindi');TD=null;await loadT();teacherHome('assign')}catch(e){toast('E’lon qilinmadi. Qayta urining.');$('#aAdd').disabled=false;$('#aAdd').textContent='E’lon qilish'}};
   document.querySelectorAll('[data-hide]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await cpost({action:'editAssign',key:U.pass,aid:b.dataset.hide,hidden:b.dataset.h==='1'});TD=null;await loadT();teacherHome('assign')}catch(e){toast('Xatolik')}});
-  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>modal('<h3>Topshiriqni o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchilar uni boshqa ko‘rmaydi.</p>',
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>modal('<h3>Topshiriqni o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchilar uni boshqa ko‘rmaydi va bu topshiriq uchun olingan XP hisobdan chiqadi.</p>',
     [{t:'Bekor qilish'},{t:'O‘chirish',cls:'red',f:async()=>{try{await cpost({action:'editAssign',key:U.pass,aid:b.dataset.del,remove:true});TD=null;await loadT();teacherHome('assign')}catch(e){toast('Xatolik')}}}]));
 }
 async function teacherStudent(id){
@@ -1347,16 +1485,25 @@ async function teacherStudent(id){
   view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
   let j=null;try{await loadT();j=await cget({action:'login',q:id})}catch(e){}
   if(!j||!j.ok){view().innerHTML='<div class="wrap"><div class="card sec"><h3>O‘quvchi topilmadi</h3></div></div>';return}
-  const r=TD.roster.find(x=>x.id===id)||{};const rk=myRank(j);
+  const r=TD.roster.find(x=>x.id===id)||{};const rk=myRank(j);const T=tracks(j);const st=bstats(j.booster);
   view().innerHTML=`<div class="wrap st anim">
     <div class="st-hello"><div class="pav">${esc(initials(j.student.name))}</div><div><h1>${esc(j.student.name)}</h1>
-      <div class="st-meta"><span>ID ${esc(j.student.id)}</span><span>${esc(j.student.group)}</span>${rk?`<span>${rk.me.r}-o‘rin</span>`:''}</div></div>
+      <div class="st-meta"><span>ID ${esc(j.student.id)}</span><span>${esc(j.student.group)}</span><span>${j.xp.T} XP</span>${rk?`<span>${rk.me.r}-o‘rin</span>`:''}</div></div>
       ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}</div>
-    ${bahoHTML(j,{teacher:true})}
-    <h2 class="sech">Mashqlar</h2>${mashqHTML(j,{teacher:true})}
+    <h2 class="sech">Topshiriqlar</h2>
+    <div class="alist">${T.map(t=>`<div class="card asg ${t.booster?'main':''}"><div class="aic">${t.finished?'🏆':t.booster?'📖':'🗺️'}</div>
+      <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP</div>
+      <div class="dots">${t.steps.map(s=>`<i class="${s.done?'on':''}" title="${esc(s.t)}"></i>`).join('')}</div></div></div>`).join('')}</div>
+    ${st.read?`<h2 class="sech">Booster natijalari</h2><div class="card sec">${testBars(st)}</div>`:''}
     <a class="btn navy big" style="margin-top:16px" href="${BOOSTER_URL}" target="_blank" rel="noopener">Booster bo‘yicha batafsil hisobot</a></div>`;
-  document.querySelectorAll('[data-lm]').forEach(()=>{});
 }
+function testBars(st){
+  const W=600,H=110,bw=W/BOOSTER_TESTS;const m=Object.fromEntries(st.res);
+  return `<svg class="chart" viewBox="0 0 ${W} ${H+26}" role="img" aria-label="Har bir test natijasi">${Array.from({length:BOOSTER_TESTS},(_,k)=>{const i=k+1,r=m[i];
+    const h=r?Math.max(5,r.score/6*H):H;const c=!r?'var(--track)':r.score>=5?'#159947':r.score>=3?'#D98A06':'#E3101F';
+    return `<rect x="${k*bw+3}" y="${H-h+2}" width="${bw-6}" height="${h}" rx="4" style="fill:${c}" ${r?'':'opacity=".5"'}/><text x="${k*bw+bw/2}" y="${H+20}" text-anchor="middle" font-size="9" font-weight="700" style="fill:var(--mute)">${i}</text>`}).join('')}</svg>`;
+}
+addEventListener('resize',()=>{clearTimeout(ui.rz);ui.rz=setTimeout(()=>{if(ui.stab==='map'&&ui.onResize&&location.hash.startsWith('#/me/a/'))ui.onResize()},150)});
 
 /* ================= START ================= */
 (function start(){

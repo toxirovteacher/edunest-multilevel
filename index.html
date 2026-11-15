@@ -915,6 +915,27 @@ button.lp-btn{border:0;cursor:pointer;font-family:inherit}
 body.dark .tgcard,body.dark .tglink{background:#12283a;border-color:#1f4a66}
 .btn.tgb .tgi{width:18px;height:18px;color:#229ED9}
 
+/* coming soon + ready-made materials */
+.tcard.soon{cursor:default}
+.tcard.soon:hover{transform:none}
+.tcard.soon .tcov{filter:saturate(.75) brightness(.92)}
+.tcard.soon .tnum{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.16)}
+.tcard.soon .tnum svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tcard.soon .tgo{color:var(--mute)}
+.mlbl{width:max-content;max-width:min(280px,70vw);white-space:normal;text-align:center;line-height:1.25}
+.liblist{display:grid;margin-top:6px}
+.libitem{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.libsw{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:800;font-size:18px;display:grid;place-items:center}
+.libtx b{display:block;font-size:16px;color:var(--head)}
+.libtx small{display:block;color:var(--mute);font-size:13px;font-weight:500;line-height:1.35;margin-top:2px}
+.liblink{display:inline-block;margin-top:4px;font-size:13.5px;font-weight:800;color:var(--red);text-decoration:none}
+.libitem .btn{min-height:46px;white-space:nowrap}
+.libitem .tag{white-space:nowrap}
+.soonopt{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:14px;cursor:pointer}
+.soonopt input{width:22px;height:22px;margin-top:2px;accent-color:#E3101F;flex:none}
+.soonopt b{display:block;color:var(--head)}.soonopt small{color:var(--mute);font-size:13px}
+@media(max-width:640px){.libitem{grid-template-columns:44px 1fr}.libsw{width:44px;height:44px}.libitem .btn,.libitem .tag{grid-column:1/-1;justify-self:stretch;text-align:center}}
+
 </style>
 </head>
 <body class="uz-on">
@@ -1366,7 +1387,21 @@ const COVERS={
   u4a:{k:'Unit 4A · Level 3',w:'HOUSEWORK',c1:'#0B2A4A',c2:'#1C7ED6',art:'dots',l:'4A'},
   u4b:{k:'Unit 4B · Level 3',w:'SHOPPING',c1:'#3D2A00',c2:'#E8590C',art:'lines',l:'4B'},
   u4c:{k:'Unit 4C · Level 3',w:'WEEKENDS',c1:'#0E3322',c2:'#2B9A66',art:'wave',l:'4C'},
-  rc34:{k:'Revise & Check',w:'UNITS 3–4',c1:'#2A1046',c2:'#9C36B5',art:'book',l:'R&C'}};
+  rc34:{k:'Revise & Check',w:'UNITS 3–4',c1:'#2A1046',c2:'#9C36B5',art:'book',l:'R&C'},
+  rp3:{k:'Reading · Part 3',w:'HEADINGS',c1:'#0A2E3A',c2:'#12A3A8',art:'lines',l:'Part 3'},
+  rp2:{k:'Reading · Part 2',w:'MATCHING',c1:'#102A43',c2:'#2F80ED',art:'book',l:'Part 2'},
+  wr1:{k:'Writing · Part 1',w:'EMAILS',c1:'#0E3322',c2:'#1E9A56',art:'lines',l:'Writing 1'},
+  wr2:{k:'Writing · Part 2',w:'ESSAYS',c1:'#16351C',c2:'#58B83A',art:'book',l:'Writing 2'},
+  ai:{k:'Writing',w:'AI CHECK',c1:'#1F1147',c2:'#6C4DF6',art:'dots',l:'AI'}};
+/* ---------- ready-made materials (files in this site) ---------- */
+const LIB=[{"key":"rm1","title":"Reading · Full Mock Test 1","note":"35 savol · 60 daqiqa · bitta o‘tirishda, oxirida natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 1","l":"mashq.html#d=rm1&x=all"}]},{"key":"rp3","title":"Reading Part 3 · Sarlavhalar","note":"12 ta matn: sarlavha tanlash, tahlil va tarjima bilan","cover":"rp3","xp":15,"sec":"reading","steps":[{"t":"1. The End of Cash? (B1–B2)","l":"mashq.html#d=rp3&x=e1"},{"t":"2. The Second Life of Things (B1–B2)","l":"mashq.html#d=rp3&x=e2"},{"t":"3. The Future of Small Local Shops (B1–B2)","l":"mashq.html#d=rp3&x=e3"},{"t":"4. The Truth About Loyalty Cards (B1–B2)","l":"mashq.html#d=rp3&x=e4"},{"t":"5. Starting a Business from Your Bedroom (B1–B2)","l":"mashq.html#d=rp3&x=e5"},{"t":"6. The Changing World of Shopping (B1–B2)","l":"mashq.html#d=rp3&x=e6"},{"t":"7. The Hidden Science of Prices (B2–C1)","l":"mashq.html#d=rp3&x=e7"},{"t":"8. Living on Subscription (B2–C1)","l":"mashq.html#d=rp3&x=e8"},{"t":"9. The Changing World of Shopping (B2–C1)","l":"mashq.html#d=rp3&x=e9"},{"t":"10. Green Spaces (B2–C1)","l":"mashq.html#d=rp3&x=e10"},{"t":"11. Slow Travel: When Less Can Mean More","l":"mashq.html#d=rp3&x=e11"},{"t":"12. Beyond the Classroom: What School Really Teaches Us","l":"mashq.html#d=rp3&x=e12"}]},{"key":"rp2b1","title":"Reading Part 2 · B1 Pack 1","note":"7 ta mashq: 5 kishi va 8 ta matn, izohlar bilan","cover":"rp2","xp":10,"sec":"reading","steps":[{"t":"1. Department Stores","l":"mashq.html#d=rp2b1&x=e1"},{"t":"2. Art Courses","l":"mashq.html#d=rp2b1&x=e2"},{"t":"3. Film Studios","l":"mashq.html#d=rp2b1&x=e3"},{"t":"4. Reviews of Animated Films","l":"mashq.html#d=rp2b1&x=e4"},{"t":"5. Geography Websites","l":"mashq.html#d=rp2b1&x=e5"},{"t":"6. Beaches","l":"mashq.html#d=rp2b1&x=e6"},{"t":"7. Museums","l":"mashq.html#d=rp2b1&x=e7"}]},{"key":"voc1","title":"Lug‘at · Speaking iboralari","note":"60 ta ibora: tarjima, misollar, Speaking javoblari va 2 ta mashq","cover":"vocab","xp":10,"sec":"vocab","steps":[{"t":"Free Time: Collocations","l":"mashq.html#d=voc1&x=ft1"},{"t":"Free Time: Phrasal verbs","l":"mashq.html#d=voc1&x=ft2"},{"t":"Free Time: Mashq","l":"mashq.html#d=voc1&x=ftx"},{"t":"Character: Adjectives va Idioms","l":"mashq.html#d=voc1&x=cp1"},{"t":"Character: Collocations","l":"mashq.html#d=voc1&x=cp2"},{"t":"Work and Study: Collocations","l":"mashq.html#d=voc1&x=ws1"},{"t":"Work and Study: Phrasal verbs","l":"mashq.html#d=voc1&x=ws2"},{"t":"Work and Study: Mashq","l":"mashq.html#d=voc1&x=wsx"}]},{"key":"wr1","title":"Writing Part 1 · 30 savol","note":"Har bir savolga 1.1 va 1.2 namuna javob (60 ta)","cover":"wr1","xp":5,"sec":"writing","steps":[{"t":"1. School Dormitory Rules","l":"mashq.html#d=wr1&x=q1"},{"t":"2. Earlier Study Room Closing","l":"mashq.html#d=wr1&x=q2"},{"t":"3. Cinema Screening and Ticket Changes","l":"mashq.html#d=wr1&x=q3"},{"t":"4. Museum Exhibition Space","l":"mashq.html#d=wr1&x=q4"},{"t":"5. Library Books and Computer Room","l":"mashq.html#d=wr1&x=q5"},{"t":"6. School Canteen Menu","l":"mashq.html#d=wr1&x=q6"},{"t":"7. Sports Club Booking Policy","l":"mashq.html#d=wr1&x=q7"},{"t":"8. Public Park Facilities","l":"mashq.html#d=wr1&x=q8"},{"t":"9. Language School Class Timetable","l":"mashq.html#d=wr1&x=q9"},{"t":"10. University Shuttle Service","l":"mashq.html#d=wr1&x=q10"},{"t":"11. Community Centre Weekend Activities","l":"mashq.html#d=wr1&x=q11"},{"t":"12. School Playground Redesign","l":"mashq.html#d=wr1&x=q12"},{"t":"13. Swimming Pool Timetable","l":"mashq.html#d=wr1&x=q13"},{"t":"14. Bookshop Reading Events","l":"mashq.html#d=wr1&x=q14"},{"t":"15. College Career Centre","l":"mashq.html#d=wr1&x=q15"},{"t":"16. Museum History Exhibition","l":"mashq.html#d=wr1&x=q16"},{"t":"17. School Mountain Trip","l":"mashq.html#d=wr1&x=q17"},{"t":"18. Cinema Film Festival","l":"mashq.html#d=wr1&x=q18"},{"t":"19. University Career Day","l":"mashq.html#d=wr1&x=q19"},{"t":"20. Community Sports Tournament","l":"mashq.html#d=wr1&x=q20"},{"t":"21. Library Author Workshop","l":"mashq.html#d=wr1&x=q21"},{"t":"22. Outdoor Music Evening","l":"mashq.html#d=wr1&x=q22"},{"t":"23. School Science Fair","l":"mashq.html#d=wr1&x=q23"},{"t":"24. Hotel Guest Experience","l":"mashq.html#d=wr1&x=q24"},{"t":"25. Restaurant Service Review","l":"mashq.html#d=wr1&x=q25"},{"t":"26. School Library Experience","l":"mashq.html#d=wr1&x=q26"},{"t":"27. Fitness Centre Facilities","l":"mashq.html#d=wr1&x=q27"},{"t":"28. Online Learning Platform","l":"mashq.html#d=wr1&x=q28"},{"t":"29. Local Bus Service","l":"mashq.html#d=wr1&x=q29"},{"t":"30. School Sports Day","l":"mashq.html#d=wr1&x=q30"}]},{"key":"wr2","title":"Writing Part 2 · 60 mavzu","note":"15 yo‘nalish, har bir savolga C1 namuna (180–200 so‘z)","cover":"wr2","xp":10,"sec":"writing","steps":[{"t":"1. Education","l":"mashq.html#d=wr2&x=t1"},{"t":"2. Technology","l":"mashq.html#d=wr2&x=t2"},{"t":"3. Environment","l":"mashq.html#d=wr2&x=t3"},{"t":"4. Transport & Cities","l":"mashq.html#d=wr2&x=t4"},{"t":"5. Health & Lifestyle","l":"mashq.html#d=wr2&x=t5"},{"t":"6. Society & Youth","l":"mashq.html#d=wr2&x=t6"},{"t":"7. Culture & Traditions","l":"mashq.html#d=wr2&x=t7"},{"t":"8. Business & Work","l":"mashq.html#d=wr2&x=t8"},{"t":"9. Global Issues","l":"mashq.html#d=wr2&x=t9"},{"t":"10. Art & Media","l":"mashq.html#d=wr2&x=t10"},{"t":"11. Family & Community","l":"mashq.html#d=wr2&x=t11"},{"t":"12. Animals & Nature","l":"mashq.html#d=wr2&x=t12"},{"t":"13. Tourism & Travel","l":"mashq.html#d=wr2&x=t13"},{"t":"14. Food & Consumption","l":"mashq.html#d=wr2&x=t14"},{"t":"15. Work & Future","l":"mashq.html#d=wr2&x=t15"}]},{"key":"soon-ai","soon":true,"title":"Writing · AI tekshiruv","note":"1.1, 1.2 va 2-topshiriqlarni yozasiz, AI tekshirib, xatolarni tushuntiradi","cover":"ai","xp":1,"steps":[{"t":"Tez kunda","l":"soon"}]}];
+const isSoon=a=>!!(a&&a.steps&&a.steps.length===1&&a.steps[0].l==='soon');
+const isExam=l=>/^mashq\.html#(?:.*&)?x=all(?:&|$)/.test(l||'');
+const examDoc=l=>{const m=/^mashq\.html#(?:.*&)?d=([a-z0-9-]+)/.exec(l||'');return m?m[1]:''};
+function examRes(l){if(!isExam(l)||!U||!U.id)return null;try{const x=JSON.parse(store(ST+'mashq:'+U.id+':'+examDoc(l)+':exam')||'null');return (x&&x.r)||null}catch(e){return null}}
+const resText=r=>r?`${r.ok}/${r.of} · ${r.ball} ball · ${r.lv||'B1 dan past'}`:'';
+const SECS=[['mock','Mock testlar'],['reading','Reading'],['listening','Listening'],['writing','Writing'],['vocab','Lug‘at'],['other','Boshqa topshiriqlar']];
+const secOf=t=>t.steps.some(x=>isExam(x.l))?'mock':t.booster?'reading':({reading:'reading',rp3:'reading',rp2:'reading',listening:'listening',vocab:'vocab',wr1:'writing',wr2:'writing',writing:'writing'}[t.cover]||'other');
 function coverArt(a){
   if(a==='wave')return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">${Array.from({length:34},(_,i)=>{const h=8+Math.abs(Math.sin(i*.55)*Math.cos(i*.21))*62;return `<rect x="${i*6}" y="${40-h/2}" width="3" height="${h}" rx="1.5"/>`}).join('')}</svg>`;
   if(a==='lines')return `<svg class="cart cart-r" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMid meet" aria-hidden="true"><rect x="70" y="4" width="110" height="74" rx="6" fill="none" stroke-width="3"/>${Array.from({length:7},(_,i)=>`<rect x="${i%3?90:84}" y="${14+i*9}" width="${60+((i*29)%30)}" height="3" rx="1.5"/>`).join('')}</svg>`;
@@ -1383,8 +1418,8 @@ function tracks(p){
   const b={aid:BOOSTER_AID,title:'Reading Part 1 Booster',sub:'30 ta matn, har birida A–E mashqlari',booster:true,cover:'booster',
     steps:Array.from({length:BOOSTER_TESTS},(_,i)=>{const t=st.tests[i+1];const done=!!(t&&t.kwt&&t.res);
       return{t:'Test '+(i+1),done,score:t&&t.res?t.res.score:null,xp:done?bxp(p,t.res.score):null,pack:Math.floor(i/10)+1}})};
-  const own=(p.assignments||[]).filter(mineA).map(a=>({aid:a.aid,title:a.title,sub:a.note||'',xpEach:a.xp,cover:a.cover||'',
-    steps:a.steps.map((s,i)=>({t:s.t||('Bosqich '+(i+1)),l:s.l,done:((p.progress||{})[a.aid+':'+i])==='done',xp:a.xp}))}));
+  const own=(p.assignments||[]).filter(mineA).filter(a=>!isSoon(a)).map(a=>({aid:a.aid,title:a.title,sub:a.note||'',xpEach:a.xp,cover:a.cover||'',
+    steps:a.steps.map((s,i)=>({t:s.t||('Bosqich '+(i+1)),l:s.l,done:((p.progress||{})[a.aid+':'+i])==='done',xp:a.xp,info:((p.info||{})[a.aid+':'+i])||''}))}));
   return (G3?own:[b,...own]).map(t=>{const d=t.steps.filter(s=>s.done).length;const cur=t.steps.findIndex(s=>!s.done);return{...t,done:d,total:t.steps.length,cur,finished:d===t.steps.length}});
 }
 
@@ -1408,9 +1443,12 @@ function stNav(tab){return `<nav class="stnav two" aria-label="Bo‘limlar">${ST
 function drawMe(){
   const tab=ui.stab;
   if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);
-    const pd=ui.pendingDone;if(pd&&pd.aid===t.aid){ui.pendingDone=null;const st=t.steps[pd.i];if(st&&!st.done&&!t.booster&&pd.i===t.cur)stepMark(P,t,pd.i,'done')}return}
+    const pd=ui.pendingDone;if(pd&&pd.aid===t.aid){ui.pendingDone=null;const st=t.steps[pd.i];
+      if(st&&!st.done&&!t.booster&&pd.i===t.cur){if(isExam(st.l)&&!examRes(st.l))toast('Avval testni oxirigacha ishlang');else stepMark(P,t,pd.i,'done')}
+      else if(st&&st.done&&isExam(st.l)){const inf=resText(examRes(st.l));if(inf&&inf!==st.info){P.info=P.info||{};P.info[t.aid+':'+pd.i]=inf;store(ST+'p:'+U.id,JSON.stringify(P));cpost({action:'mark',id:U.id,t:U.t,aid:t.aid+':'+pd.i,status:'done',info:inf}).catch(()=>{})}}}return}
   view().innerHTML=`<div class="wrap st anim">${tab==='liga'?ligaHTML(P):homeHTML(P)}</div>`+stNav(tab);
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
+  document.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')});
   const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
 }
 function myRank(p){const rows=p.board||[];const me=rows.find(r=>r.me);if(!me)return null;const better=rows.filter(r=>r.t>me.t);return{me,n:rows.length,gap:better.length?Math.min(...better.map(r=>r.t))-me.t:0}}
@@ -1426,13 +1464,18 @@ function homeHTML(p){
       <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
   </a>
   ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
-  <h2 class="sech">Topshiriqlar</h2>
-  <div class="tgrid">${T.map((t,i)=>`<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
+  ${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
+  <div class="tgrid">${ts.map(t=>{const i=T.indexOf(t);return `<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
       ${coverHTML(t.cover,i,`<span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}`)}
       <div class="tbody"><b>${esc(t.title)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:''}
         <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
         <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
-    </button>`).join('')}</div>`;
+    </button>`}).join('')}</div>`).join('')}
+  ${(()=>{const sn=(p.assignments||[]).filter(mineA).filter(isSoon);return sn.length?`<h2 class="sech">Tez kunda</h2>
+  <div class="tgrid">${sn.map((a,i)=>`<button class="tcard soon" data-soon="1">
+      ${coverHTML(a.cover,i+7,`<span class="tnum">${IC.lock}</span><span class="tbadge">Tez kunda</span>`)}
+      <div class="tbody"><b>${esc(a.title)}</b>${a.note?`<small>${esc(a.note)}</small>`:''}<span class="tgo">Tez kunda ochiladi</span></div>
+    </button>`).join('')}</div>`:''})()}`;
 }
 function podium(rows){
   const top=rows.filter(r=>r.r<=3&&r.t>0).slice(0,3);if(!top.length)return '';
@@ -1478,6 +1521,7 @@ function layoutMap(p,t){
   const fin=t.finished;
   html+=`<button class="mnode goal ${fin?'done':'lock'}" data-goal="1" style="left:${cx}px;top:${endY}px" aria-label="Sertifikat">${IC.trophy}<span class="mlbl">${fin?'Sertifikat':'Oxirida: sertifikat'}</span></button>`;
   box.style.height=(endY+110)+'px';box.style.width=W+'px';box.innerHTML=html;
+  const bx=box.getBoundingClientRect();box.querySelectorAll('.mlbl').forEach(l=>{const r=l.getBoundingClientRect();const dx=r.left<bx.left+2?bx.left+2-r.left:r.right>bx.right-2?bx.right-2-r.right:0;if(dx)l.style.transform=`translateX(calc(-50% + ${Math.round(dx)}px))`});
 }
 function bindMap(p,t){
   bindSnd();layoutMap(p,t);
@@ -1503,11 +1547,11 @@ function openSheet(p,t,i){
     body=`<div class="shk">${n}-test · ${s.pack}-to‘plam</div><h3>Reading Part 1, Test ${n}</h3>
       <p class="muted">${s.done?`Bajarilgan: o‘qish ${s.score}/6, ${s.xp} XP. Xohlasangiz qayta ishlashingiz mumkin.`:`Matnni o‘qing, bo‘sh joylarni to‘ldiring, so‘ng A–E mashqlarini bajaring. Tugatsangiz ${bxp(p,0)}–${bxp(p,6)} XP olasiz.`}</p>
       <div class="shb"><a class="btn red big block" href="${esc(boosterLink(p,n))}" id="shGo">${s.done?'Qayta ishlash':'Boshlash'}</a></div>`}
-  else{
-    body=`<div class="shk">${i+1}-bosqich / ${t.total}</div><h3>${esc(s.t)}</h3>
-      <p class="muted">${s.done?'Bu bosqich bajarilgan.':`Topshiriqni oching, bajaring va qaytib “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
-      <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(stepHref(s.l,t.aid,i))}" ${/^(viewer|mashq)\.html/.test(s.l)?'':'target="_blank" rel="noopener"'} id="shOpen">Ochish</a>`:''}
-        ${s.done?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
+  else{const ex=isExam(s.l),er=ex?examRes(s.l):null,inf=er?resText(er):s.info;
+    body=`<div class="shk">${ex?'Mock test · bitta o‘tirishda':`${i+1}-bosqich / ${t.total}`}</div><h3>${esc(s.t)}</h3>
+      <p class="muted">${s.done?'Bu bosqich bajarilgan.'+(inf?' Natija: '+esc(inf)+'.':''):ex?`Barcha qismlar bitta testda, vaqt to‘xtamaydi. Testni yakunlab, natija sahifasida “Bajardim”ni bossangiz ${t.xpEach} XP va sertifikat olasiz.`:`Topshiriqni oching, bajaring va qaytib “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
+      <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(stepHref(s.l,t.aid,i))}" ${/^(viewer|mashq)\.html/.test(s.l)?'':'target="_blank" rel="noopener"'} id="shOpen">${ex?(s.done||er?'Natijani ko‘rish':'Testni ochish'):'Ochish'}</a>`:''}
+        ${s.done||ex?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
   sh.innerHTML=`<div class="grab"></div>${body}<button class="btn ghost block" id="shClose">Yopish</button>`;
   sh.classList.add('on');sh.setAttribute('aria-hidden','false');bg.classList.remove('hide');
   const close=()=>{sh.classList.remove('on');sh.setAttribute('aria-hidden','true');bg.classList.add('hide')};
@@ -1522,8 +1566,9 @@ async function stepMark(p,t,i,status){
   P.progress=P.progress||{};P.progress[aid]=status;
   if(status==='done'){P.xp.A+=t.xpEach;P.xp.an++;P.xp.T+=t.xpEach;const me=(P.board||[]).find(r=>r.me);if(me)me.t=P.xp.T}
   store(ST+'p:'+U.id,JSON.stringify(P));
+  const info=status==='done'?resText(examRes(t.steps[i].l)):'';if(info){P.info=P.info||{};P.info[aid]=info;store(ST+'p:'+U.id,JSON.stringify(P))}
   if(status==='done')drawMe();
-  try{await cpost({action:'mark',id:U.id,t:U.t,aid,status});if(status==='done')lastFetch=0}catch(e){}
+  try{await cpost(Object.assign({action:'mark',id:U.id,t:U.t,aid,status},info?{info}:{}));if(status==='done')lastFetch=0}catch(e){}
 }
 
 /* ---------- certificate (PNG to keep or share) ---------- */
@@ -1546,8 +1591,9 @@ async function certificate(p,t){
   x.fillStyle='#E3101F';x.fillRect(W/2-260,785,520,6);
   x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('ga',W/2,860);
   x.fillStyle='#141B2D';x.font=F(800,58);x.fillText(`“${t.title}”`,W/2,950);
-  x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('dasturini to‘liq tugatgani uchun beriladi.',W/2,1020);
-  const stats=t.booster?[`${BOOSTER_TESTS} test`,`O‘qish aniqligi ${st.acc||0}%`,`${t.steps.reduce((a,b)=>a+(b.xp||0),0)} XP`]:[`${t.total} bosqich`,`${t.total*t.xpEach} XP`];
+  const ex=!t.booster&&t.total===1&&isExam(t.steps[0].l);const inf=ex?(resText(examRes(t.steps[0].l))||t.steps[0].info||''):'';const ip=inf.split(' · ');
+  x.fillStyle='#5A6378';x.font=F(500,44);x.fillText(ex?'sinov imtihonini to‘liq topshirgani uchun beriladi.':'dasturini to‘liq tugatgani uchun beriladi.',W/2,1020);
+  const stats=t.booster?[`${BOOSTER_TESTS} test`,`O‘qish aniqligi ${st.acc||0}%`,`${t.steps.reduce((a,b)=>a+(b.xp||0),0)} XP`]:ex&&ip.length===3?[`To‘g‘ri javoblar: ${ip[0]}`,ip[1],/^[ABC]\d$/.test(ip[2])?ip[2]+' daraja':ip[2]]:[`${t.total} bosqich`,`${t.total*t.xpEach} XP`];
   x.fillStyle='#141B2D';x.font=F(700,40);x.fillText(stats.join('   ·   '),W/2,1105);
   x.textAlign='left';x.fillStyle='#141B2D';x.font=F(800,44);x.fillText("A'zamjon Toxirov",150,1250);
   x.fillStyle='#5A6378';x.font=F(500,34);x.fillText('C1 o‘qituvchi, EDUNEST Academy',150,1298);
@@ -1577,7 +1623,7 @@ function groupRank(group){
   rows.forEach((r,i)=>{r.r=i&&rows[i-1].o.T===r.o.T?rows[i-1].r:i+1});return rows;
 }
 function tRows(){
-  const as=TD.assignments.filter(a=>!a.hidden);const rk={};
+  const as=TD.assignments.filter(a=>!a.hidden&&!isSoon(a));const rk={};
   [...new Set(TD.roster.map(s=>s.group))].forEach(g=>groupRank(g).forEach(r=>rk[r.s.id]=r.r));
   return TD.roster.map(s=>{const b=TD.booster[s.id]||{};const pr=TD.progress[s.id]||{};
     const mine=as.filter(a=>forGroup(a,s.group));const stot=mine.reduce((n,a)=>n+a.steps.length,0);
@@ -1698,7 +1744,18 @@ function tAssign(){
     const st=who.filter(x=>a.steps.some((_,i)=>pr(x.s.id)[a.aid+':'+i])).length;return{tot:who.length,fin,st}};
   const bRows=rows.filter(x=>x.s.type!=='guest');
   ui.steps=ui.steps||[{t:'',l:''}];
-  $('#tBody').innerHTML=`<div class="card sec">
+  const pub=c=>TD.assignments.find(a=>a.steps[0]&&a.steps[0].l===c.steps[0].l&&(!c.soon||a.title===c.title));
+  const libHTML=G3?'':`<div class="card sec lib">
+    <h3>Tayyor materiallar</h3>
+    <p class="muted" style="font-size:14px;margin:4px 0 10px">Saytga yuklangan materiallar. “E’lon qilish”ni bossangiz, o‘quvchilar sahifasida xarita bo‘lib chiqadi. Keyin pastdagi ro‘yxatdan yashirish yoki o‘chirish mumkin.</p>
+    <div class="field"><label>Kimlarga e’lon qilinsin</label><div class="gchips">${[...GROUPS.filter(g=>g!=='GUEST'),'ALL'].map(g=>`<button class="lgchip gchip ${g==='ALL'?'':'on'}" data-lg="${g}">${g==='ALL'?'Hammaga (mehmonlar ham)':g}</button>`).join('')}</div></div>
+    <div class="liblist">${LIB.map((c,i)=>{const a=pub(c),cv=COVERS[c.cover]||{c1:'#141B2D',c2:'#E3101F'};return `<div class="libitem ${a?'on':''}">
+      <span class="libsw" style="--c1:${cv.c1};--c2:${cv.c2}">${c.soon?'⏳':c.steps.length}</span>
+      <div class="libtx"><b>${esc(c.title)}</b><small>${c.soon?'“Tez kunda” kartasi: o‘quvchilar ko‘radi, lekin ochilmaydi':`${c.steps.length} bosqich · har biri ${c.xp} XP`} · ${esc(c.note)}</small>${c.soon?'':`<a class="liblink" href="${esc(c.steps.length>1?'mashq.html#d='+examDoc(c.steps[0].l):c.steps[0].l)}" target="_blank" rel="noopener">Ko‘rib chiqish →</a>`}</div>
+      ${a?`<span class="tag ok">${a.hidden?'E’lon qilingan (yashirilgan)':'✓ E’lon qilingan'}</span>`:`<button class="btn red libpub" data-lib="${i}">E’lon qilish</button>`}</div>`}).join('')}</div>
+    ${LIB.some(c=>!pub(c))?`<button class="btn ghost" id="libAll" style="margin-top:12px">Hammasini e’lon qilish</button>`:''}
+  </div>`;
+  $('#tBody').innerHTML=libHTML+`<div class="card sec">
     <h3>Yangi topshiriq (xarita)</h3>
     <p class="muted" style="font-size:14px;margin:4px 0 6px">Har bir bosqich o‘quvchi xaritasida bitta nuqta bo‘ladi. Bosqichlar ketma-ket ochiladi.</p>
     <div class="agrid">
@@ -1711,17 +1768,18 @@ function tAssign(){
       <div class="field"><label for="aX">Har bir bosqich uchun XP</label><input id="aX" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
       <div class="field"><label>Kimlarga</label><div class="gchips">${['ALL',...GROUPS].map(g=>`<button class="gchip ${g==='ALL'?'on':''}" data-g="${g}">${g==='ALL'?'Hammaga':g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
     </div>
-    <div class="field"><label>Banner</label><div class="cvchips">${Object.entries(COVERS).filter(([k])=>k!=='booster'&&(G3||!/^(u4|rc)/.test(k))).map(([k,c],j)=>`<button class="cvchip ${j?'':'on'}" data-cv="${k}" style="--c1:${c.c1};--c2:${c.c2}">${c.l}</button>`).join('')}</div></div>
+    <div class="field"><label>Banner</label><div class="cvchips">${Object.entries(COVERS).filter(([k])=>k!=='booster'&&(G3?!/^(rp|wr|ai)/.test(k):!/^(u4|rc)/.test(k))).map(([k,c],j)=>`<button class="cvchip ${j?'':'on'}" data-cv="${k}" style="--c1:${c.c1};--c2:${c.c2}">${c.l}</button>`).join('')}</div></div>
+    <label class="soonopt"><input type="checkbox" id="aSoon"><span><b>“Tez kunda” kartasi</b><small>O‘quvchilar ko‘radi, lekin ochilmaydi. Bosqichlar kerak emas.</small></span></label>
     <button class="btn red big" id="aAdd" style="margin-top:14px">E’lon qilish</button>
   </div>
   <h2 class="sech">Barcha topshiriqlar</h2>
   <div class="alist">
     <div class="card asg main ${G3?'hide':''}"><div class="aic">📖</div><div class="atx"><div class="at">Reading Part 1 Booster</div><div class="as">30 bosqich, har doim hammaga ko‘rinadi. XP avtomatik.</div>
       <div><span class="tag ok">${bRows.filter(x=>x.done>=BOOSTER_TESTS).length}/${bRows.length} tugatdi</span> <span class="tag">${bRows.filter(x=>x.done).length} boshladi</span></div></div></div>
-    ${TD.assignments.slice().reverse().map(a=>{const c=cnt(a);return `<div class="card asg ${a.hidden?'hid':''}">
-    <div class="aic">${a.hidden?'🙈':'🗺️'}</div>
-    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${a.steps.length} bosqich, har biri ${a.xp} XP, ${esc(a.groups==='ALL'?'hammaga':a.groups)}${a.note?', '+esc(a.note):''}</div>
-      <div><span class="tag ok">${c.fin}/${c.tot} tugatdi</span> <span class="tag">${c.st} boshladi</span></div></div>
+    ${TD.assignments.slice().reverse().map(a=>{const c=cnt(a),sn=isSoon(a);return `<div class="card asg ${a.hidden?'hid':''}">
+    <div class="aic">${a.hidden?'🙈':sn?'⏳':'🗺️'}</div>
+    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${sn?'“Tez kunda” kartasi':`${a.steps.length} bosqich, har biri ${a.xp} XP`}, ${esc(a.groups==='ALL'?'hammaga':a.groups)}${a.note?', '+esc(a.note):''}</div>
+      ${sn?'':`<div><span class="tag ok">${c.fin}/${c.tot} tugatdi</span> <span class="tag">${c.st} boshladi</span></div>`}</div>
     <div class="abtns"><button class="btn ghost" data-hide="${a.aid}" data-h="${a.hidden?0:1}">${a.hidden?'Ko‘rsatish':'Yashirish'}</button><button class="btn ghost" data-del="${a.aid}" aria-label="O‘chirish">🗑</button></div>
   </div>`}).join('')}</div>`;
   const sync=()=>{ui.steps=[...document.querySelectorAll('.steprow')].map(r=>({t:r.querySelector('.stT').value,l:r.querySelector('.stL').value}))};
@@ -1730,12 +1788,23 @@ function tAssign(){
   document.querySelectorAll('.cvchip').forEach(b=>b.onclick=()=>document.querySelectorAll('.cvchip').forEach(x=>x.classList.toggle('on',x===b)));
   $('#stList').onclick=e=>{const b=e.target.closest('.stX');if(!b)return;sync();ui.steps.splice(+b.closest('.steprow').dataset.k,1);if(!ui.steps.length)ui.steps=[{t:'',l:''}];redraw()};
   $('#stAdd').onclick=()=>{sync();ui.steps.push({t:'',l:''});redraw();const r=document.querySelectorAll('.steprow');r[r.length-1].querySelector('.stT').focus()};
-  document.querySelectorAll('.gchip').forEach(b=>b.onclick=()=>{const all=b.dataset.g==='ALL';
-    document.querySelectorAll('.gchip').forEach(x=>{if(all)x.classList.toggle('on',x===b);else if(x.dataset.g==='ALL')x.classList.remove('on')});
-    if(!all)b.classList.toggle('on');if(!document.querySelector('.gchip.on'))document.querySelector('.gchip[data-g="ALL"]').classList.add('on')});
+  const chips=(sel,attr)=>document.querySelectorAll(sel).forEach(b=>b.onclick=()=>{const all=b.dataset[attr]==='ALL';
+    document.querySelectorAll(sel).forEach(x=>{if(all)x.classList.toggle('on',x===b);else if(x.dataset[attr]==='ALL')x.classList.remove('on')});
+    if(!all)b.classList.toggle('on');if(!document.querySelector(sel+'.on'))document.querySelector(sel+'[data-'+attr+'="ALL"]').classList.add('on')});
+  chips('.gchip[data-g]','g');chips('.lgchip','lg');
+  const libPub=async list=>{const g=[...document.querySelectorAll('.lgchip.on')].map(x=>x.dataset.lg).join(',')||'ALL';
+    document.querySelectorAll('.libpub,#libAll').forEach(b=>b.disabled=true);let n=0;
+    try{for(const c of list){const j=await cpost({action:'addAssign',key:U.pass,title:c.title,note:c.note,steps:c.steps,xp:c.xp,groups:g,cover:c.cover});if(!j.ok)throw 0;n++;
+        if(c.steps.some(x=>isExam(x.l))){const d=examDoc(c.steps[0].l);const old=TD.assignments.filter(a=>!a.hidden&&a.steps.length>1&&a.steps.every(x=>examDoc(x.l)===d&&!isExam(x.l)));
+          for(const o of old)await cpost({action:'editAssign',key:U.pass,aid:o.aid,hidden:true})}}
+      toast(n>1?n+' ta material e’lon qilindi':'E’lon qilindi')}catch(e){toast(n?n+' tasi e’lon qilindi, qolgani chiqmadi. Qayta urining.':'E’lon qilinmadi. Qayta urining.')}
+    TD=null;try{await loadT()}catch(e){}teacherHome('assign')};
+  document.querySelectorAll('.libpub').forEach(b=>b.onclick=()=>libPub([LIB[+b.dataset.lib]]));
+  const la=$('#libAll');if(la)la.onclick=()=>{const todo=LIB.filter(c=>!pub(c));modal(`<h3>${todo.length} ta materialni e’lon qilasizmi?</h3><p class="muted" style="margin-top:6px">${todo.map(c=>esc(c.title)).join(', ')}.</p>`,[{t:'Bekor qilish'},{t:'E’lon qilish',cls:'red',f:()=>libPub(todo)}])};
   $('#aAdd').onclick=async()=>{sync();const t=$('#aT').value.trim();if(!t){toast('Nomini yozing');$('#aT').focus();return}
-    const steps=ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
-    const g=[...document.querySelectorAll('.gchip.on')].map(x=>x.dataset.g).join(',');
+    const soon=$('#aSoon').checked;
+    const steps=soon?[{t:'Tez kunda',l:'soon'}]:ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l)&&!/^(mashq|viewer)\.html#/.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
+    const g=[...document.querySelectorAll('.gchip[data-g].on')].map(x=>x.dataset.g).join(',')||'ALL';
     $('#aAdd').disabled=true;$('#aAdd').textContent='E’lon qilinmoqda…';
     const cover=(document.querySelector('.cvchip.on')||{}).dataset?.cv||'';
     try{const j=await cpost({action:'addAssign',key:U.pass,title:t,note:$('#aN').value.trim(),steps,xp:+$('#aX').value||10,groups:g,cover});if(!j.ok)throw 0;
@@ -1760,7 +1829,7 @@ async function teacherStudent(id){
       ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}</div>
     <h2 class="sech">Topshiriqlar</h2>
     <div class="alist">${T.map(t=>`<div class="card asg ${t.booster?'main':''}"><div class="aic">${t.finished?'🏆':t.booster?'📖':'🗺️'}</div>
-      <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP</div>
+      <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP${t.steps.filter(x=>x.info).map(x=>' · Natija: '+esc(x.info)).join('')}</div>
       <div class="dots">${t.steps.map(s=>`<i class="${s.done?'on':''}" title="${esc(s.t)}"></i>`).join('')}</div></div></div>`).join('')}</div>
     ${st.read?`<h2 class="sech">Booster natijalari</h2><div class="card sec">${testBars(st)}</div>`:''}
     <a class="btn navy big ${G3?'hide':''}" style="margin-top:16px" href="${BOOSTER_URL}" target="_blank" rel="noopener">Booster bo‘yicha batafsil hisobot</a></div>`;

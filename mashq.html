@@ -142,6 +142,112 @@ main{max-width:1240px;margin:0 auto;padding:14px 12px 130px}
 @keyframes s{to{transform:rotate(360deg)}}
 @media(max-width:520px){main{padding:10px 8px 130px}.paper{padding:16px 14px 20px;border-radius:16px}.bar .ttl span{display:none}}
 @media(prefers-reduced-motion:reduce){.spin{animation:none}}
+
+[hidden]{display:none!important}
+textarea{-webkit-user-select:text;user-select:text;font-family:inherit}
+.side li span b{display:block;margin-bottom:3px;font-size:1.02em}
+.nt{margin-top:12px;padding:11px 13px;border-radius:12px;background:#FFF7DB;border-left:4px solid #E0A800;font-size:calc(var(--fs) - 2px);line-height:1.52}
+.nt .k{display:inline-block;margin:0 8px 4px 0;padding:2px 9px;border-radius:7px;background:#7A5A00;color:#fff;font-size:.8em;font-weight:800;white-space:nowrap}
+.nt i{font-style:italic;font-weight:600}
+.after{margin-top:12px}
+.after h3{margin:22px 0 8px;font-size:1.02em;font-weight:800;color:var(--red2);padding-top:16px;border-top:2px solid var(--mist)}
+.after h3:first-child{margin-top:0;padding-top:0;border-top:0}
+.after h4{margin:0 0 8px;font-size:1.05em;font-weight:800;text-align:center}
+.after p{font-size:calc(var(--fs) - 1.5px)}
+.trl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.trl li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:12px;background:var(--mist);font-size:calc(var(--fs) - 2px);line-height:1.4}
+.trl li i{font-style:normal;flex:none;width:26px;height:26px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.trl li span b{display:block}.trl li span em{font-style:normal;color:var(--slate)}
+.vl{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
+.vl div{padding:8px 11px;border-radius:12px;background:var(--mist);font-size:calc(var(--fs) - 2px);line-height:1.35}
+.vl b{display:block}.vl span{color:var(--slate)}
+
+/* vocabulary cards */
+.vtools{display:flex;gap:8px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.vtools button{min-height:46px;padding:0 16px;border-radius:13px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:800;font-size:14.5px;cursor:pointer}
+.vtools button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.vtools span{font-size:13.5px;color:var(--slate);font-weight:600}
+.vgrid{display:grid;gap:12px}
+@media(min-width:900px){.vgrid{grid-template-columns:1fr 1fr;align-items:start}}
+.vc{padding:0;overflow:hidden}
+.vc header{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--ink);color:#fff}
+.vc header .num{background:var(--red)}
+.vc header h3{margin:0;flex:1;min-width:0;font-size:1.12em;line-height:1.2;font-weight:800}
+.vc header em{flex:none;font-style:normal;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.14);white-space:nowrap}
+.vc .vb{padding:14px 16px 16px}
+.vc .tr{margin:0 0 6px;font-weight:800;color:var(--red2);font-size:1.02em;line-height:1.35}
+.vc .df{margin:0 0 10px;font-size:.92em;color:var(--slate);line-height:1.45}
+.vc .df b{color:var(--ink);font-weight:700}
+.vc ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:9px;counter-reset:e}
+.vc ol li{counter-increment:e;position:relative;padding-left:26px;line-height:1.45}
+.vc ol li::before{content:counter(e);position:absolute;left:0;top:2px;width:19px;height:19px;border-radius:6px;background:var(--mist);font-size:11.5px;font-weight:800;display:grid;place-items:center}
+.vc ol li b{background:#FFF1B8;border-radius:4px;padding:0 3px}
+.vc .uz{display:block;margin-top:2px;color:var(--slate);font-size:.9em;font-style:italic;line-height:1.4}
+.vc .sp{margin-top:14px;padding:12px 13px;border-radius:14px;background:var(--mist)}
+.vc .sp .spk{display:block;font-size:12px;font-weight:800;color:#8A6400;letter-spacing:.03em;margin-bottom:5px}
+.vc .sp p{margin:0 0 5px;line-height:1.45}
+.vc .sp p.sq{font-weight:800}
+.vc .sp p b{background:#FFF1B8;border-radius:4px;padding:0 3px}
+.hideuz .uz,.hideuz .tr{filter:blur(6px);cursor:pointer;transition:filter .15s}
+.hideuz .uz.show,.hideuz .tr.show{filter:none}
+
+/* writing */
+.wwrap{max-width:860px;margin:0 auto}
+.wsit{font-weight:700;margin:0 0 12px!important}
+.whint{margin:14px 4px 0;font-size:13.5px;color:var(--slate);text-align:center}
+.mail{border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;background:#FAFBFD}
+.mail p{margin:0 0 .8em;white-space:pre-line}.mail p:last-child{margin:0}
+.wt{margin-top:12px}
+.wt .wh{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.wt .tag{flex:none;padding:5px 10px;border-radius:9px;background:var(--ink);color:#fff;font-weight:800;font-size:13px;white-space:nowrap;margin-top:1px}
+.wt .wq{font-weight:700;line-height:1.45}
+.wt textarea{display:block;width:100%;min-height:150px;padding:12px 13px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:max(16px,.95em);line-height:1.5;resize:vertical}
+.wt textarea:focus{outline:2px solid var(--ink);outline-offset:1px}
+.wbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 0;font-size:13.5px;color:var(--slate);font-weight:600}
+.wbar .wc{padding:3px 10px;border-radius:999px;background:var(--mist);color:var(--ink);font-weight:800}
+.wbar .wc.in{background:var(--okbg);color:var(--ok)}
+.wbar .ai{margin-left:auto;padding:3px 10px;border-radius:999px;border:1.5px dashed #b9c1d3;font-weight:700;font-size:12.5px}
+.model{margin-top:12px;border-radius:14px;border:1.5px solid #BFE3CD;background:#F3FBF6;padding:14px 16px}
+.model .mh{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;font-size:13px;font-weight:800}
+.model .mh span:first-child{color:var(--ok)}.model .mh span:last-child{color:var(--slate)}
+.model p{margin:0 0 .8em;white-space:pre-line}.model p:last-child{margin:0}
+
+/* one-sitting mock exam */
+.xtabs{position:sticky;top:var(--bar);z-index:29;display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.xtabs::-webkit-scrollbar{display:none}
+.xtabs button{flex:none;min-width:54px;height:46px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:800;font-size:14px;cursor:pointer;line-height:1.1}
+.xtabs button small{display:block;font-size:11px;font-weight:700;color:var(--slate)}
+.xtabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}.xtabs button.on small{color:#cfd5e3}
+.xtabs button.full:not(.on){border-color:var(--ok)}.xtabs button.full:not(.on) small{color:var(--ok)}
+.xtabs .xend{margin-left:auto;border-color:var(--red);color:var(--red)}
+.xtm{flex:none;display:inline-flex;align-items:center;height:42px;padding:0 12px;border-radius:11px;background:var(--ink);color:#fff;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.xtm.low{background:var(--red)}
+body.exam main{padding-top:12px}
+@media(min-width:960px){body.exam main{padding-bottom:96px}body.exam .grid.split>.col{position:static;max-height:var(--xh,60vh)}}
+.xin{max-width:560px;margin:26px auto;background:#fff;border-radius:22px;padding:26px 22px;text-align:center}
+.xin h2{margin:0 0 4px;font-size:24px;line-height:1.2}.xin .sub{color:var(--slate);margin:0 0 18px;font-weight:600}
+.xin .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 18px}
+.xin .facts div{background:var(--mist);border-radius:14px;padding:12px 6px}
+.xin .facts b{display:block;font-size:24px;line-height:1.1}.xin .facts span{font-size:12.5px;color:var(--slate);font-weight:700}
+.xin ul{text-align:left;margin:0 0 20px;padding:0 0 0 20px;line-height:1.55;color:#2b3550;font-size:15.5px}
+.xin ul li{margin-bottom:4px}
+.xbtn{display:block;width:100%;min-height:58px;border:0;border-radius:16px;background:var(--red);color:#fff;font-size:17px;font-weight:800;cursor:pointer}
+.xbtn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line);margin-top:8px}
+.xbtn.txt{background:none;color:var(--slate);min-height:44px;font-size:14.5px;margin-top:6px}
+.xres .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.xres .tiles div{background:var(--ink);color:#fff;border-radius:16px;padding:14px 6px}
+.xres .tiles div.lv{background:var(--red)}
+.xres .tiles b{display:block;font-size:28px;line-height:1.1}.xres .tiles span{font-size:12.5px;font-weight:700;opacity:.85}
+.xres table{width:100%;border-collapse:collapse;margin:0 0 12px;font-size:15px;text-align:left}
+.xres td{padding:9px 6px;border-bottom:1px solid var(--line)}.xres td:last-child{text-align:right;font-weight:800;white-space:nowrap}
+.xres .lg{font-size:13px;color:var(--slate);margin:0 0 16px}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(20,27,45,.55);display:grid;place-items:center;padding:16px}
+.ov .md{width:100%;max-width:420px;background:#fff;border-radius:20px;padding:22px}
+.ov h3{margin:0 0 6px;font-size:20px}.ov p{margin:0 0 16px;color:var(--slate);line-height:1.5}
+.ov .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ov .row2 button{min-height:54px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:800;font-size:16px;cursor:pointer}
+.ov .row2 button.red{background:var(--red);border-color:var(--red);color:#fff}
+@media(max-width:520px){.xin{margin:10px auto;padding:22px 16px}.bar .fs.xhide{display:none}}
 @media print{body{display:none!important}}
 </style>
 </head>
@@ -157,8 +263,9 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const H=Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
-document.addEventListener('contextmenu',e=>{if(e.target.tagName!=='INPUT')e.preventDefault()});
-document.addEventListener('copy',e=>{if(document.activeElement.tagName!=='INPUT')e.preventDefault()});
+const own=e=>/^(INPUT|TEXTAREA)$/.test((e&&e.tagName)||'');
+document.addEventListener('contextmenu',e=>{if(!own(e.target))e.preventDefault()});
+document.addEventListener('copy',e=>{if(!own(document.activeElement))e.preventDefault()});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&/^[spu]$/i.test(e.key))e.preventDefault()});
 
 let SESSION=null;try{SESSION=JSON.parse(ls(ST+'session')||'null')}catch(e){}
@@ -181,14 +288,15 @@ async function load(name){const r=await fetch(name+'.bin',{cache:'no-cache'});if
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’‘`]/g,"'").replace(/[£$€]/g,'').replace(/[.,;:!?]+$/,'').replace(/\bcan't\b/g,'cannot').replace(/won't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ve\b/g,' have').replace(/'re\b/g,' are').replace(/'m\b/g,' am').replace(/'ll\b/g,' will').replace(/\s+/g,' ').trim();
 const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 
-let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null;
-const key=()=>ST+'mashq:'+UID+':'+H.d+':'+SEC.id;
-function save(){lset(key(),JSON.stringify({a:ANS,r:DONE}))}
-function restore(){let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}ANS=(s&&s.a)||{};DONE=(s&&s.r)||null}
+const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>');
+let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null,EX=null,WR={};
+const key=()=>ST+'mashq:'+UID+':'+H.d+':'+(EX?'exam':SEC.id);
+function save(){if(EX){lset(key(),JSON.stringify({a:ANS,t0:EX.t0,part:EX.part,r:EX.r}));return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR}))}
+function restore(){let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}ANS=(s&&s.a)||{};DONE=(s&&s.r)||null;WR=(s&&s.w)||{}}
 
 function gapHTML(n){return `<span class="gapw" data-q="${n}"><span class="num">${n}</span><input class="gap" data-n="${n}" aria-label="Savol ${n}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next"></span>`}
 const fillGaps=x=>esc(x).replace(/\{\{(\d+)(?::([^}]+))?\}\}/g,(_,n,o)=>o?`<span class="gapw" data-q="${n}"><span class="num">${n}</span><span class="pick in"><select data-n="${n}" aria-label="Savol ${n}"><option value="">…</option>${o.split('|').map(v=>`<option>${v}</option>`).join('')}</select></span></span>`:gapHTML(n));
-function sizeGaps(){document.querySelectorAll('input.gap').forEach(i=>{const a=(SEC.ans[i.dataset.n]||[''])[0];const L=Math.max(5,Math.min(30,a.length+2));i.style.width=L*.62+'em'})}
+function sizeGaps(){document.querySelectorAll('input.gap').forEach(i=>{if(SEC.gapw){i.style.width=SEC.gapw+'em';return}const a=(SEC.ans[i.dataset.n]||[''])[0];const L=Math.max(5,Math.min(30,a.length+2));i.style.width=L*.62+'em'})}
 function pickHTML(n){const o=SEC.sel[n];if(!o)return '';const side=(SEC.side&&SEC.side.items)||[];
   return `<span class="pick"><select data-n="${n}" aria-label="Savol ${n} uchun javob"><option value="">Tanlang</option>${o.map(L=>{const t=(side.find(s=>s[0]===L)||[])[1]||'';return `<option value="${L}">${L}${t?' — '+esc(t.length>58?t.slice(0,56)+'…':t):''}</option>`}).join('')}</select></span>`}
 
@@ -199,7 +307,7 @@ function blockHTML(b){
   if(b.t==='sub')return `<h3 class="sub">${esc(b.x)}</h3>`;
   if(b.t==='ex')return `<div class="row exm"><b>Namuna</b>${esc(b.x)}</div>`;
   if(b.t==='chips')return `<div class="chips">${b.x.map(w=>w[0]==='~'?`<s>${esc(w.slice(1))}</s>`:`<span>${esc(w)}</span>`).join('')}</div>`;
-  if(b.t==='box')return `<div class="box" data-q="${b.n}"><div class="boxh"><span class="num">${b.n}</span><strong>${esc(b.title)}</strong>${pickHTML(b.n)}</div><div>${esc(b.x)}</div></div>`;
+  if(b.t==='box')return `<div class="box" data-q="${b.n}"><div class="boxh"><span class="num">${b.n}</span><strong>${esc(b.title)}</strong>${pickHTML(b.n)}</div><div>${esc(b.x)}</div><div class="nt" data-nt="${b.n}" hidden></div></div>`;
   return '';
 }
 function qHTML(q){
@@ -213,16 +321,18 @@ function nums(){return Object.keys(SEC.ans).map(Number).sort((a,b)=>a-b)}
 function answered(){return nums().filter(n=>norm(ANS[n])).length}
 
 function render(){
+  if(SEC.kind==='study'){renderStudy();return}
+  if(SEC.kind==='write'){renderWrite();return}
   const s=SEC,split=s.layout==='split';
   $('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.label;
   let left='',right='';
   const paper=!s.blocks.length?'':`<div class="paper">${s.blocks.map(blockHTML).join('')}${s.kind==='listen'?'<div id="scr"></div>':''}</div>`;
-  if(s.side){const side=`<div class="paper side"><h3>${esc(s.side.title)}</h3><ol>${s.side.items.map(i=>`<li data-l="${i[0]}"><i>${i[0]}</i><span>${esc(i[1])}</span></li>`).join('')}</ol></div>`;left=side;right=paper}
+  if(s.side){const side=`<div class="paper side"><h3>${esc(s.side.title)}</h3><ol>${s.side.items.map(i=>`<li data-l="${i[0]}"><i>${i[0]}</i><span>${i[2]?`<b>${esc(i[1])}</b>${esc(i[2])}`:esc(i[1])}</span></li>`).join('')}</ol></div>`;if(s.sideAfter){left=paper;right=side}else{left=side;right=paper}}
   else if(s.qs.length&&!paper){left=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
   else if(s.qs.length){left=paper;right=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
   else{left=paper}
   $('#main').innerHTML=`<div id="res"></div>${s.kind==='listen'?'<div id="pl"></div>':''}<div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>
-    <div class="grid ${split&&right?'split':''}"><div class="col" id="cA">${left}</div>${right?`<div class="col" id="cB">${right}</div>`:''}</div>`;
+    <div class="grid ${split&&right?'split':''}"><div class="col" id="cA">${left}</div>${right?`<div class="col" id="cB">${right}</div>`:''}</div><div id="aft"></div>`;
   watermark();sizeGaps();
   // restore answers
   document.querySelectorAll('.gap').forEach(i=>{i.value=ANS[i.dataset.n]||'';i.addEventListener('input',()=>{ANS[i.dataset.n]=i.value;armed=false;save();foot()});
@@ -233,14 +343,20 @@ function render(){
   used();
   if(s.kind==='listen')player();
   // mobile jump between text and questions
-  const jb=$('#jump');if(right&&s.qs.length){jb.hidden=false;const upd=()=>{const B=$('#cB');if(!B)return;const below=B.getBoundingClientRect().top>innerHeight*.6;jb.textContent=below?'Savollar ↓':'Matn ↑';jb.onclick=()=>(below?B:$('#cA')).scrollIntoView({behavior:'smooth',block:'start'})};addEventListener('scroll',upd,{passive:true});upd()}else jb.hidden=true;
+  const jb=$('#jump');const jl=s.qs.length?['Savollar ↓','Matn ↑']:s.sideAfter?['Matnlar ↓','Savollar ↑']:['Matn ↓','Sarlavhalar ↑'];
+  if(right&&(s.qs.length||s.side)){jb.hidden=false;const upd=()=>{const B=$('#cB');if(!B)return;const below=B.getBoundingClientRect().top>innerHeight*.6;jb.textContent=below?jl[0]:jl[1];jb.onclick=()=>(below?B:$('#cA')).scrollIntoView({behavior:'smooth',block:'start'})};addEventListener('scroll',upd,{passive:true});upd()}else jb.hidden=true;
+  if(EX)examChrome();
   if(DONE)showResult(false);
   foot();
 }
 function used(){if(!SEC.side)return;const v=new Set(Object.values(ANS));document.querySelectorAll('.side li').forEach(li=>li.classList.toggle('used',v.has(li.dataset.l)))}
 
+function goDone(){const canDone=H.a&&H.s!=null;location.href=canDone?'./#/me/a/'+encodeURIComponent(H.a)+'/done/'+(+H.s):'./#/me'}
 function foot(){
-  const f=$('#footin');$('#foot').hidden=false;const total=nums().length,a=answered();
+  if(EX){examFoot();return}
+  const f=$('#footin');$('#foot').hidden=false;
+  if(SEC.kind==='study'||SEC.kind==='write'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;$('#dn').onclick=goDone;return}
+  const total=nums().length,a=answered();
   if(!DONE){
     f.innerHTML=`<button id="chk" class="${armed?'warn':''}">${armed?`${total-a} ta savol bo‘sh — baribir tekshirish`:'Javoblarni tekshirish'}<span class="cnt">${a} / ${total} javob yozildi</span></button>`;
     $('#chk').onclick=()=>{if(a<total&&!armed){armed=true;foot();return}check()};
@@ -269,7 +385,132 @@ function showResult(scroll){
     else if(!good){const host=document.querySelector(`.gapw[data-q="${n}"]`)||document.querySelector(`.box[data-q="${n}"] .boxh`);if(host&&!host.querySelector('.fix'))host.insertAdjacentHTML('beforeend',`<span class="fix">✓ ${esc(SEC.ans[n].join(' / '))}</span>`)}
   });
   if(SEC.kind==='listen'){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
+  if(SEC.notes)document.querySelectorAll('[data-nt]').forEach(el=>{const n=el.dataset.nt;if(!SEC.notes[n])return;el.innerHTML=`<span class="k">${n} · Javob: ${esc(SEC.ans[n][0])}</span>${rich(SEC.notes[n])}`;el.hidden=false});
+  if(SEC.after&&$('#aft')&&!$('#aft').innerHTML){$('#aft').innerHTML=`<button class="reveal" id="rva">${esc(SEC.afterLabel||'Tarjimani ochish')}</button>`;$('#rva').onclick=()=>{$('#aft').innerHTML=`<div class="paper after">${SEC.after.map(afterHTML).join('')}</div>`;watermark()}}
   if(scroll)scrollTo({top:0,behavior:'smooth'});
+}
+function afterHTML(b){
+  if(b.t==='ah')return `<h3>${esc(b.x)}</h3>`;
+  if(b.t==='at')return `<h4>${esc(b.x)}</h4>`;
+  if(b.t==='ap')return `<p>${rich(b.x)}</p>`;
+  if(b.t==='atr')return `<ol class="trl">${b.x.map(r=>`<li><i>${esc(r[0])}</i><span><b>${esc(r[1])}</b><em>${esc(r[2])}</em></span></li>`).join('')}</ol>`;
+  if(b.t==='av')return `<div class="vl">${b.x.map(r=>`<div><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join('')}</div>`;
+  return '';
+}
+
+/* ---------- vocabulary: study cards ---------- */
+function renderStudy(){
+  const s=SEC;$('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+s.label+' · '+s.title;$('#jump').hidden=true;
+  const card=it=>`<article class="paper vc"><header><span class="num">${it.n}</span><h3>${esc(it.w)}</h3><em>${esc(it.ty)}</em></header><div class="vb">
+    <p class="tr">${esc(it.tr)}</p>${it.df?`<p class="df"><b>Ta’rif:</b> ${esc(it.df)}</p>`:''}
+    <ol>${it.ex.map(e=>`<li>${rich(e[0])}<span class="uz">${esc(e[1])}</span></li>`).join('')}</ol>
+    <div class="sp"><span class="spk">${esc(it.sp[0])}</span><p class="sq">Q: ${esc(it.sp[1])}</p><p>A: ${rich(it.sp[2])}</p><span class="uz">${esc(it.sp[3])}</span></div></div></article>`;
+  $('#main').innerHTML=`<div class="instr"><b>${esc(s.label)} · ${esc(s.title)}</b>${esc(s.instr)}</div>
+    <div class="vtools"><button id="hz" aria-pressed="false">Tarjimani yashirish</button><span id="hzt">${s.items.length} ta ibora</span></div>
+    <div class="vgrid" id="vg">${s.items.map(card).join('')}</div>`;
+  watermark();
+  $('#hz').onclick=()=>{const on=$('#vg').classList.toggle('hideuz');$('#hz').setAttribute('aria-pressed',on);$('#hz').textContent=on?'Tarjimani ko‘rsatish':'Tarjimani yashirish';$('#hzt').textContent=on?'O‘zingizni sinang: tarjimani ko‘rish uchun ustiga bosing':s.items.length+' ta ibora';document.querySelectorAll('.uz.show,.tr.show').forEach(e=>e.classList.remove('show'))};
+  $('#vg').onclick=e=>{const t=e.target.closest('.uz,.tr');if(t&&$('#vg').classList.contains('hideuz'))t.classList.toggle('show')};
+  foot();
+}
+
+/* ---------- writing: task, own attempt, model answer ---------- */
+const wcount=t=>(String(t||'').trim().match(/\S+/g)||[]).length;
+function renderWrite(){
+  const s=SEC;$('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.title;$('#jump').hidden=true;
+  const paras=a=>a.map(p=>`<p>${esc(p)}</p>`).join('');
+  const head=(s.sit||s.mail)?`<div class="paper"><h2>${esc(s.title)}</h2>${s.sit?`<p class="wsit">${esc(s.sit)}</p>`:''}${s.mail?`<div class="mail">${paras(s.mail)}</div>`:''}</div>`:'';
+  const task=(t,i)=>`<div class="paper wt" data-t="${i}"><div class="wh"><span class="tag">${esc(t.tag)}</span><div class="wq">${esc(t.q)}</div></div>
+    <textarea data-w="${i}" placeholder="Javobingizni shu yerga yozib ko‘ring…" aria-label="${esc(t.tag)} uchun javobingiz" autocapitalize="sentences" spellcheck="false"></textarea>
+    <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span><span class="ai">AI tekshiruvi — tez kunda</span></div>
+    <button class="reveal" data-m="${i}">Namuna javobni ko‘rish</button><div data-mb="${i}"></div></div>`;
+  $('#main').innerHTML=`<div class="wwrap"><div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>${head}${s.tasks.map(task).join('')}<p class="whint">Yozganingiz faqat shu qurilmada saqlanadi, ustozga yuborilmaydi.</p></div>`;
+  watermark();
+  const model=i=>{const t=s.tasks[i];document.querySelector(`[data-mb="${i}"]`).innerHTML=`<div class="model"><div class="mh"><span>${esc(t.mk)}</span><span>${t.mw} so‘z</span></div>${paras(t.m)}</div>`;const b=document.querySelector(`[data-m="${i}"]`);if(b)b.remove()};
+  const upd=i=>{const t=s.tasks[i],n=wcount((WR.t||{})[i]);const c=document.querySelector(`[data-c="${i}"]`);c.textContent=n+' so‘z';c.classList.toggle('in',n>=t.lo&&n<=t.hi)};
+  document.querySelectorAll('textarea[data-w]').forEach(a=>{const i=a.dataset.w;a.value=(WR.t||{})[i]||'';upd(i);a.addEventListener('input',()=>{WR.t=WR.t||{};WR.t[i]=a.value;save();upd(i)})});
+  document.querySelectorAll('[data-m]').forEach(b=>{const i=b.dataset.m;b.onclick=()=>{WR.m=WR.m||{};WR.m[i]=1;save();model(i)};if((WR.m||{})[i])model(i)});
+  foot();
+}
+
+/* ---------- mock exam: every part in one sitting ---------- */
+const mmss=t=>{t=Math.max(0,Math.round(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+const allNums=()=>DOC.sections.flatMap(s=>Object.keys(s.ans).map(Number));
+const partDone=s=>Object.keys(s.ans).filter(n=>norm(ANS[n])).length;
+function ask(h,p,no,yes,f){const d=document.createElement('div');d.className='ov';d.innerHTML=`<div class="md" role="dialog" aria-modal="true"><h3>${esc(h)}</h3><p>${esc(p)}</p><div class="row2"><button id="ovn">${esc(no)}</button><button class="red" id="ovy">${esc(yes)}</button></div></div>`;document.body.appendChild(d);
+  d.querySelector('#ovn').onclick=()=>d.remove();d.querySelector('#ovy').onclick=()=>{d.remove();f()};d.querySelector('#ovy').focus()}
+function examBoot(){
+  EX={t0:0,part:0,r:null,cfg:DOC.exam,tick:null,view:'intro'};document.body.classList.add('exam');
+  let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}
+  if(s){ANS=s.a||{};EX.t0=s.t0||0;EX.part=Math.min(DOC.sections.length-1,s.part||0);EX.r=s.r||null}
+  if(EX.r){examResult();return}
+  if(EX.t0){if(Date.now()>=EX.t0+EX.cfg.mins*60000){examFinish(true);return}examGo(EX.part);return}
+  examIntro();
+}
+function examIntro(){
+  EX.view='intro';$('#ttl').textContent=DOC.short;$('#sub').textContent=DOC.title;document.title='EDUNEST · '+DOC.title;$('#foot').hidden=true;$('#jump').hidden=true;examBar();
+  $('#main').innerHTML=`<div class="xin"><h2>${esc(DOC.title)}</h2><p class="sub">Haqiqiy imtihon formatida</p>
+    <div class="facts"><div><b>${allNums().length}</b><span>savol</span></div><div><b>${DOC.sections.length}</b><span>qism</span></div><div><b>${EX.cfg.mins}</b><span>daqiqa</span></div></div>
+    <ul><li>Barcha qismlar <b>bitta testda</b>: qismlar orasida xohlagancha o‘tishingiz mumkin.</li><li>Vaqt boshlangach <b>to‘xtamaydi</b>. Sahifani yopsangiz ham vaqt ketaveradi.</li><li>Javoblar faqat <b>oxirida</b> tekshiriladi: to‘g‘ri javoblar soni, ball va daraja chiqadi.</li><li>Tugatgach xaritada <b>sertifikat</b> ochiladi.</li></ul>
+    <button class="xbtn" id="xgo">Testni boshlash</button></div>`;
+  $('#xgo').onclick=()=>{EX.t0=Date.now();ANS={};save();examGo(0);scrollTo(0,0)};
+}
+function examBar(){
+  let t=$('#xtabs');if(!t){t=document.createElement('div');t.id='xtabs';t.className='xtabs';$('.bar').after(t)}
+  const live=EX.view==='part'||EX.view==='review';t.hidden=!live;
+  if(!$('#xtm')){const m=document.createElement('span');m.id='xtm';m.className='xtm';$('.fs').before(m);$('.fs').classList.add('xhide')}
+  $('#xtm').hidden=EX.view!=='part';
+  if(!live)return;
+  t.innerHTML=DOC.sections.map((s,i)=>{const of=Object.keys(s.ans).length,d=EX.r?Object.keys(s.ans).filter(n=>EX.r.res[n]).length:partDone(s);
+    return `<button data-p="${i}" class="${i===EX.part?'on':''} ${!EX.r&&d===of?'full':''}" aria-label="${esc(s.label)}">${esc(s.label)}<small>${d}/${of}</small></button>`}).join('')+(EX.r?'':`<button class="xend" id="xend">Yakunlash</button>`);
+  t.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{examGo(+b.dataset.p);scrollTo(0,0)});
+  const e=$('#xend');if(e)e.onclick=examAsk;
+  const on=t.querySelector('.on');if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest',inline:'center'});
+}
+function examGo(i){
+  EX.part=i;EX.view=EX.r?'review':'part';SEC=DOC.sections[i];DONE=EX.r?{ok:Object.keys(SEC.ans).filter(n=>EX.r.res[n]).length,of:Object.keys(SEC.ans).length,res:EX.r.res}:null;armed=false;
+  if(!EX.r)save();
+  render();
+  if(!EX.r&&!EX.tick)EX.tick=setInterval(examTick,500);examTick();
+}
+function examChrome(){$('#ttl').textContent=DOC.short;$('#sub').textContent=SEC.label+' · '+SEC.title;examBar()}
+function examTick(){
+  if(!EX||EX.r||!EX.t0)return;const left=(EX.t0+EX.cfg.mins*60000-Date.now())/1000;const m=$('#xtm');
+  if(m){m.textContent=mmss(left);m.classList.toggle('low',left<300)}
+  if(left<=0)examFinish(true);
+}
+function examFit(){const g=document.querySelector('.grid.split');if(!g)return;if(innerWidth<960){g.style.removeProperty('--xh');return}
+  g.style.setProperty('--xh',Math.max(280,innerHeight-(g.getBoundingClientRect().top+scrollY)-96)+'px')}
+addEventListener('resize',()=>{if(EX)examFit()});
+function examFoot(){
+  examFit();
+  const f=$('#footin');$('#foot').hidden=false;const i=EX.part,last=i===DOC.sections.length-1;
+  if(EX.r){f.innerHTML=`<button class="alt" id="xr">Natija</button><button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;$('#xr').onclick=()=>{examResult();scrollTo(0,0)};$('#dn').onclick=goDone;return}
+  const tot=allNums().length,a=allNums().filter(n=>norm(ANS[n])).length;
+  f.innerHTML=`${i?'<button class="alt" id="xp">← Oldingi</button>':''}<button id="xn">${last?'Testni yakunlash':'Keyingi qism →'}<span class="cnt">${a} / ${tot} javob belgilandi</span></button>`;
+  const p=$('#xp');if(p)p.onclick=()=>{examGo(i-1);scrollTo(0,0)};
+  $('#xn').onclick=()=>{if(last)examAsk();else{examGo(i+1);scrollTo(0,0)}};
+  const t=$('#xtabs');if(t)t.querySelectorAll('[data-p]').forEach((b,k)=>{const s=DOC.sections[k],of=Object.keys(s.ans).length,d=partDone(s);b.querySelector('small').textContent=d+'/'+of;b.classList.toggle('full',d===of)});
+}
+function examAsk(){const tot=allNums().length,a=allNums().filter(n=>norm(ANS[n])).length;
+  ask('Testni yakunlaysizmi?',a<tot?`${tot-a} ta savol javobsiz qoldi. Yakunlagach javoblarni o‘zgartirib bo‘lmaydi.`:'Barcha savollarga javob berdingiz. Yakunlagach javoblarni o‘zgartirib bo‘lmaydi.','Davom etish','Yakunlash',()=>examFinish(false))}
+function examFinish(auto){
+  if(EX.tick){clearInterval(EX.tick);EX.tick=null}
+  const res={};let ok=0;const per=DOC.sections.map(s=>{let k=0;Object.keys(s.ans).forEach(n=>{res[n]=isOk(ANS[n],s.ans[n]);if(res[n])k++});ok+=k;return{l:s.label,t:s.title,ok:k,of:Object.keys(s.ans).length}});
+  const of=allNums().length,ball=EX.cfg.conv[ok],lv=(EX.cfg.levels.find(x=>ball>=x[0])||[0,''])[1];
+  EX.r={ok,of,per,ball,lv,res,auto:!!auto,secs:Math.min(EX.cfg.mins*60,Math.round((Date.now()-EX.t0)/1000)),at:Date.now()};save();examResult();scrollTo(0,0);
+}
+function examResult(){
+  EX.view='result';const r=EX.r;$('#ttl').textContent=DOC.short;$('#sub').textContent='Natija';$('#foot').hidden=true;$('#jump').hidden=true;examBar();
+  $('#main').innerHTML=`<div class="xin xres"><h2>${r.auto?'Vaqt tugadi':'Test yakunlandi'}</h2><p class="sub">${esc(DOC.title)} · sarflangan vaqt ${mmss(r.secs)}</p>
+    <div class="tiles"><div><b>${r.ok}/${r.of}</b><span>to‘g‘ri javob</span></div><div><b>${r.ball}</b><span>ball (75 dan)</span></div><div class="lv"><b>${r.lv||'—'}</b><span>${r.lv?'daraja':'B1 dan past'}</span></div></div>
+    <table>${r.per.map(p=>`<tr><td>${esc(p.l)} · ${esc(p.t)}</td><td>${p.ok} / ${p.of}</td></tr>`).join('')}</table>
+    <p class="lg">Ball jadvali: B1 38–50 · B2 51–64 · C1 65–75</p>
+    <button class="xbtn" id="dn">${H.a&&H.s!=null?'Bajardim — sertifikatni olish':'Xaritaga qaytish'}</button>
+    <button class="xbtn alt" id="xrev">Javoblarni ko‘rib chiqish</button>
+    <button class="xbtn txt" id="xre">Qayta topshirish</button></div>`;
+  $('#dn').onclick=goDone;$('#xrev').onclick=()=>{examGo(0);scrollTo(0,0)};
+  $('#xre').onclick=()=>ask('Qayta topshirasizmi?','Hozirgi javoblaringiz va natijangiz o‘chadi, vaqt boshidan boshlanadi.','Bekor qilish','Qayta boshlash',()=>{ANS={};DONE=null;EX.t0=0;EX.part=0;EX.r=null;save();examIntro();scrollTo(0,0)});
 }
 function script(){
   let html=SEC.script.map(p=>esc(p)).join('</p><p>');
@@ -300,7 +541,7 @@ async function player(){
 function menu(){
   $('#ttl').textContent=DOC.short;$('#sub').textContent=DOC.title;
   $('#main').innerHTML=`<div class="menu">${DOC.sections.map(s=>{let r=null;try{r=JSON.parse(ls(ST+'mashq:'+UID+':'+H.d+':'+s.id)||'null')}catch(e){}const d=r&&r.r;
-    return `<a href="#d=${esc(H.d)}&x=${s.id}"><span class="num">${esc(s.label.replace(/\D/g,'')||'•')}</span><span>${esc(s.label)} · ${esc(s.title)}<small>${Object.keys(s.ans).length} ta savol</small></span>${d?`<em>${d.ok}/${d.of}</em>`:''}</a>`}).join('')}</div>`;
+    return `<a href="#d=${esc(H.d)}&x=${s.id}"><span class="num">${esc(s.label.replace(/\D/g,'')||'•')}</span><span>${esc(s.label)} · ${esc(s.title)}<small>${Object.keys(s.ans).length?Object.keys(s.ans).length+' ta savol':s.kind==='study'?s.items.length+' ta ibora':s.kind==='write'?s.tasks.length+' ta topshiriq':''}</small></span>${d?`<em>${d.ok}/${d.of}</em>`:''}</a>`}).join('')}</div>`;
 }
 
 let fs=+(ls(ST+'fs')||17);
@@ -313,6 +554,7 @@ async function boot(){
   if(!ls(ST+'k')){fail('Avval kiring','Bu mashq faqat EDUNEST o‘quvchilari uchun. Platformaga kiring va xaritadan oching.');return}
   try{DOC=JSON.parse(new TextDecoder().decode(await load(H.d)))}
   catch(e){e.message==='net'?fail('Yuklanmadi','Internetni tekshirib, sahifani yangilang.','./#/me'):fail('Qayta kiring','Kirish muddati tugagan. Platformaga qaytadan kiring.');return}
+  if(H.x==='all'&&DOC.exam){examBoot();return}
   SEC=DOC.sections.find(s=>s.id===H.x);
   if(!SEC){menu();return}
   restore();render();

@@ -1719,8 +1719,8 @@ async function tAI(){
     document.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const bd=b.nextElementSibling,open=bd.hidden;if(open&&!bd.innerHTML)bd.innerHTML=aiDetail(C[+b.dataset.ai]);bd.hidden=!open;b.setAttribute('aria-expanded',open)})};
   $('#aiQ').oninput=e=>{F.q=e.target.value;draw()};$('#aiT').onchange=e=>{F.t=e.target.value;draw()};draw();
   const save=async(body,ok)=>{try{const x=await cpost(Object.assign({action:'setAi',key:U.pass},body));if(!x.ok)throw x;toast(x.warn==='busy'?'Kalit saqlandi. Google hozir band — birozdan keyin sinab ko‘ring.':ok);tAI()}
-    catch(e){toast(e&&e.error==='badkey'?'Google bu kalitni qabul qilmadi. Kalitni tekshiring.':'Saqlanmadi. Skript yangilanganini tekshiring.')}};
-  $('#aiKeySave').onclick=()=>{const k=$('#aiKey').value.trim();if(!/^\S{20,}$/.test(k)){toast('Kalit noto‘g‘ri ko‘rinishda');return}$('#aiKeySave').disabled=true;$('#aiKeySave').textContent='Tekshirilmoqda…';save({key:k},'AI ulandi va yoqildi ✓')};
+    catch(e){toast(e&&e.error==='badkey'?'Google bu kalitni qabul qilmadi. Kalitni tekshiring.':'Saqlanmadi. Skript yangilanganini tekshiring.');const kb=$('#aiKeySave');if(kb){kb.disabled=false;kb.textContent=A.hasKey?'Almashtirish':'Ulash'}}};
+  $('#aiKeySave').onclick=()=>{const k=$('#aiKey').value.trim();if(!/^\S{20,}$/.test(k)){toast('Kalit noto‘g‘ri ko‘rinishda');return}$('#aiKeySave').disabled=true;$('#aiKeySave').textContent='Tekshirilmoqda…';save({aikey:k},'AI ulandi va yoqildi ✓')};
   if($('#aiLimSave'))$('#aiLimSave').onclick=()=>save({limit:+$('#aiLim').value||0},'Limit saqlandi');
   if($('#aiOn'))$('#aiOn').onclick=()=>save({on:!A.on},A.on?'AI o‘chirildi':'AI yoqildi');
 }

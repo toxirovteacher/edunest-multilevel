@@ -1720,7 +1720,7 @@ async function tAI(){
   $('#aiQ').oninput=e=>{F.q=e.target.value;draw()};$('#aiT').onchange=e=>{F.t=e.target.value;draw()};draw();
   const save=async(body,ok)=>{try{const x=await cpost(Object.assign({action:'setAi',key:U.pass},body));if(!x.ok)throw x;toast(x.warn==='busy'?'Kalit saqlandi. Google hozir band — birozdan keyin sinab ko‘ring.':ok);tAI()}
     catch(e){toast(e&&e.error==='badkey'?'Google bu kalitni qabul qilmadi. Kalitni tekshiring.':'Saqlanmadi. Skript yangilanganini tekshiring.')}};
-  $('#aiKeySave').onclick=()=>{const k=$('#aiKey').value.trim();if(!/^[\w-]{20,}$/.test(k)){toast('Kalit noto‘g‘ri ko‘rinishda');return}$('#aiKeySave').disabled=true;$('#aiKeySave').textContent='Tekshirilmoqda…';save({key:k},'AI ulandi va yoqildi ✓')};
+  $('#aiKeySave').onclick=()=>{const k=$('#aiKey').value.trim();if(!/^\S{20,}$/.test(k)){toast('Kalit noto‘g‘ri ko‘rinishda');return}$('#aiKeySave').disabled=true;$('#aiKeySave').textContent='Tekshirilmoqda…';save({key:k},'AI ulandi va yoqildi ✓')};
   if($('#aiLimSave'))$('#aiLimSave').onclick=()=>save({limit:+$('#aiLim').value||0},'Limit saqlandi');
   if($('#aiOn'))$('#aiOn').onclick=()=>save({on:!A.on},A.on?'AI o‘chirildi':'AI yoqildi');
 }

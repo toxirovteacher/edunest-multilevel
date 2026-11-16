@@ -936,6 +936,34 @@ body.dark .tgcard,body.dark .tglink{background:#12283a;border-color:#1f4a66}
 .soonopt b{display:block;color:var(--head)}.soonopt small{color:var(--mute);font-size:13px}
 @media(max-width:640px){.libitem{grid-template-columns:44px 1fr}.libsw{width:44px;height:44px}.libitem .btn,.libitem .tag{grid-column:1/-1;justify-self:stretch;text-align:center}}
 
+/* ---------- AI Writing (Gemini) ---------- */
+.aicard{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px;padding:16px;border-radius:20px;background:radial-gradient(120% 160% at 100% 0%,#4B3BB5 0%,#1F1147 55%,#141B2D 100%);color:#fff;text-decoration:none;box-shadow:0 10px 26px rgba(31,17,71,.28)}
+.aicard .aicon{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.14);display:grid;place-items:center}
+.aicard .aicon svg{width:26px;height:26px}
+.aicard .aitx{flex:1;min-width:0}.aicard b{display:block;font-size:17px;color:#fff}.aicard small{display:block;font-size:13.5px;opacity:.85;margin-top:3px;line-height:1.35}
+.aicard em{font-style:normal;font-weight:800;background:#fff;color:#1F1147;border-radius:12px;padding:9px 14px;flex:none}
+.aiset h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.aiset h3 svg{width:22px;height:22px;color:#6C4DF6}.aiset h3 small{font-size:13px;font-weight:600;color:var(--mute)}
+.aist{margin:6px 0 12px;padding:9px 12px;border-radius:12px;background:#FDE8E9;color:#9b111b;font-weight:700;font-size:14.5px}
+.aist.on{background:#E4F5EC;color:#0E7A45}
+body.dark .aist{background:#3a1a1d;color:#ffb3b8}body.dark .aist.on{background:#123524;color:#8be0b2}
+.aisteps{margin:0 0 12px;padding-left:22px;line-height:1.6;color:var(--ink)}.aisteps li{margin-bottom:4px}.aisteps a{color:inherit}
+.airow2{margin-top:10px;align-items:center}.airow2 label{font-weight:700;color:var(--head);font-size:14.5px}.airow2 input{flex:0 0 96px!important;min-width:0!important}
+.aihint{font-size:13px;margin:8px 0 0;line-height:1.5}
+.ailist{display:grid;gap:8px}
+.aichk{padding:0;overflow:hidden}
+.aihd{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;background:none;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.ailv{flex:none;width:50px;height:50px;border-radius:14px;color:#fff;font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.ailv small{font-size:11px;font-weight:700;opacity:.9}
+.aihd .aitx{flex:1;min-width:0}.aihd .aitx b{display:block;font-size:15.5px;color:var(--head)}.aihd .aitx small{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.aiar{font-size:24px;color:var(--mute);transition:transform .2s}.aihd[aria-expanded="true"] .aiar{transform:rotate(90deg)}
+.aibody{padding:0 14px 14px;border-top:1px solid var(--line)}
+.aiblk{margin-top:12px}.aiblk h4{margin:0 0 6px;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.aiblk p{margin:6px 0 0;line-height:1.55}.aiblk .pre{white-space:pre-wrap;padding:10px 12px;border-radius:12px;background:var(--mist,#EEF1F6);color:var(--ink);font-size:15px}
+body.dark .aiblk .pre{background:#1d2436}
+.aisc{display:flex;flex-wrap:wrap;gap:8px}.aisc span{padding:7px 10px;border-radius:12px;border:1.5px solid var(--line);font-size:13px;color:var(--mute)}.aisc b{display:block;font-size:16px;color:var(--head)}
+.aimi{padding:8px 0;border-bottom:1px solid var(--line);line-height:1.5}.aimi:last-child{border-bottom:0}
+.aimi del{color:#C4121D}.aimi ins{color:#0E8A4F;text-decoration:none;font-weight:800}.aimi small{display:block;color:var(--mute);font-size:13.5px;margin-top:2px}
+#aiOf svg{color:#6C4DF6}
 </style>
 </head>
 <body class="uz-on">
@@ -1464,6 +1492,7 @@ function homeHTML(p){
       <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
   </a>
   ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
+  ${!G3&&p.ai?`<a class="aicard" href="mashq.html#ai"><span class="aicon">${AI_SVG}</span><span class="aitx"><b>AI Writing yordamchi</b><small>Xat va esselaringizni AI tekshiradi: ball, daraja, har bir xato o‘zbekcha tushuntirish bilan</small></span><em>Ochish</em></a>`:''}
   ${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
   <div class="tgrid">${ts.map(t=>{const i=T.indexOf(t);return `<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
       ${coverHTML(t.cover,i,`<span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}`)}
@@ -1471,7 +1500,7 @@ function homeHTML(p){
         <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
         <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
     </button>`}).join('')}</div>`).join('')}
-  ${(()=>{const sn=(p.assignments||[]).filter(mineA).filter(isSoon);return sn.length?`<h2 class="sech">Tez kunda</h2>
+  ${(()=>{const sn=(p.assignments||[]).filter(mineA).filter(isSoon).filter(a=>!(p.ai&&a.cover==='ai'));return sn.length?`<h2 class="sech">Tez kunda</h2>
   <div class="tgrid">${sn.map((a,i)=>`<button class="tcard soon" data-soon="1">
       ${coverHTML(a.cover,i+7,`<span class="tnum">${IC.lock}</span><span class="tbadge">Tez kunda</span>`)}
       <div class="tbody"><b>${esc(a.title)}</b>${a.note?`<small>${esc(a.note)}</small>`:''}<span class="tgo">Tez kunda ochiladi</span></div>
@@ -1583,7 +1612,7 @@ async function certificate(p,t){
   x.strokeStyle='#DCE1EA';x.lineWidth=3;x.strokeRect(70,90,W-140,H-180);
   const logo=new Image();logo.src=LOGO;await new Promise(r=>{logo.onload=r;logo.onerror=r});
   try{x.drawImage(logo,W/2-70,150,140,140)}catch(e){}
-  x.textAlign='center';x.fillStyle='#E3101F';x.font=F(800,40);x.fillText('EDUNEST ACADEMY · MULTI-LEVEL',W/2,350);
+  x.textAlign='center';x.fillStyle='#E3101F';x.font=F(800,40);x.fillText(G3?'EDUNEST ACADEMY · GENERAL ENGLISH · LEVEL 3':'EDUNEST ACADEMY · MULTI-LEVEL',W/2,350);
   x.fillStyle='#141B2D';x.font=F(800,150);x.fillText('SERTIFIKAT',W/2,510);
   x.fillStyle='#5A6378';x.font=F(500,44);x.fillText('Ushbu sertifikat',W/2,610);
   let nm=s.name,sz=120;x.font=F(800,sz);while(x.measureText(nm).width>W-360&&sz>60){sz-=6;x.font=F(800,sz)}
@@ -1630,7 +1659,7 @@ function tRows(){
     const sdone=mine.reduce((n,a)=>n+a.steps.filter((_,i)=>pr[a.aid+':'+i]==='done').length,0);
     return{s,done:+b.done||0,last:b.last||0,sdone,stot,xp:xpOf(s.id).T,rank:rk[s.id]}});
 }
-const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],...(G3?[]:[['guests','Mehmonlar']]),['settings','Sozlamalar']];
+const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],...(G3?[]:[['ai','AI Writing'],['guests','Mehmonlar']]),['settings','Sozlamalar']];
 async function teacherHome(tab){
   document.body.classList.remove('st-mode');
   tab=TTABS.some(t=>t[0]===tab)?tab:'students';ui.ttab=tab;setBack(null);
@@ -1651,7 +1680,49 @@ async function teacherHome(tab){
     <div id="tBody"></div></div>`;
   document.querySelectorAll('.ttabs [data-t]').forEach(b=>b.onclick=()=>go('#/teacher/'+b.dataset.t));
   $('#tRef').onclick=()=>{TD=null;teacherHome(tab)};
-  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else if(tab==='settings')tSettings();else tList(tab==='guests'?gu:st,tab==='guests');
+  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else if(tab==='settings')tSettings();else if(tab==='ai')tAI();else tList(tab==='guests'?gu:st,tab==='guests');
+}
+/* ---------- AI Writing (Gemini): settings + every check students made ---------- */
+const AI_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
+const AI_TN={'1.1':'Task 1.1 · norasmiy xat','1.2':'Task 1.2 · rasmiy xat','2':'Part 2 · esse'};
+const AI_CN=[['task','Topshiriq'],['organisation','Tuzilish'],['vocabulary','Lug‘at'],['grammar','Grammatika']];
+const aiLvC=l=>l==='C1'?'#159947':l==='B2'?'#2F80ED':l==='B1'?'#D98A06':'#E3101F';
+function aiDetail(c){const r=c.r||{},ms=r.mistakes||[];
+  return `<div class="aidet">${c.task?`<div class="aiblk"><h4>Topshiriq</h4><p class="pre">${esc(c.task)}</p></div>`:''}
+    <div class="aiblk"><h4>O‘quvchi matni · ${c.words} so‘z</h4><p class="pre">${esc(c.text)}</p></div>
+    <div class="aiblk"><h4>Ballar</h4><div class="aisc">${AI_CN.map(([k,n])=>`<span><b>${(r.scores||{})[k]??'–'}/10</b>${n}</span>`).join('')}<span><b>${c.score}/75</b>${esc(c.level)}</span></div><p>${esc(r.summary_uz||'')}</p></div>
+    ${ms.length?`<div class="aiblk"><h4>Xatolar (${ms.length})</h4>${ms.map((m,i)=>`<div class="aimi"><b>${i+1}.</b> <del>${esc(m.original)}</del> → <ins>${esc(m.correction)}</ins><small>${esc(m.explain_uz)}</small></div>`).join('')}</div>`:''}
+    ${r.improved?`<div class="aiblk"><h4>AI yaxshilagan variant</h4><p class="pre">${esc(r.improved)}</p></div>`:''}</div>`}
+async function tAI(){
+  const B=$('#tBody');B.innerHTML='<div class="loading" style="margin-top:30px"><div class="spin"></div>Yuklanmoqda…</div>';
+  let j=null;try{j=await cget({action:'ailist',key:U.pass},30000)}catch(e){}
+  if(!j||!j.ok){B.innerHTML='<div class="card sec"><h3>Yuklanmadi</h3><p class="muted">Google skript yangilanganini tekshiring (yangi versiya), so‘ng “Yangilash”ni bosing.</p></div>';return}
+  const A=j.ai,C=j.checks||[];const F=ui.aif=ui.aif||{q:'',t:''};if(ui.aiq){F.q=ui.aiq;ui.aiq=''}
+  const week=Date.now()-7*864e5,wk=C.filter(c=>c.at>week),avg=C.length?Math.round(C.reduce((s,c)=>s+c.score,0)/C.length):0;
+  B.innerHTML=`<div class="card sec aiset"><h3>${AI_SVG} AI Writing tekshiruvi <small>Google Gemini · bepul</small></h3>
+      <p class="aist ${A.on?'on':''}">${A.on?'Yoqilgan — o‘quvchilar Writing sahifalarida va «AI Writing yordamchi»da tekshira oladi':A.hasKey?'O‘chirilgan — o‘quvchilar hozir tekshira olmaydi':'Hali ulanmagan — Gemini kalitini qo‘ying'}</p>
+      ${A.hasKey?'':`<ol class="aisteps"><li><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener"><b>aistudio.google.com/apikey</b></a> sahifasini oching va Google akkauntingiz bilan kiring.</li><li><b>Create API key</b> tugmasini bosing, kalitni nusxa oling.</li><li>Kalitni pastdagi qatorga qo‘yib, <b>Ulash</b>ni bosing. Kalit faqat sizning Google skriptingizda saqlanadi.</li></ol>`}
+      <div class="setrow"><input id="aiKey" type="password" autocomplete="off" placeholder="${A.hasKey?'Yangi kalit (almashtirish uchun)':'AIza…'}"><button class="btn red" id="aiKeySave">${A.hasKey?'Almashtirish':'Ulash'}</button></div>
+      ${A.hasKey?`<div class="setrow airow2"><label for="aiLim">Kunlik limit, 1 o‘quvchiga</label><input id="aiLim" type="number" inputmode="numeric" min="0" max="50" value="${A.limit}"><button class="btn ghost" id="aiLimSave">Saqlash</button><button class="btn ${A.on?'ghost':'navy'}" id="aiOn">${A.on?'O‘chirish':'Yoqish'}</button></div>
+      <p class="muted aihint">0 = cheksiz. Bepul Google limiti butun sayt uchun umumiy: juda ko‘p o‘quvchi bir vaqtda tekshirsa, ularga «biroz kuting» chiqadi. Bepul tarifda Google yuborilgan matnlardan o‘z mahsulotlarini yaxshilash uchun foydalanishi mumkin; o‘quvchi ismi va ID yuborilmaydi.</p>`:''}</div>
+    <div class="kpis"><div class="card kpi"><div class="l">Jami tekshiruv</div><div class="v">${C.length}</div><div class="muted ks">oxirgi 300 tasi</div></div>
+      <div class="card kpi"><div class="l">Shu hafta</div><div class="v">${wk.length}</div><div class="muted ks">${new Set(wk.map(c=>c.id)).size} o‘quvchi</div></div>
+      <div class="card kpi"><div class="l">O‘rtacha ball</div><div class="v">${avg}</div><div class="muted ks">75 dan, taxminiy</div></div>
+      <div class="card kpi"><div class="l">Foydalanganlar</div><div class="v">${new Set(C.map(c=>c.id)).size}</div><div class="muted ks">o‘quvchi</div></div></div>
+    <div class="tfil"><input id="aiQ" placeholder="Ism yoki ID" value="${esc(F.q)}" aria-label="Qidirish"><select id="aiT" aria-label="Topshiriq turi"><option value="">Barcha turlar</option>${['1.1','1.2','2'].map(k=>`<option value="${k}" ${F.t===k?'selected':''}>${AI_TN[k]}</option>`).join('')}</select></div>
+    <div id="aiList" class="ailist"></div>`;
+  const draw=()=>{const q=F.q.toLowerCase();const L=C.filter(c=>(!F.t||c.type===F.t)&&(!q||(c.name+' '+c.id).toLowerCase().includes(q)));
+    $('#aiList').innerHTML=L.length?L.map(c=>{const i=C.indexOf(c);return `<div class="card aichk"><button class="aihd" data-ai="${i}" aria-expanded="false">
+        <span class="ailv" style="background:${aiLvC(c.level)}">${esc(c.level==='B1 dan past'?'B1−':c.level)}<small>${c.score}</small></span>
+        <span class="aitx"><b>${esc(c.name)}</b><small>${esc(c.group)} · ${AI_TN[c.type]||esc(c.type)} · ${c.words} so‘z · ${new Date(c.at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</small></span>
+        <span class="aiar">›</span></button><div class="aibody" hidden></div></div>`}).join(''):'<p class="muted empty">Hali tekshiruvlar yo‘q.</p>';
+    document.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const bd=b.nextElementSibling,open=bd.hidden;if(open&&!bd.innerHTML)bd.innerHTML=aiDetail(C[+b.dataset.ai]);bd.hidden=!open;b.setAttribute('aria-expanded',open)})};
+  $('#aiQ').oninput=e=>{F.q=e.target.value;draw()};$('#aiT').onchange=e=>{F.t=e.target.value;draw()};draw();
+  const save=async(body,ok)=>{try{const x=await cpost(Object.assign({action:'setAi',key:U.pass},body));if(!x.ok)throw x;toast(x.warn==='busy'?'Kalit saqlandi. Google hozir band — birozdan keyin sinab ko‘ring.':ok);tAI()}
+    catch(e){toast(e&&e.error==='badkey'?'Google bu kalitni qabul qilmadi. Kalitni tekshiring.':'Saqlanmadi. Skript yangilanganini tekshiring.')}};
+  $('#aiKeySave').onclick=()=>{const k=$('#aiKey').value.trim();if(!/^[\w-]{20,}$/.test(k)){toast('Kalit noto‘g‘ri ko‘rinishda');return}$('#aiKeySave').disabled=true;$('#aiKeySave').textContent='Tekshirilmoqda…';save({key:k},'AI ulandi va yoqildi ✓')};
+  if($('#aiLimSave'))$('#aiLimSave').onclick=()=>save({limit:+$('#aiLim').value||0},'Limit saqlandi');
+  if($('#aiOn'))$('#aiOn').onclick=()=>save({on:!A.on},A.on?'AI o‘chirildi':'AI yoqildi');
 }
 function tList(rows,guests){
   ui.tf=ui.tf||{q:'',g:'ALL',sort:'xp'};const f=ui.tf;if(guests)f.g='ALL';
@@ -1826,7 +1897,8 @@ async function teacherStudent(id){
       ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}
       ${r.tgu?`<a class="btn ghost tgb" href="https://t.me/${esc(r.tgu.slice(1))}" target="_blank" rel="noopener">${TGI}<span>${esc(r.tgu)}</span></a>`:''}
       ${r.tg?`<button class="btn ghost" id="tgUn">Telegramni uzish</button>`:''}
-      ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}</div>
+      ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}
+      ${G3?'':`<button class="btn ghost" id="aiOf">${AI_SVG.replace('<svg','<svg width="18" height="18"')}<span>AI tekshiruvlari</span></button>`}</div>
     <h2 class="sech">Topshiriqlar</h2>
     <div class="alist">${T.map(t=>`<div class="card asg ${t.booster?'main':''}"><div class="aic">${t.finished?'🏆':t.booster?'📖':'🗺️'}</div>
       <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP${t.steps.filter(x=>x.info).map(x=>' · Natija: '+esc(x.info)).join('')}</div>
@@ -1835,6 +1907,7 @@ async function teacherStudent(id){
     <a class="btn navy big ${G3?'hide':''}" style="margin-top:16px" href="${BOOSTER_URL}" target="_blank" rel="noopener">Booster bo‘yicha batafsil hisobot</a></div>`;
   const tu=$('#tgUn');if(tu)tu.onclick=()=>modal(`<h3>${esc(j.student.name)} Telegramini uzasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchi keyin profilidan qaytadan ulashi mumkin.${r.tgp?' Telegram raqami: '+phoneNice(r.tgp)+'.':''}</p>`,
     [{t:'Bekor qilish'},{t:'Uzish',cls:'red',f:async()=>{try{const x=await cpost({action:'tgUnlink',key:U.pass,id});if(!x.ok)throw 0;toast('Uzildi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}]);
+  const ao=$('#aiOf');if(ao)ao.onclick=()=>{ui.aiq=j.student.id;go('#/teacher/ai')};
   const pr=$('#pinReset');if(pr)pr.onclick=()=>{if(!r.hasPin){toast('O‘quvchi hali parol o‘rnatmagan');return}
     modal(`<h3>${esc(j.student.name)} uchun parolni yangilaysizmi?</h3><p class="muted" style="margin-top:6px">Eski parol ishlamay qoladi. Keyingi kirishda o‘quvchi yangi parol o‘ylab topadi.</p>`,
       [{t:'Bekor qilish'},{t:'Yangilash',cls:'red',f:async()=>{try{const x=await cpost({action:'resetPin',key:U.pass,id});if(!x.ok)throw 0;toast('Parol yangilandi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}])};

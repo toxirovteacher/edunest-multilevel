@@ -249,6 +249,82 @@ body.exam main{padding-top:12px}
 .ov .row2 button.red{background:var(--red);border-color:var(--red);color:#fff}
 @media(max-width:520px){.xin{margin:10px auto;padding:22px 16px}.bar .fs.xhide{display:none}}
 @media print{body{display:none!important}}
+
+/* ---------- AI writing checker ---------- */
+.aib{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;margin:12px 0 0;border:0;border-radius:16px;background:linear-gradient(135deg,#141B2D,#2B3A67);color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;box-shadow:0 8px 22px rgba(20,27,45,.22)}
+.aib svg{width:22px;height:22px;flex:none}
+.aib:disabled{opacity:.7;cursor:wait}
+.aib.again{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.aiload{margin-top:12px;border-radius:16px;background:#fff;border:1.5px solid var(--line);padding:18px;text-align:center}
+.aiload .dots{display:flex;justify-content:center;gap:6px;margin:0 0 10px}
+.aiload .dots i{width:10px;height:10px;border-radius:50%;background:#2B3A67;animation:aid 1.2s infinite ease-in-out}
+.aiload .dots i:nth-child(2){animation-delay:.15s}.aiload .dots i:nth-child(3){animation-delay:.3s}
+@keyframes aid{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.aiload b{display:block;font-size:16px}.aiload span{display:block;margin-top:4px;font-size:13.5px;color:var(--slate)}
+.aierr{margin-top:12px;border-radius:14px;padding:13px 15px;background:var(--badbg);border-left:4px solid var(--bad);font-size:15px;line-height:1.5}
+.air,.aiload,.aierr{scroll-margin-top:calc(var(--bar) + 12px)}
+.air{margin-top:14px;border-radius:20px;overflow:hidden;background:#fff;border:1.5px solid var(--line);font-size:15.5px;line-height:1.55}
+.air .hd{display:flex;align-items:center;gap:14px;padding:18px;background:linear-gradient(135deg,#141B2D,#2B3A67);color:#fff}
+.air .lv{flex:none;width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--lc) calc(var(--p)*1%),rgba(255,255,255,.18) 0)}
+.air .lv span{width:66px;height:66px;border-radius:50%;background:#141B2D;display:grid;place-items:center;text-align:center;line-height:1}
+.air .lv b{display:block;font-size:23px}.air .lv small{display:block;font-size:10.5px;opacity:.8;margin-top:3px;font-weight:700}
+.air .hd h3{margin:0;font-size:19px;line-height:1.2}
+.air .hd p{margin:4px 0 0;font-size:13.5px;opacity:.85}
+.air .hd .wcs{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12.5px;font-weight:700}
+.air .sec{padding:16px 18px;border-top:1px solid var(--line)}
+.air .sec>h4{margin:0 0 10px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.air .sum{margin:0;font-weight:600}
+.air .crit{display:grid;gap:12px}
+.air .cr .top{display:flex;justify-content:space-between;gap:8px;font-weight:800;font-size:14.5px}
+.air .cr .bar2{height:9px;border-radius:9px;background:var(--mist);margin:6px 0 5px;overflow:hidden}
+.air .cr .bar2 i{display:block;height:100%;border-radius:9px;background:var(--cc)}
+.air .cr p{margin:0;font-size:14px;color:var(--slate)}
+.air ul.ok,.air ul.nx{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.air ul.ok li,.air ul.nx li{position:relative;padding-left:28px}
+.air ul.ok li::before{content:"✓";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--okbg);color:var(--ok);font-weight:800;font-size:12px;display:grid;place-items:center}
+.air ul.nx li{counter-increment:nx}.air ul.nx{counter-reset:nx}
+.air ul.nx li::before{content:counter(nx);position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}
+.air .yt{white-space:pre-wrap;padding:12px 14px;border-radius:12px;background:#FAFBFD;border:1.5px solid var(--line);font-size:15.5px;line-height:1.7;-webkit-user-select:none;user-select:none}
+.air .yt mark{background:#FDE2E4;color:inherit;border-radius:4px;padding:0 2px;border-bottom:2px solid var(--bad);cursor:pointer}
+.air .yt mark sup{font-size:.68em;font-weight:800;color:var(--bad);margin-left:1px}
+.air .ms{display:grid;gap:10px}
+.air .mi{border-radius:14px;border:1.5px solid var(--line);padding:11px 13px;scroll-margin-top:calc(var(--bar) + 12px)}
+.air .mi.flash{animation:aif 1.4s}
+@keyframes aif{0%,60%{background:#FFF4C2}100%{background:#fff}}
+.air .mi .mt{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--slate)}
+.air .mi .mt em{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--bad);color:#fff;display:grid;place-items:center;font-size:11.5px}
+.air .mi .fx{font-size:15.5px;line-height:1.5}
+.air .mi del{color:var(--bad);text-decoration-thickness:2px}
+.air .mi ins{color:var(--ok);text-decoration:none;font-weight:800}
+.air .mi p{margin:6px 0 0;font-size:14px;color:#3d4559}
+.air .chips2{display:flex;flex-wrap:wrap;gap:8px}
+.air .chips2 span{padding:7px 11px;border-radius:12px;background:#EEF2FF;border:1px solid #D9E0FB;font-size:14px;line-height:1.35}
+.air .imp{white-space:pre-wrap;padding:14px;border-radius:14px;background:#F3FBF6;border:1.5px solid #BFE3CD;line-height:1.7;font-size:15.5px}
+.air .note{margin:0;padding:12px 18px 16px;font-size:12.5px;color:var(--slate);text-align:center}
+.air .tgl{width:100%;min-height:50px;border-radius:14px;border:1.5px dashed #9CC9AE;background:#fff;color:var(--ok);font-weight:800;font-size:15px;cursor:pointer}
+/* standalone AI page */
+.aip{max-width:860px;margin:0 auto}
+.aihero{border-radius:22px;padding:22px 20px;background:radial-gradient(120% 140% at 100% 0%,#3B4E8C 0%,#141B2D 60%);color:#fff;margin:0 0 12px}
+.aihero h1{margin:0 0 6px;font-size:24px;line-height:1.15}
+.aihero p{margin:0;opacity:.88;line-height:1.5;font-size:15px}
+.aihero .feat{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.aihero .feat span{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12.5px;font-weight:700}
+.aistep{background:#fff;border-radius:18px;padding:16px;margin:0 0 12px}
+.aistep h2{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}
+.aistep h2 i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:13px}
+.aitypes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.aitypes button{min-height:76px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-align:left;padding:10px 12px;font-family:inherit}
+.aitypes button b{display:block;font-size:16px}.aitypes button small{display:block;color:var(--slate);font-size:12.5px;margin-top:2px;line-height:1.3}
+.aitypes button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.aitypes button[aria-pressed="true"] small{color:rgba(255,255,255,.8)}
+.aistep textarea{display:block;width:100%;padding:12px 13px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:16px;line-height:1.5;resize:vertical}
+.aistep textarea:focus{outline:2px solid var(--ink);outline-offset:1px}
+.aistep .tsk{min-height:96px}.aistep .ans{min-height:220px}
+.aihist{display:grid;gap:8px}
+.aihist button{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-align:left;padding:8px 12px;cursor:pointer;font-family:inherit}
+.aihist .hl{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;background:#2B3A67;font-size:14px}
+.aihist .hx{flex:1;min-width:0}.aihist .hx b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aihist .hx small{color:var(--slate);font-size:12.5px}
+@media(max-width:520px){.aitypes{grid-template-columns:1fr}.aitypes button{min-height:58px}.air .hd{padding:16px 14px}.air .sec{padding:14px}}
 </style>
 </head>
 <body>
@@ -420,17 +496,122 @@ function renderWrite(){
   const s=SEC;$('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.title;$('#jump').hidden=true;
   const paras=a=>a.map(p=>`<p>${esc(p)}</p>`).join('');
   const head=(s.sit||s.mail)?`<div class="paper"><h2>${esc(s.title)}</h2>${s.sit?`<p class="wsit">${esc(s.sit)}</p>`:''}${s.mail?`<div class="mail">${paras(s.mail)}</div>`:''}</div>`:'';
+  const ai=aiEnabled();
   const task=(t,i)=>`<div class="paper wt" data-t="${i}"><div class="wh"><span class="tag">${esc(t.tag)}</span><div class="wq">${esc(t.q)}</div></div>
     <textarea data-w="${i}" placeholder="Javobingizni shu yerga yozib ko‘ring…" aria-label="${esc(t.tag)} uchun javobingiz" autocapitalize="sentences" spellcheck="false"></textarea>
-    <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span><span class="ai">AI tekshiruvi — tez kunda</span></div>
+    <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span>${ai?'':'<span class="ai">AI tekshiruvi — tez kunda</span>'}</div>
+    ${ai?`<button class="aib" type="button" data-ai="${i}">${AI_ICON} AI bilan tekshirish</button><div data-ar="${i}"></div>`:''}
     <button class="reveal" data-m="${i}">Namuna javobni ko‘rish</button><div data-mb="${i}"></div></div>`;
-  $('#main').innerHTML=`<div class="wwrap"><div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>${head}${s.tasks.map(task).join('')}<p class="whint">Yozganingiz faqat shu qurilmada saqlanadi, ustozga yuborilmaydi.</p></div>`;
+  $('#main').innerHTML=`<div class="wwrap"><div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>${head}${s.tasks.map(task).join('')}<p class="whint">${ai?'Yozganingiz shu qurilmada saqlanadi. «AI bilan tekshirish»ni bossangiz, matn tekshiruvga yuboriladi (ismingiz emas) va natijani ustozingiz ham ko‘radi.':'Yozganingiz faqat shu qurilmada saqlanadi, ustozga yuborilmaydi.'}</p></div>`;
   watermark();
   const model=i=>{const t=s.tasks[i];document.querySelector(`[data-mb="${i}"]`).innerHTML=`<div class="model"><div class="mh"><span>${esc(t.mk)}</span><span>${t.mw} so‘z</span></div>${paras(t.m)}</div>`;const b=document.querySelector(`[data-m="${i}"]`);if(b)b.remove()};
   const upd=i=>{const t=s.tasks[i],n=wcount((WR.t||{})[i]);const c=document.querySelector(`[data-c="${i}"]`);c.textContent=n+' so‘z';c.classList.toggle('in',n>=t.lo&&n<=t.hi)};
   document.querySelectorAll('textarea[data-w]').forEach(a=>{const i=a.dataset.w;a.value=(WR.t||{})[i]||'';upd(i);a.addEventListener('input',()=>{WR.t=WR.t||{};WR.t[i]=a.value;save();upd(i)})});
   document.querySelectorAll('[data-m]').forEach(b=>{const i=b.dataset.m;b.onclick=()=>{WR.m=WR.m||{};WR.m[i]=1;save();model(i)};if((WR.m||{})[i])model(i)});
+  // AI check per task: type from the target length (1.1 ≈ 50 words, 1.2 = 120–150, Part 2 = 180–200)
+  const aiTask=i=>{const t=s.tasks[i];const type=t.lo<100?'1.1':t.lo<170?'1.2':'2';
+    return {type,task:[s.sit,(s.mail||[]).join('\n'),type==='2'?s.instr:'',t.q].filter(Boolean).join('\n\n')}};
+  const again=b=>{b.classList.add('again');b.innerHTML=AI_ICON+' Tuzatib, qayta tekshirish'};
+  document.querySelectorAll('[data-ai]').forEach(b=>{const i=b.dataset.ai,host=document.querySelector(`[data-ar="${i}"]`);
+    const prev=(WR.ai||{})[i];if(prev&&prev.r){aiResult(host,prev.r,prev.x);again(b)}
+    b.onclick=async()=>{const text=((WR.t||{})[i]||'').trim();
+      if(wcount(text)<10){host.innerHTML=`<div class="aierr">${AI_ERR.short}</div>`;return}
+      const q=aiTask(i);b.disabled=true;const stop=aiLoading(host);
+      const j=await aiCheck(q.type,q.task,text,H.d+':'+SEC.id+':'+i);stop();b.disabled=false;
+      if(!j||!j.ok){host.innerHTML=`<div class="aierr">${esc(AI_ERR[j&&j.error]||AI_ERR.fail)}</div>`;return}
+      WR.ai=WR.ai||{};WR.ai[i]={r:j.r,x:text,at:Date.now()};save();aiResult(host,j.r,text);again(b);
+      host.firstElementChild.scrollIntoView({behavior:'smooth',block:'start'})}});
   foot();
+}
+
+/* ---------- AI writing checker (Google Gemini through the EDUNEST script) ---------- */
+const CLOUD_URL="https://script.google.com/macros/s/AKfycbyGlQel0xAg62m-yMubZRfQgFrz-p8B7AMnxp4JsN9fv8eUJzek_zg6GM17BIo9ZkHNrw/exec";
+const AI_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
+function aiEnabled(){let p=null;try{p=JSON.parse(ls(ST+'p:'+UID)||'null')}catch(e){}return !!(p&&p.ai)}
+const AI_T={'1.1':{n:'Task 1.1 · norasmiy xat',lo:40,hi:60},'1.2':{n:'Task 1.2 · rasmiy xat',lo:120,hi:150},'2':{n:'Part 2 · esse',lo:180,hi:200}};
+const AI_C=[['task','Topshiriq bajarilishi'],['organisation','Tuzilish va bog‘lanish'],['vocabulary','Lug‘at boyligi'],['grammar','Grammatika']];
+const AI_MT={grammar:'Grammatika',vocabulary:'Lug‘at',spelling:'Imlo',punctuation:'Tinish belgisi',style:'Uslub',register:'Rasmiylik',organisation:'Tuzilish'};
+const AI_ERR={off:'AI tekshiruvi hozircha yoqilmagan. Ustozga murojaat qiling.',busy:'AI hozir juda band (bepul limit tugadi). 1–2 daqiqadan keyin qayta urinib ko‘ring.',
+  limit:'Bugungi tekshiruvlar soni tugadi. Ertaga yana urinib ko‘ring.',short:'Kamida 10 ta so‘z yozing — AI juda qisqa matnni baholay olmaydi.',
+  long:'Matn juda uzun (600 so‘zdan ko‘p). Faqat bitta topshiriq javobini yuboring.',auth:'Kirish muddati tugagan. Platformaga qaytadan kiring.',
+  type:'Topshiriq turini tanlang.',net:'Internet bilan muammo. Ulanishni tekshirib, qayta urinib ko‘ring.',fail:'Tekshirib bo‘lmadi. Birozdan keyin qayta urinib ko‘ring.'};
+async function aiCheck(type,task,text,src){
+  if(!SESSION||!SESSION.t)return {ok:false,error:'auth'};
+  const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),150000);
+  try{const r=await fetch(CLOUD_URL,{method:'POST',body:JSON.stringify({action:'aicheck',id:SESSION.id,t:SESSION.t,type,task,text,src}),signal:ctl.signal});return await r.json()}
+  catch(e){return {ok:false,error:'net'}}finally{clearTimeout(tm)}
+}
+const AI_STEPS=['Matn o‘qilmoqda…','Xatolar qidirilmoqda…','4 mezon bo‘yicha baholanmoqda…','Yaxshilangan variant yozilmoqda…','Deyarli tayyor…'];
+function aiLoading(host){let i=0;host.innerHTML=`<div class="aiload" role="status" aria-live="polite"><div class="dots"><i></i><i></i><i></i></div><b>${AI_STEPS[0]}</b><span>Odatda 15–40 soniya. Sahifani yopmang.</span></div>`;
+  const b=host.querySelector('b');const iv=setInterval(()=>{i=Math.min(AI_STEPS.length-1,i+1);b.textContent=AI_STEPS[i]},7000);return ()=>clearInterval(iv)}
+const lvShort=l=>l==='B1 dan past'?'B1−':l;
+const lvColor=l=>l==='C1'?'#2ECC71':l==='B2'?'#4EA8FF':l==='B1'?'#F5B400':'#FF6B6B';
+const critColor=v=>v>=9?'#0E8A4F':v>=7?'#2F80ED':v>=5?'#E0A800':'#C4121D';
+function aiMarkText(text,ms){   // underline each mistake's fragment inside the student's own text
+  const T=String(text||''),L=T.toLowerCase(),sp=[];
+  ms.forEach((m,i)=>{const o=String(m.original||'').trim().toLowerCase();if(o.length<2)return;let from=0;
+    for(;;){const k=L.indexOf(o,from);if(k<0)return;const e=k+o.length;if(!sp.some(s=>k<s.e&&e>s.s)){sp.push({s:k,e,i});return}from=k+1}});
+  sp.sort((a,b)=>a.s-b.s);let out='',p=0;
+  sp.forEach(s=>{out+=esc(T.slice(p,s.s))+`<mark data-mi="${s.i}">${esc(T.slice(s.s,s.e))}<sup>${s.i+1}</sup></mark>`;p=s.e});
+  return out+esc(T.slice(p));
+}
+function aiResult(host,r,text){
+  const ms=r.mistakes||[],li=a=>(a||[]).map(x=>`<li>${esc(x)}</li>`).join('');
+  host.innerHTML=`<div class="air">
+    <div class="hd"><div class="lv" style="--p:${Math.round((r.score75||0)/75*100)};--lc:${lvColor(r.level)}"><span><div><b>${esc(lvShort(r.level))}</b><small>${r.score75}/75</small></div></span></div>
+      <div><h3>Taxminiy daraja: ${esc(r.level)}</h3><p>${r.total}/40 · Multi-Level mezonlari bo‘yicha AI bahosi</p><span class="wcs">${r.words} so‘z · maqsad ${r.lo}–${r.hi}</span></div></div>
+    <div class="sec"><p class="sum">${esc(r.summary_uz)}</p></div>
+    <div class="sec"><h4>4 mezon</h4><div class="crit">${AI_C.map(([k,n])=>{const v=(r.scores||{})[k]||0;
+      return `<div class="cr"><div class="top"><span>${n}</span><span>${v}/10</span></div><div class="bar2"><i style="width:${v*10}%;--cc:${critColor(v)}"></i></div><p>${esc((r.criteria_uz||{})[k]||'')}</p></div>`}).join('')}</div></div>
+    ${(r.strengths_uz||[]).length?`<div class="sec"><h4>Yaxshi tomonlar</h4><ul class="ok">${li(r.strengths_uz)}</ul></div>`:''}
+    <div class="sec"><h4>Sizning matningiz${ms.length?` · ${ms.length} ta xato`:''}</h4><div class="yt">${aiMarkText(text,ms)}</div></div>
+    ${ms.length?`<div class="sec"><h4>Xatolar va tuzatishlar</h4><div class="ms">${ms.map((m,i)=>`<div class="mi" data-k="${i}"><div class="mt"><em>${i+1}</em>${esc(AI_MT[m.type]||m.type)}</div>
+      <div class="fx"><del>${esc(m.original)}</del> → <ins>${esc(m.correction)}</ins></div><p>${esc(m.explain_uz)}</p></div>`).join('')}</div></div>`
+      :`<div class="sec"><h4>Xatolar</h4><p class="sum">Jiddiy xato topilmadi — zo‘r! 👏</p></div>`}
+    ${(r.useful_phrases||[]).length?`<div class="sec"><h4>Foydali iboralar</h4><div class="chips2">${r.useful_phrases.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
+    ${(r.next_steps_uz||[]).length?`<div class="sec"><h4>Keyingi safar nima qilish kerak</h4><ul class="nx">${li(r.next_steps_uz)}</ul></div>`:''}
+    ${r.improved?`<div class="sec"><h4>Yaxshilangan variant</h4><button class="tgl" type="button">Yaxshilangan variantni ko‘rish · ${wcount(r.improved)} so‘z</button><div class="imp" hidden>${esc(r.improved)}</div></div>`:''}
+    <p class="note">Bu AI bahosi — taxminiy. Rasmiy imtihon natijasi farq qilishi mumkin. Xatolarni o‘zingiz tuzatib, qayta tekshiring.</p></div>`;
+  host.querySelectorAll('mark[data-mi]').forEach(m=>m.onclick=()=>{const t=host.querySelector(`.mi[data-k="${m.dataset.mi}"]`);
+    if(t){t.scrollIntoView({behavior:'smooth',block:'center'});t.classList.remove('flash');void t.offsetWidth;t.classList.add('flash')}});
+  const tg=host.querySelector('.tgl');if(tg)tg.onclick=()=>{tg.nextElementSibling.hidden=false;tg.remove()};
+}
+function aiPage(){
+  $('#ttl').textContent='AI Writing yordamchi';$('#sub').textContent='Multi-Level · Writing tekshiruvi';document.title='EDUNEST · AI Writing yordamchi';
+  $('#back').textContent='← Bosh sahifa';$('#back').href='./#/me';$('#jump').hidden=true;$('#foot').hidden=true;
+  const K=ST+'ai:'+UID;let D={};try{D=JSON.parse(ls(K)||'{}')}catch(e){}if(!AI_T[D.type])D.type='1.2';
+  const sv=()=>lset(K,JSON.stringify({type:D.type,task:D.task||'',text:D.text||''}));
+  const desc={'1.1':'Do‘stga norasmiy xat · ~50 so‘z','1.2':'Rasmiy xat · 120–150 so‘z','2':'Esse / fikr bildirish · 180–200 so‘z'};
+  $('#main').innerHTML=`<div class="aip">
+    <div class="aihero"><h1>AI Writing yordamchi</h1><p>Xat yoki esseingizni yozing — AI uni Multi-Level mezonlari bo‘yicha tekshiradi, har bir xatoni o‘zbekcha tushuntiradi va yaxshilangan variantini ko‘rsatadi.</p>
+      <div class="feat"><span>4 mezon bo‘yicha ball</span><span>Taxminiy daraja: B1 · B2 · C1</span><span>Xatolar + tushuntirish</span><span>Yaxshilangan variant</span></div></div>
+    <div class="aistep"><h2><i>1</i>Topshiriq turi</h2><div class="aitypes">${['1.1','1.2','2'].map(k=>`<button type="button" data-ty="${k}" aria-pressed="${D.type===k}"><b>${k==='2'?'Part 2':'Task '+k}</b><small>${desc[k]}</small></button>`).join('')}</div></div>
+    <div class="aistep"><h2><i>2</i>Topshiriq matni</h2><textarea class="tsk" id="atk" placeholder="Savolni yoki vaziyatni shu yerga yozing (masalan, kelgan xat va savol). AI javobingiz topshiriqqa mosligini shunga qarab tekshiradi."></textarea></div>
+    <div class="aistep"><h2><i>3</i>Sizning javobingiz</h2><textarea class="ans" id="atx" placeholder="Javobingizni ingliz tilida yozing…" autocapitalize="sentences" spellcheck="false"></textarea>
+      <div class="wbar"><span class="wc" id="awc">0 so‘z</span><span id="atg"></span></div>
+      <button class="aib" type="button" id="ago">${AI_ICON} AI bilan tekshirish</button><div id="ares"></div></div>
+    <div class="aistep" id="ahs" hidden><h2>Oldingi tekshiruvlarim</h2><div class="aihist" id="ahl"></div></div>
+    <p class="whint">Tekshirish uchun faqat topshiriq va javobingiz AI'ga yuboriladi (ismingiz emas). Natijalarni ustozingiz ham ko‘radi.</p></div>`;
+  const tk=$('#atk'),tx=$('#atx'),host=$('#ares'),go=$('#ago');tk.value=D.task||'';tx.value=D.text||'';
+  const upd=()=>{const t=AI_T[D.type],n=wcount(tx.value);$('#awc').textContent=n+' so‘z';$('#awc').classList.toggle('in',n>=t.lo&&n<=t.hi);$('#atg').textContent='Maqsad: '+t.lo+'–'+t.hi+' so‘z'};
+  document.querySelectorAll('[data-ty]').forEach(b=>b.onclick=()=>{D.type=b.dataset.ty;document.querySelectorAll('[data-ty]').forEach(x=>x.setAttribute('aria-pressed',x===b));sv();upd()});
+  tk.oninput=()=>{D.task=tk.value;sv()};tx.oninput=()=>{D.text=tx.value;sv();upd()};upd();
+  go.onclick=async()=>{const text=tx.value.trim();
+    if(wcount(text)<10){host.innerHTML=`<div class="aierr">${AI_ERR.short}</div>`;return}
+    go.disabled=true;const stop=aiLoading(host);const j=await aiCheck(D.type,tk.value.trim(),text,'ai-page');stop();go.disabled=false;
+    if(!j||!j.ok){host.innerHTML=`<div class="aierr">${esc(AI_ERR[j&&j.error]||AI_ERR.fail)}</div>`;return}
+    aiResult(host,j.r,text);go.classList.add('again');go.innerHTML=AI_ICON+' Tuzatib, qayta tekshirish';host.firstElementChild.scrollIntoView({behavior:'smooth',block:'start'});hist()};
+  async function hist(){
+    try{const ctl=new AbortController();setTimeout(()=>ctl.abort(),20000);
+      const j=await (await fetch(CLOUD_URL+'?action=aihist&id='+encodeURIComponent(SESSION.id)+'&t='+encodeURIComponent(SESSION.t),{signal:ctl.signal})).json();
+      if(!j||!j.ok)return;
+      if(!j.on){go.disabled=true;if(!host.firstElementChild)host.innerHTML=`<div class="aierr">${AI_ERR.off}</div>`}
+      if(!j.checks.length)return;$('#ahs').hidden=false;
+      $('#ahl').innerHTML=j.checks.map((c,i)=>`<button type="button" data-h="${i}"><span class="hl" style="background:${lvColor(c.level)}">${esc(lvShort(c.level))}</span><span class="hx"><b>${esc(AI_T[c.type]?AI_T[c.type].n:c.type)} · ${c.score}/75</b><small>${esc(new Date(c.at).toLocaleString())} · ${c.words} so‘z${c.task?' · '+esc(c.task.slice(0,60)):''}</small></span></button>`).join('');
+      document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const c=j.checks[+b.dataset.h];if(!c.r)return;aiResult(host,c.r,c.text);host.firstElementChild.scrollIntoView({behavior:'smooth',block:'start'})});
+    }catch(e){}
+  }
+  hist();
 }
 
 /* ---------- mock exam: every part in one sitting ---------- */
@@ -549,6 +730,7 @@ function setFs(){document.documentElement.style.setProperty('--fs',fs+'px');lset
 $('#fsp').onclick=()=>{fs=Math.min(24,fs+1);setFs()};$('#fsm').onclick=()=>{fs=Math.max(14,fs-1);setFs()};setFs();
 
 async function boot(){
+  if('ai' in H){if(!SESSION||!SESSION.t||SESSION.role==='teacher'){fail('Avval kiring','AI Writing yordamchidan foydalanish uchun platformaga o‘quvchi sifatida kiring.');return}watermark();aiPage();return}
   if(!H.d||!/^[a-z0-9-]+$/.test(H.d)){fail('Mashq topilmadi','Havola noto‘g‘ri. Xaritadan qayta oching.','./#/me');return}
   if(H.a)$('#back').href='./#/me/a/'+encodeURIComponent(H.a);
   if(!ls(ST+'k')){fail('Avval kiring','Bu mashq faqat EDUNEST o‘quvchilari uchun. Platformaga kiring va xaritadan oching.');return}

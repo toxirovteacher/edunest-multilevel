@@ -1685,13 +1685,15 @@ async function teacherHome(tab){
 /* ---------- AI Writing (Gemini): settings + every check students made ---------- */
 const AI_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
 const AI_TN={'1.1':'Task 1.1 · norasmiy xat','1.2':'Task 1.2 · rasmiy xat','2':'Part 2 · esse'};
-const AI_CN=[['task','Topshiriq'],['organisation','Tuzilish'],['vocabulary','Lug‘at'],['grammar','Grammatika']];
+const AI_CN=[['task','Topshiriq'],['grammar','Grammatika'],['vocabulary','Lug‘at'],['organisation','Bog‘lanish'],['mechanics','Imlo']];
 const aiLvC=l=>l==='C1'?'#159947':l==='B2'?'#2F80ED':l==='B1'?'#D98A06':'#E3101F';
-function aiDetail(c){const r=c.r||{},ms=r.mistakes||[];
+function aiDetail(c){const r=c.r||{},all=r.mistakes||[],er=all.filter(m=>m.kind!=='tip'),tp=all.filter(m=>m.kind==='tip');
+  const mi=(m,i)=>`<div class="aimi"><b>${i+1}.</b> <del>${esc(m.original)}</del> → <ins>${esc(m.correction)}</ins><small>${esc(m.explain_uz)}</small></div>`;
   return `<div class="aidet">${c.task?`<div class="aiblk"><h4>Topshiriq</h4><p class="pre">${esc(c.task)}</p></div>`:''}
     <div class="aiblk"><h4>O‘quvchi matni · ${c.words} so‘z</h4><p class="pre">${esc(c.text)}</p></div>
-    <div class="aiblk"><h4>Ballar</h4><div class="aisc">${AI_CN.map(([k,n])=>`<span><b>${(r.scores||{})[k]??'–'}/10</b>${n}</span>`).join('')}<span><b>${c.score}/75</b>${esc(c.level)}</span></div><p>${esc(r.summary_uz||'')}</p></div>
-    ${ms.length?`<div class="aiblk"><h4>Xatolar (${ms.length})</h4>${ms.map((m,i)=>`<div class="aimi"><b>${i+1}.</b> <del>${esc(m.original)}</del> → <ins>${esc(m.correction)}</ins><small>${esc(m.explain_uz)}</small></div>`).join('')}</div>`:''}
+    <div class="aiblk"><h4>Ballar</h4><div class="aisc">${AI_CN.filter(([k])=>k in (r.scores||{})).map(([k,n])=>`<span><b>${r.scores[k]}/10</b>${n}</span>`).join('')}<span><b>${r.max?r.points+'/'+r.max:c.score+'/75'}</b>${esc(c.level)}</span></div><p>${esc(r.summary_uz||'')}</p>${r.word_note_uz?`<p>⚠️ ${esc(r.word_note_uz)}</p>`:''}</div>
+    <div class="aiblk"><h4>Xatolar (${er.length})</h4>${er.length?er.map(mi).join(''):'<p>Xato topilmadi.</p>'}</div>
+    ${tp.length?`<div class="aiblk"><h4>Tavsiyalar (${tp.length}) — xato emas</h4>${tp.map(mi).join('')}</div>`:''}
     ${r.improved?`<div class="aiblk"><h4>AI yaxshilagan variant</h4><p class="pre">${esc(r.improved)}</p></div>`:''}</div>`}
 async function tAI(){
   const B=$('#tBody');B.innerHTML='<div class="loading" style="margin-top:30px"><div class="spin"></div>Yuklanmoqda…</div>';
@@ -1713,7 +1715,7 @@ async function tAI(){
     <div id="aiList" class="ailist"></div>`;
   const draw=()=>{const q=F.q.toLowerCase();const L=C.filter(c=>(!F.t||c.type===F.t)&&(!q||(c.name+' '+c.id).toLowerCase().includes(q)));
     $('#aiList').innerHTML=L.length?L.map(c=>{const i=C.indexOf(c);return `<div class="card aichk"><button class="aihd" data-ai="${i}" aria-expanded="false">
-        <span class="ailv" style="background:${aiLvC(c.level)}">${esc(c.level==='B1 dan past'?'B1−':c.level)}<small>${c.score}</small></span>
+        <span class="ailv" style="background:${aiLvC(c.level)}">${esc(c.level==='B1 dan past'?'B1−':c.level)}<small>${c.r&&c.r.max?c.r.points+'/'+c.r.max:c.score}</small></span>
         <span class="aitx"><b>${esc(c.name)}</b><small>${esc(c.group)} · ${AI_TN[c.type]||esc(c.type)} · ${c.words} so‘z · ${new Date(c.at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</small></span>
         <span class="aiar">›</span></button><div class="aibody" hidden></div></div>`}).join(''):'<p class="muted empty">Hali tekshiruvlar yo‘q.</p>';
     document.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const bd=b.nextElementSibling,open=bd.hidden;if(open&&!bd.innerHTML)bd.innerHTML=aiDetail(C[+b.dataset.ai]);bd.hidden=!open;b.setAttribute('aria-expanded',open)})};

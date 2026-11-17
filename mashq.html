@@ -451,6 +451,8 @@ const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 
 const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>');
 let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null,EX=null,WR={};
+const OPENED=Date.now();
+function toast(m){let d=document.getElementById('mtoast');if(!d){d=document.createElement('div');d.id='mtoast';d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:96px;transform:translateX(-50%);max-width:min(92vw,460px);background:#141B2D;color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;z-index:9999;box-shadow:0 12px 30px rgba(0,0,0,.3);text-align:center;transition:opacity .2s';document.body.appendChild(d)}d.textContent=m;d.style.opacity=1;clearTimeout(d._t);d._t=setTimeout(()=>d.style.opacity=0,3200)}
 const key=()=>ST+'mashq:'+UID+':'+H.d+':'+(EX?'exam':SEC.id);
 function save(){if(EX){lset(key(),JSON.stringify({a:ANS,t0:EX.t0,part:EX.part,r:EX.r}));return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR}))}
 function restore(){let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}ANS=(s&&s.a)||{};DONE=(s&&s.r)||null;WR=(s&&s.w)||{}}
@@ -516,7 +518,11 @@ function goDone(){const canDone=H.a&&H.s!=null;location.href=canDone?'./#/me/a/'
 function foot(){
   if(EX){examFoot();return}
   const f=$('#footin');$('#foot').hidden=false;
-  if(SEC.kind==='study'||SEC.kind==='write'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;$('#dn').onclick=goDone;return}
+  if(SEC.kind==='study'||SEC.kind==='write'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;
+    $('#dn').onclick=()=>{if(H.a&&H.s!=null){
+      if(SEC.kind==='write'&&!Object.values(WR.t||{}).some(x=>typeof x==='string'&&x.trim().split(/\s+/).length>=30)){toast('Avval kamida bitta javobni yozing (30 so‘zdan ko‘p). Shundan keyin “Bajardim” ishlaydi.');return}
+      if(SEC.kind==='study'){if(Date.now()-OPENED<60000){toast('Avval iboralarni o‘qib chiqing. Kamida 1 daqiqa ishlang.');return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR,v:Date.now()}))}}
+      goDone()};return}
   const total=nums().length,a=answered();
   if(!DONE){
     f.innerHTML=`<button id="chk" class="${armed?'warn':''}">${armed?`${total-a} ta savol bo‘sh — baribir tekshirish`:'Javoblarni tekshirish'}<span class="cnt">${a} / ${total} javob yozildi</span></button>`;

@@ -1080,6 +1080,182 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
 
 .rs-bulk[hidden]{display:none}
 
+/* ===== v22 in-app Reading Booster ===== */
+.bx{padding-bottom:110px}
+.bx-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:6px 0 14px;flex-wrap:wrap}
+.bx-ht small{font:700 12px/1 Onest,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+.bx-ht h1{font:800 clamp(22px,4vw,30px)/1.15 Onest,sans-serif;margin:6px 0 0;color:var(--ink)}
+.bx-dots{display:flex;gap:6px}
+.bx-dots i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 13px Onest,sans-serif;font-style:normal;background:var(--track);color:var(--mute);transition:.25s}
+.bx-dots i.f{background:var(--red);color:#fff;transform:scale(1.06)}
+.bx-steps{list-style:none;display:flex;gap:6px;padding:0;margin:0 0 16px;overflow-x:auto;scrollbar-width:none}
+.bx-steps li{flex:1;min-width:92px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line);font:600 12.5px Onest,sans-serif;color:var(--mute)}
+.bx-steps li i{font-style:normal;width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--track);font-weight:800}
+.bx-steps li.on{border-color:var(--red);color:var(--ink);box-shadow:0 6px 18px -10px var(--red)}
+.bx-steps li.on i{background:var(--red);color:#fff}
+.bx-steps li.done{color:var(--green)}.bx-steps li.done i{background:var(--green);color:#fff}
+.bx-help{background:linear-gradient(135deg,var(--red-l),var(--card));border:1px solid var(--line);border-left:4px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:16px;line-height:1.55;color:var(--ink2)}
+.bx-help b{color:var(--ink)}.bx-help small{display:block;margin-top:4px;color:var(--mute);font-style:italic}
+.bx-pass{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,32px);box-shadow:var(--shadow);font:17px/1.85 var(--serif,Georgia),serif;color:var(--ink);overflow:hidden}
+.bx-pass h2{font:800 20px/1.2 Onest,sans-serif;margin:0 0 12px;color:var(--ink)}
+.bx-pass p{margin:0 0 14px}
+.bx-gap{display:inline-flex;align-items:center;gap:4px;vertical-align:baseline;white-space:nowrap}
+.bx-gap b{font:800 11px Onest,sans-serif;background:var(--ink);color:var(--card);border-radius:6px;padding:2px 6px}
+.bx-gap input{width:118px;font:600 16px Onest,sans-serif;border:none;border-bottom:2px dashed var(--mute);background:var(--input,transparent);color:var(--ink);padding:3px 6px;border-radius:6px 6px 0 0;outline:none;transition:.2s}
+.bx-gap input:focus{border-bottom:2px solid var(--red);background:var(--red-l)}
+.bx-gap.f input{border-bottom:2px solid var(--ink)}
+.bx-gap.ok input{border-bottom-color:var(--green);background:var(--green-l);color:var(--green)}
+.bx-gap.no input{border-bottom-color:var(--red);background:var(--red-l);color:var(--red);width:auto;min-width:150px}
+.bx-gl{border-bottom:1.5px dotted var(--mute);cursor:help}
+.bx-gl:hover{background:var(--amber-l)}
+.bx-pop{position:absolute;z-index:90;max-width:260px;background:var(--ink);color:var(--card);padding:9px 12px;border-radius:10px;font:600 14px/1.35 Onest,sans-serif;box-shadow:0 12px 30px -10px #0008;animation:bxIn .18s ease}
+.bx-pop small{display:block;opacity:.6;font-size:11px;margin-bottom:2px}
+.bx-cover{position:absolute;inset:0;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:color-mix(in srgb,var(--card) 55%,transparent);display:grid;place-items:center;padding:18px}
+.bx-start{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;max-width:380px;width:100%;box-shadow:0 30px 60px -30px #0007;font-family:Onest,sans-serif;text-align:left}
+.bx-start small{color:var(--red);font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.bx-start h3{font:800 22px/1.2 Onest,sans-serif;margin:6px 0 10px}
+.bx-start ul{margin:0 0 18px;padding-left:18px;line-height:1.7;font-size:14.5px;color:var(--ink2)}
+.bx-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px max(16px,calc((100vw - 900px)/2)) calc(12px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);font-family:Onest,sans-serif}
+.bx-bar .btn{margin:0}.bx-bar>span{color:var(--mute)}.bx-bar b{color:var(--ink)}
+.bx-res{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
+.bx-ring{position:relative;width:150px;height:150px}
+.bx-ringsvg{width:100%;height:100%}
+.bx-rg{transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+.bx-ring>div{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:Onest,sans-serif}
+.bx-ring b{font-size:34px;font-weight:800;color:var(--ink)}.bx-ring small{color:var(--mute);font-size:12px}
+.bx-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.bx-mini div{background:var(--paper,var(--hover));border-radius:12px;padding:10px;text-align:center;font-family:Onest,sans-serif}
+.bx-mini b{display:block;font-size:19px;color:var(--ink)}.bx-mini span{font-size:11px;color:var(--mute)}
+.bx-fb{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.bx-fb li{display:flex;gap:10px;align-items:flex-start;line-height:1.45;font-size:14.5px;color:var(--ink2)}
+.bx-fb i{font-style:normal;font-size:18px}
+.bx-h2{font:800 19px Onest,sans-serif;margin:8px 0 12px;color:var(--ink)}
+.bx-ans{display:grid;gap:10px}
+.bx-an{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;animation:bxIn .4s both}
+.bx-an:nth-child(2){animation-delay:.05s}.bx-an:nth-child(3){animation-delay:.1s}.bx-an:nth-child(4){animation-delay:.15s}.bx-an:nth-child(5){animation-delay:.2s}.bx-an:nth-child(6){animation-delay:.25s}
+.bx-an .n{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:800 14px Onest,sans-serif;color:#fff;background:var(--red)}
+.bx-an.ok .n{background:var(--green)}
+.bx-an .w{font:600 15.5px Onest,sans-serif;color:var(--ink)}.bx-an .w s{color:var(--red)}.bx-an .w em{color:var(--mute)}
+.bx-an .tag{font-size:11px;margin-left:6px}
+.bx-an .ev{margin-top:5px;font-size:14px;line-height:1.5;color:var(--ink2)}
+.bx-an mark,.bx-cfb mark{background:var(--amber-l);color:var(--ink);padding:0 3px;border-radius:4px}
+.bx-mt{display:grid;gap:10px;margin-bottom:16px}
+.bx-mr{display:grid;grid-template-columns:28px 1fr 18px minmax(120px,40%);gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.bx-mr .i{font:800 13px Onest,sans-serif;color:var(--mute);text-align:center}
+.bx-mr .l b{font:700 16px Onest,sans-serif;color:var(--ink)}
+.bx-mr .l small{display:block;font-size:12.5px;line-height:1.4;color:var(--mute);margin-top:2px}
+.bx-mr .l small b{font-size:12.5px;color:var(--red)}
+.bx-mr .l em{display:block;font-size:13px;color:var(--blue);font-style:normal;margin-top:2px}
+.bx-mr .a{color:var(--mute)}
+.bx-uz{font:700 10px Onest,sans-serif;border:1px solid var(--line);background:none;color:var(--mute);border-radius:6px;padding:1px 5px;margin-left:6px;cursor:pointer;vertical-align:middle}
+.bx-slot{min-height:44px;border-radius:12px;border:2px dashed var(--line);background:var(--paper,transparent);color:var(--mute);font:600 14.5px Onest,sans-serif;cursor:pointer;padding:6px 10px;transition:.2s}
+.bx-slot.sel{border-color:var(--red);color:var(--red)}
+.bx-slot.full{border-style:solid;border-color:var(--ink);color:var(--ink);background:var(--card)}
+.bx-slot.ok{border:2px solid var(--green);background:var(--green-l);color:var(--green);cursor:default}
+.bx-slot.rev{border:2px solid var(--amber);background:var(--amber-l);color:var(--ink);cursor:default}
+.bx-slot.shake{animation:bxShake .4s}
+.bx-bank{position:sticky;bottom:74px;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:0 -10px 30px -18px #0006}
+.bx-bh{display:flex;justify-content:space-between;gap:10px;font:13px Onest,sans-serif;color:var(--mute);margin-bottom:8px}.bx-bh b{color:var(--ink)}
+.bx-chips{display:flex;flex-wrap:wrap;gap:8px}
+.bx-chip{font:600 14.5px Onest,sans-serif;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s}
+.bx-chip:hover{border-color:var(--ink)}
+.bx-chip.sel{background:var(--ink);color:var(--card);border-color:var(--ink);transform:translateY(-2px)}
+.bx-chip.used{opacity:.28;pointer-events:none;text-decoration:line-through}
+.bx-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.bx-ck{font:700 12px Onest,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+.bx-sent{font:17px/1.75 var(--serif,Georgia),serif;color:var(--ink);margin:10px 0 16px}
+.bx-gx{display:inline-block;min-width:70px;text-align:center;border-bottom:3px solid var(--red);color:var(--red);font:800 14px Onest,sans-serif;animation:bxPulse 1.6s infinite}
+.bx-wt{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.bx-wt button{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:12px;cursor:pointer;text-align:left;font-family:Onest,sans-serif;transition:.15s}
+.bx-wt button:hover{border-color:var(--ink);transform:translateY(-1px)}
+.bx-wt b{display:block;font-size:15px;color:var(--ink)}.bx-wt small{color:var(--mute);font-size:12px}
+.bx-wt button.ok{border-color:var(--green);background:var(--green-l)}.bx-wt button.no{border-color:var(--red);background:var(--red-l)}
+.bx-cfb{margin-top:14px;border-radius:14px;padding:12px 14px;line-height:1.5;font-size:14.5px;animation:bxIn .25s}
+.bx-cfb.ok{background:var(--green-l);color:var(--ink)}.bx-cfb.no{background:var(--amber-l);color:var(--ink)}
+.bx-cfb div{margin-top:4px}
+.bx-modaltext{max-height:55vh;overflow:auto;font:15.5px/1.7 var(--serif,Georgia),serif;margin-top:10px}
+.bx-win{display:flex;gap:18px;align-items:center;border-radius:22px;padding:24px;color:#fff;background:radial-gradient(120% 140% at 0% 0%,#ff5a5f 0%,var(--red) 40%,#7a0710 100%);box-shadow:0 24px 50px -24px var(--red);margin:6px 0 16px;overflow:hidden;position:relative}
+.bx-win:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:#ffffff1a}
+.bx-win small{opacity:.8;font:600 12px Onest,sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.bx-win h1{font:800 clamp(24px,5vw,34px)/1.1 Onest,sans-serif;margin:4px 0 6px;color:#fff}
+.bx-win p{margin:0;opacity:.95}.bx-win .xp{background:#fff;color:var(--red);padding:2px 9px;border-radius:999px}
+.bx-trophy{font-size:54px;filter:drop-shadow(0 8px 14px #0005)}
+.bx-win.fresh .bx-trophy{animation:bxPop .8s cubic-bezier(.2,1.6,.4,1)}
+.bx-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.bx-sum div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-family:Onest,sans-serif}
+.bx-sum b{display:block;font-size:22px;color:var(--ink)}.bx-sum span{font-size:12px;color:var(--mute)}
+.bx-tw{overflow-x:auto;margin-top:10px}
+.bx-tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.bx-tbl th{text-align:left;font:700 12px Onest,sans-serif;color:var(--mute);text-transform:uppercase;padding:8px;border-bottom:2px solid var(--line)}
+.bx-tbl td{padding:9px 8px;border-bottom:1px solid var(--line);color:var(--ink)}
+.bx-tbl td.u{color:var(--blue)}.bx-tbl .red{color:var(--red);font-weight:700}
+@keyframes bxIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes bxShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes bxPulse{50%{opacity:.45}}
+@keyframes bxPop{0%{transform:scale(0) rotate(-30deg)}100%{transform:none}}
+@media(max-width:620px){.bx-res{grid-template-columns:1fr;justify-items:center}.bx-mini{grid-template-columns:repeat(2,1fr)}
+ .bx-mr{grid-template-columns:22px 1fr;row-gap:8px}.bx-mr .a{display:none}.bx-slot{grid-column:1/-1}
+ .bx-pass{font-size:16px}.bx-gap input{width:100px}.bx-dots i{width:26px;height:26px}.bx-bar .btn.big{padding-left:16px;padding-right:16px}}
+
+/* ===== v22 Telegram nudge (skippable) ===== */
+.tgnudge{position:fixed;z-index:60;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;width:min(440px,calc(100vw - 24px));display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:0 24px 50px -20px #0007;transition:.35s cubic-bezier(.2,.9,.3,1.2);font-family:Onest,sans-serif}
+.tgnudge.on{transform:translate(-50%,0);opacity:1}
+.tgnudge .ic{flex:none;width:42px;height:42px;border-radius:12px;background:#229ED9;display:grid;place-items:center;color:#fff}
+.tgnudge .ic svg{width:24px;height:24px;fill:#fff}
+.tgnudge b{display:block;font-size:15px;color:var(--ink)}
+.tgnudge span{display:block;font-size:13.5px;line-height:1.45;color:var(--mute);margin-top:3px}
+.tgnudge .bt{display:flex;gap:8px;margin-top:10px}.tgnudge .bt .btn{margin:0;padding:8px 16px}
+.tgnudge .x{position:absolute;top:6px;right:8px;border:none;background:none;font-size:20px;color:var(--mute);cursor:pointer;line-height:1}
+
+/* ===== v22 hero: cards never cover the face ===== */
+.hx-photo{inset:0 0 0 30%}
+.hx-res{left:0;top:6%;width:220px}
+.hx-sp{left:0;right:auto;top:auto;bottom:24%}
+.hx-plate{left:auto;right:3%;bottom:4%}
+@media (max-width:860px){.hx-photo{inset:0 0 0 30%}}
+@media (max-width:520px){.hx-photo{inset:0 4%}.hx-res,.hx-sp{display:none}.hx-plate{right:auto;left:0;bottom:4%}}
+
+/* ===== v22 student home hero ===== */
+.sth{position:relative;overflow:hidden;border-radius:26px;padding:22px;color:#fff;margin:4px 0 16px;
+ background:radial-gradient(90% 120% at 100% 0%,#ff6b6b55 0%,transparent 55%),radial-gradient(80% 100% at 0% 100%,#3b1d8f66 0%,transparent 60%),linear-gradient(135deg,#E3101F 0%,#a30a17 45%,#1c1f3a 100%);
+ box-shadow:0 30px 60px -30px #E3101F99;animation:bxIn .5s both}
+.sth:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='2' cy='2' r='1.2' fill='%23ffffff22'/%3E%3C/svg%3E");pointer-events:none}
+.sth:after{content:"";position:absolute;width:280px;height:280px;right:-90px;bottom:-140px;border-radius:50%;border:40px solid #ffffff10;pointer-events:none}
+.sth>*{position:relative;z-index:1}
+.sth-top{display:flex;align-items:center;gap:14px}
+.sth .pav{width:58px;height:58px;border-radius:18px;background:#ffffff22;border:1.5px solid #ffffff44;color:#fff;font:800 20px Onest,sans-serif;display:grid;place-items:center;flex:none;backdrop-filter:blur(6px)}
+.sth-top small{opacity:.8;font:600 13px Onest,sans-serif}
+.sth h1{font:800 clamp(24px,5vw,32px)/1.05 Onest,sans-serif;margin:2px 0 6px;color:#fff}
+.sth .st-meta span{background:#ffffff1f;color:#fff;border:none}
+.sth-ring{margin-left:auto;position:relative;width:92px;height:92px;flex:none}
+.sth-ring svg{width:100%;height:100%}.sth-ring circle:first-child{stroke:#ffffff26}
+.sth-ring>div{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:Onest,sans-serif}
+.sth-ring b{font-size:20px;font-weight:800}.sth-ring small{font-size:10px;opacity:.8}
+.sth-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 14px}
+.sth-stats>*{background:#ffffff17;border:1px solid #ffffff22;border-radius:16px;padding:12px;color:#fff!important;text-decoration:none;backdrop-filter:blur(6px);transition:.2s}
+.sth-stats a:hover{background:#ffffff2a;transform:translateY(-2px)}
+.sth-stats b{display:block;font:800 26px/1 Onest,sans-serif}.sth-stats b i{font-style:normal;font-size:13px;opacity:.75;margin-left:2px}
+.sth-stats span{display:block;font-size:12px;opacity:.8;margin-top:4px}
+.sth-lv{display:grid;gap:8px;margin-bottom:16px}
+.sth-lv>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sth-lvb{font:800 14px Onest,sans-serif;background:#fff;color:#a30a17;padding:5px 12px;border-radius:999px}
+.sth-lv small{font-size:12.5px;opacity:.85}
+.lvbar{height:10px;border-radius:99px;background:#ffffff26;overflow:hidden}
+.lvbar b{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#FFD166,#fff);box-shadow:0 0 14px #FFD166aa;animation:lvGrow 1.2s cubic-bezier(.2,.8,.2,1) both}
+.sth-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sth-cta em{font-style:normal;font:600 14px Onest,sans-serif;opacity:.95}
+.sth-go{background:#fff!important;color:#a30a17!important;border:none!important;display:inline-grid!important;grid-template-columns:auto auto;column-gap:8px;text-align:left;padding:10px 20px!important;border-radius:16px!important;box-shadow:0 10px 24px -10px #000a;animation:sthPulse 2.6s ease-in-out infinite}
+.sth-go span{font-size:18px;transition:.2s}.sth-go:hover span{transform:translateX(4px)}
+.sth-go small{grid-column:1/-1;font:600 11.5px Onest,sans-serif;color:#6b6f80;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .tgrid .tcard{animation:bxIn .45s both}
+.st .tgrid .tcard:nth-child(2){animation-delay:.06s}.st .tgrid .tcard:nth-child(3){animation-delay:.12s}.st .tgrid .tcard:nth-child(4){animation-delay:.18s}
+.st .tgrid .tcard{transition:transform .2s,box-shadow .2s}.st .tgrid .tcard:hover{transform:translateY(-4px) rotate(-.3deg);box-shadow:0 22px 40px -22px #0008}
+@keyframes lvGrow{from{width:0}}
+@keyframes sthPulse{0%,100%{box-shadow:0 10px 24px -10px #000a,0 0 0 0 #ffffff66}50%{box-shadow:0 10px 24px -10px #000a,0 0 0 8px #ffffff00}}
+@media(max-width:520px){.sth{padding:18px;border-radius:22px}.sth-ring{width:76px;height:76px}.sth-ring b{font-size:17px}.sth-stats b{font-size:21px}.sth-go{width:100%}.sth-go small{max-width:none}}
+@media(prefers-reduced-motion:reduce){.sth,.sth-go,.lvbar b,.st .tgrid .tcard,.bx-an{animation:none}}
+.sth-lvb{white-space:nowrap;flex:none;display:inline-block}
+
 </style>
 </head>
 <body class="uz-on">
@@ -1624,6 +1800,10 @@ function tracks(p){
 const STABS=[['home','Topshiriqlar',IC.map],['liga','Reyting',IC.cup]];
 let lastFetch=0;
 async function me(h){
+  if(h[1]==='b'&&h[2]){if(!P){try{P=JSON.parse(store(ST+'p:'+U.id)||'null')}catch(e){}}if(P&&!P.xp)P=null;
+    if(!P){view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
+      try{const j=await cget({action:'me',id:U.id,t:U.t});if(j&&j.ok){lastFetch=Date.now();P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P))}}catch(e){}}
+    if(!P){go('#/me',true);return}bxOpen(+h[2]);return}
   if(h[1]==='a'&&h[3]==='done'&&h[4]!=null){ui.pendingDone={aid:decodeURIComponent(h[2]),i:+h[4]};history.replaceState(null,'','#/me/a/'+h[2]);h=h.slice(0,3)}
   const tab=h[1]==='liga'?'liga':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2]&&decodeURIComponent(h[2]);
   document.body.classList.add('st-mode');setBack(tab==='map'?'#/me':null,'Topshiriqlar');
@@ -1632,7 +1812,7 @@ async function me(h){
   if(P)drawMe();else view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
   if(Date.now()-lastFetch<15000&&P)return;
   try{const j=await cget({action:'me',id:U.id,t:U.t});lastFetch=Date.now();
-    if(j&&j.ok){P=j;keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(j));if(location.hash.startsWith('#/me'))drawMe()}
+    if(j&&j.ok){P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P));if(location.hash.startsWith('#/me'))drawMe();qFlush();bxFlush()}
     else if(j&&!j.ok){toast(U.guest?'Mehmon muddati tugadi. Qaytadan kiring.':'Qaytadan kiring');logout(true)}}
   catch(e){if(!P)view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Internet aloqasi yo‘q</h3><p class="muted">Aloqani tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="lastFetch=0;route()">Qayta urinish</button></div></div>`}
 }
@@ -1641,25 +1821,51 @@ function drawMe(){
   const tab=ui.stab;
   if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);
     const pd=ui.pendingDone;if(pd&&pd.aid===t.aid){ui.pendingDone=null;const st=t.steps[pd.i];
-      if(st&&!st.done&&!t.booster&&pd.i===t.cur){if(isExam(st.l)&&!examRes(st.l))toast('Avval testni oxirigacha ishlang');else stepMark(P,t,pd.i,'done')}
+      if(st&&!st.done&&!t.booster&&pd.i===t.cur){const pf=stepProof(st.l);if(!pf.ok)toast(pf.msg);else stepMark(P,t,pd.i,'done',pf.info)}
       else if(st&&st.done&&isExam(st.l)){const inf=resText(examRes(st.l));if(inf&&inf!==st.info){P.info=P.info||{};P.info[t.aid+':'+pd.i]=inf;store(ST+'p:'+U.id,JSON.stringify(P));cpost({action:'mark',id:U.id,t:U.t,aid:t.aid+':'+pd.i,status:'done',info:inf}).catch(()=>{})}}}return}
   view().innerHTML=`<div class="wrap st anim">${tab==='liga'?ligaHTML(P):homeHTML(P)}</div>`+stNav(tab);
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
   document.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')});
   const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
+  if(tab==='home'){tgNudge();bxAnim();const c=$('[data-count]'),k=ST+'xpseen:'+U.id,from=+store(k)||0,to=c?+c.dataset.count:0;
+    if(c&&to>from&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const t0=performance.now(),f=n=>{const q=Math.min(1,(n-t0)/1100);c.textContent=Math.round(from+(to-from)*(1-Math.pow(1-q,3)));if(q<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+    store(k,String(to))}
 }
+/* friendly, skippable Telegram reminder — at most once every 3 days */
+function tgNudge(){const s=P&&P.student;if(!s||s.type==='guest'||!P.tgBot||s.tg||$('.tgnudge'))return;
+  const k=ST+'tgn:'+U.id;if(Date.now()-(+store(k)||0)<3*864e5)return;
+  clearTimeout(ui.tgn);ui.tgn=setTimeout(()=>{if(ui.stab!=='home'||$('.tgnudge')||!location.hash.replace(/^#\/?/,'').match(/^(me)?$/))return;
+    const d=document.createElement('div');d.className='tgnudge';d.setAttribute('role','dialog');d.setAttribute('aria-label','Telegram’ni ulash');
+    d.innerHTML=`<button class="x" aria-label="Yopish">×</button><div class="ic">${TGI}</div><div class="tx"><b>Telegram’ni ulab qo‘ying 👋</b><span>Parolni eslab yurish shart emas — keyingi safar bir bosishda kirasiz. Ustoz xabarlari ham shu yerga keladi.</span>
+      <div class="bt"><button class="btn red" data-y>Ulash</button><button class="btn ghost" data-n>Keyinroq</button></div></div>`;
+    document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('on'));
+    const shut=()=>{store(k,String(Date.now()));d.classList.remove('on');setTimeout(()=>d.remove(),300)};
+    d.querySelector('[data-n]').onclick=shut;d.querySelector('.x').onclick=shut;d.querySelector('[data-y]').onclick=()=>{shut();tgLinkModal()}},1500)}
+addEventListener('hashchange',()=>{const n=$('.tgnudge');if(n)n.remove()});
 function myRank(p){const rows=p.board||[];const me=rows.find(r=>r.me);if(!me)return null;const better=rows.filter(r=>r.t>me.t);return{me,n:rows.length,gap:better.length?Math.min(...better.map(r=>r.t))-me.t:0}}
+const LVS=[[0,'🌱','Yangi boshlovchi'],[50,'📘','Izlanuvchi'],[150,'⚡','Faol o‘quvchi'],[350,'🔥','Bilimdon'],[700,'💎','Usta'],[1200,'👑','Chempion']];
+function stLevel(x){let i=0;while(i<LVS.length-1&&x>=LVS[i+1][0])i++;const c=LVS[i],n=LVS[i+1];
+  return{ic:c[1],n:c[2],next:n&&n[2],need:n?n[0]-x:0,pct:n?Math.round((x-c[0])/(n[0]-c[0])*100):100}}
 function homeHTML(p){
-  const s=p.student,rk=myRank(p),T=tracks(p);
+  const s=p.student,rk=myRank(p),T=tracks(p),lv=stLevel(p.xp.T);
+  const all=T.reduce((a,t)=>a+t.total,0),dn=T.reduce((a,t)=>a+t.done,0),pc=all?Math.round(dn/all*100):0;
+  const nx=T.find(t=>t.done&&!t.finished)||T.find(t=>!t.finished);
+  const nxHref=nx?(nx.booster?'#/me/b/'+((nx.cur==null?nx.done:nx.cur)+1):'#/me/a/'+encodeURIComponent(nx.aid)):'#/me/liga';
+  const h=new Date().getHours(),hi=h<11?'Xayrli tong':h<17?'Salom':'Xayrli kech';
   return `
-  <div class="st-hello"><div class="pav">${esc(initials(s.name))}</div><div><h1>Salom, ${esc(s.name.split(' ')[0])}</h1>
-    <div class="st-meta">${s.type==='guest'?'<span>Mehmon</span><span>vaqtinchalik kirish</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}</div></div></div>
-  <a class="st-rank" href="#/me/liga">
-    <div class="st-rk"><b>${rk?rk.me.r:'–'}</b><small>o‘rin</small></div>
-    <div class="st-rt"><span>${s.type==='guest'?'Mehmonlar':esc(s.group)} reytingi${rk?', '+rk.n+' kishi':''}</span>
-      <strong>${p.xp.T} XP</strong>
-      <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
-  </a>
+  <section class="sth">
+    <div class="sth-top"><div class="pav">${esc(initials(s.name))}</div><div><small>${hi},</small><h1>${esc(s.name.split(' ')[0])}</h1>
+      <div class="st-meta">${s.type==='guest'?'<span>Mehmon</span><span>vaqtinchalik kirish</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}</div></div>
+      <div class="sth-ring" title="Umumiy progress">${bxRing(dn,all||1,'#fff')}<div><b>${pc}%</b><small>bajarildi</small></div></div></div>
+    <div class="sth-stats">
+      <a href="#/me/liga"><b>${rk?rk.me.r:'–'}<i>-o‘rin</i></b><span>${s.type==='guest'?'Mehmonlar':esc(s.group)}${rk?' · '+rk.n+' kishi':''}</span></a>
+      <div><b data-count="${p.xp.T}">${p.xp.T}</b><span>XP jami</span></div>
+      <div><b>${dn}<i>/${all}</i></b><span>bosqich</span></div></div>
+    <div class="sth-lv"><div><span class="sth-lvb">${lv.ic} ${lv.n}</span><small>${lv.next?`Keyingi daraja “${lv.next}” — yana ${lv.need} XP`:'Eng yuqori daraja!'}</small></div>
+      <div class="lvbar"><b style="width:${lv.pct}%"></b></div></div>
+    <div class="sth-cta"><em>${!rk?'':rk.me.r===1?(p.xp.T?'🏆 Siz guruhda birinchisiz!':'⚡ Birinchi XP’ni hozir oling'):`🎯 Keyingi o‘ringa ${rk.gap} XP qoldi`}</em>
+      ${nx?`<a class="btn big sth-go" href="${nxHref}">${nx.done?'Davom etish':'Boshlash'} <span>→</span><small>${esc(nx.title)}</small></a>`:''}</div>
+  </section>
   ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
   ${!G3&&p.ai?`<a class="aicard" href="mashq.html#ai"><span class="aicon">${AI_SVG}</span><span class="aitx"><b>AI Writing yordamchi</b><small>Xat va esselaringizni AI tekshiradi: ball, daraja, har bir xato o‘zbekcha tushuntirish bilan</small></span><em>Ochish</em></a>
   <a class="aicard sp" href="mashq.html#speak"><span class="aicon">🎙️</span><span class="aitx"><b>AI Speaking yordamchi</b><small>Imtihondagidek gapiring: AI tinglaydi, transkript qiladi va 4 mezon bo‘yicha baholaydi</small></span><em>Ochish</em></a>`:''}
@@ -1745,30 +1951,45 @@ function openSheet(p,t,i){
   if(t.booster){const n=i+1;
     body=`<div class="shk">${n}-test · ${s.pack}-to‘plam</div><h3>Reading Part 1, Test ${n}</h3>
       <p class="muted">${s.done?`Bajarilgan: o‘qish ${s.score}/6, ${s.xp} XP. Xohlasangiz qayta ishlashingiz mumkin.`:`Matnni o‘qing, bo‘sh joylarni to‘ldiring, so‘ng A–E mashqlarini bajaring. Tugatsangiz ${bxp(p,0)}–${bxp(p,6)} XP olasiz.`}</p>
-      <div class="shb"><a class="btn red big block" href="${esc(boosterLink(p,n))}" id="shGo">${s.done?'Qayta ishlash':'Boshlash'}</a></div>`}
+      <div class="shb"><a class="btn red big block" href="#/me/b/${n}" id="shGo">${s.done?'Qayta ishlash':'Boshlash'}</a></div>`}
   else{const ex=isExam(s.l),er=ex?examRes(s.l):null,inf=er?resText(er):s.info;
     body=`<div class="shk">${ex?'Mock test · bitta o‘tirishda':`${i+1}-bosqich / ${t.total}`}</div><h3>${esc(s.t)}</h3>
-      <p class="muted">${s.done?'Bu bosqich bajarilgan.'+(inf?' Natija: '+esc(inf)+'.':''):ex?`Barcha qismlar bitta testda, vaqt to‘xtamaydi. Testni yakunlab, natija sahifasida “Bajardim”ni bossangiz ${t.xpEach} XP va sertifikat olasiz.`:`Topshiriqni oching, bajaring va qaytib “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
+      <p class="muted">${s.done?'Bu bosqich bajarilgan.'+(inf?' Natija: '+esc(inf)+'.':''):ex?`Barcha qismlar bitta testda, vaqt to‘xtamaydi. Testni yakunlab, natija sahifasida “Bajardim”ni bossangiz ${t.xpEach} XP va sertifikat olasiz.`:/^(viewer|mashq)\.html/.test(s.l||'')?`Mashqni oching va oxirigacha bajaring: javoblar tekshirilgach “Bajardim” tugmasi chiqadi. ${t.xpEach} XP olasiz.`:`Topshiriqni bajaring va “Bajardim” ni bosing. ${t.xpEach} XP olasiz.`}</p>
       <div class="shb">${s.l?`<a class="btn ${s.done?'ghost':'red'} big block" href="${esc(stepHref(s.l,t.aid,i))}" ${/^(viewer|mashq)\.html/.test(s.l)?'':'target="_blank" rel="noopener"'} id="shOpen">${ex?(s.done||er?'Natijani ko‘rish':'Testni ochish'):'Ochish'}</a>`:''}
-        ${s.done||ex?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
+        ${s.done||ex||/^(viewer|mashq)\.html/.test(s.l||'')?'':`<button class="btn ${s.l?'ghost':'red'} big block" id="shDone">Bajardim</button>`}</div>`}
   sh.innerHTML=`<div class="grab"></div>${body}<button class="btn ghost block" id="shClose">Yopish</button>`;
   sh.classList.add('on');sh.setAttribute('aria-hidden','false');bg.classList.remove('hide');
   const close=()=>{sh.classList.remove('on');sh.setAttribute('aria-hidden','true');bg.classList.add('hide')};
   bg.onclick=close;$('#shClose').onclick=close;
-  const go_=$('#shGo');if(go_)go_.onclick=()=>sfx('open');
+  const go_=$('#shGo');if(go_)go_.onclick=()=>{sfx('open');close()};
   const op=$('#shOpen');if(op)op.onclick=()=>{sfx('open');stepMark(p,t,i,'opened')};
   const dn=$('#shDone');if(dn)dn.onclick=()=>{close();stepMark(p,t,i,'done')};
   setTimeout(()=>{const f=sh.querySelector('.btn.red,.btn');if(f)f.focus()},60);
 }
-async function stepMark(p,t,i,status){
+async function stepMark(p,t,i,status,info0){
   const aid=t.aid+':'+i;const cur=(P.progress||{})[aid];if(cur==='done'||cur===status)return;
   P.progress=P.progress||{};P.progress[aid]=status;
   if(status==='done'){P.xp.A+=t.xpEach;P.xp.an++;P.xp.T+=t.xpEach;const me=(P.board||[]).find(r=>r.me);if(me)me.t=P.xp.T}
   store(ST+'p:'+U.id,JSON.stringify(P));
-  const info=status==='done'?resText(examRes(t.steps[i].l)):'';if(info){P.info=P.info||{};P.info[aid]=info;store(ST+'p:'+U.id,JSON.stringify(P))}
+  const info=status==='done'?(info0||resText(examRes(t.steps[i].l))||''):'';if(info){P.info=P.info||{};P.info[aid]=info;store(ST+'p:'+U.id,JSON.stringify(P))}
   if(status==='done')drawMe();
-  try{await cpost(Object.assign({action:'mark',id:U.id,t:U.t,aid,status},info?{info}:{}));if(status==='done')lastFetch=0}catch(e){}
+  const body=Object.assign({action:'mark',id:U.id,t:U.t,aid,status},info?{info}:{});
+  try{const j=await cpost(body);if(!j||!j.ok)throw 0;if(status==='done')lastFetch=0}catch(e){if(status==='done')qPush(body)}
 }
+/* marks that could not reach the server wait here and are re-sent on the next load */
+const qKey=()=>ST+'q:'+U.id;
+function qGet(){try{return JSON.parse(store(qKey())||'[]')}catch(e){return []}}
+function qPush(b){const q=qGet().filter(x=>x.aid!==b.aid||x.action!==b.action);q.push(b);store(qKey(),JSON.stringify(q))}
+async function qFlush(){const q=qGet();if(!q.length)return;const left=[];for(const b of q){try{const j=await cpost(Object.assign({},b,{t:U.t}));if(!j||!j.ok)left.push(b)}catch(e){left.push(b)}}store(qKey(),left.length?JSON.stringify(left):null);if(left.length<q.length)lastFetch=0}
+function qApply(p){qGet().forEach(b=>{if(b.action==='mark'&&b.status==='done'){p.progress=p.progress||{};if(p.progress[b.aid]!=='done'){p.progress[b.aid]='done';const a=(p.assignments||[]).find(x=>b.aid.startsWith(x.aid+':'));if(a){p.xp.A+=a.xp;p.xp.an++;p.xp.T+=a.xp}}if(b.info){p.info=p.info||{};p.info[b.aid]=b.info}}});bxApply(p);return p}
+/* proof that a step was really done: mashq saves the checked result on this device */
+function stepProof(l){const m=/^mashq\.html#d=([a-z0-9-]+)&x=([\w-]+)/.exec(l||'');if(!m)return{ok:true};
+  if(m[2]==='all'){const r=examRes(l);return r?{ok:true,info:resText(r)}:{ok:false,msg:'Avval testni oxirigacha ishlang'}}
+  let s=null;try{s=JSON.parse(store(ST+'mashq:'+U.id+':'+m[1]+':'+m[2])||'null')}catch(e){}
+  if(s&&s.r&&s.r.of)return{ok:true,info:s.r.ok+'/'+s.r.of+' to‘g‘ri'};
+  if(s&&s.w&&Object.values(s.w.t||{}).some(x=>typeof x==='string'&&x.trim().split(/\s+/).length>=30))return{ok:true,info:'javob yozildi'};
+  if(s&&s.v)return{ok:true};
+  return{ok:false,msg:'Avval mashqni bajaring: javoblarni tekshiring, keyin “Bajardim”ni bosing'}}
 
 /* ---------- certificate (PNG to keep or share) ---------- */
 async function certificate(p,t){
@@ -2153,6 +2374,186 @@ function testBars(st){
     return `<rect x="${k*bw+3}" y="${H-h+2}" width="${bw-6}" height="${h}" rx="4" style="fill:${c}" ${r?'':'opacity=".5"'}/><text x="${k*bw+bw/2}" y="${H+20}" text-anchor="middle" font-size="9" font-weight="700" style="fill:var(--mute)">${i}</text>`}).join('')}</svg>`;
 }
 addEventListener('resize',()=>{clearTimeout(ui.rz);ui.rz=setTimeout(()=>{if(ui.stab==='map'&&ui.onResize&&location.hash.startsWith('#/me/a/'))ui.onResize()},150)});
+
+/* ================= READING PART 1 BOOSTER — inside the platform (no separate page) =================
+ * Same 30 tests, same A–E steps and the same saved data as the old booster.html,
+ * so XP, the map, the ranking and the teacher's Booster report keep working. */
+let BXT=null;
+async function bxTests(){if(BXT)return BXT;const r=await fetch('rb1.json?v=2',{cache:'force-cache'});if(!r.ok)throw new Error('load');BXT=await r.json();return BXT}
+const bxQ=()=>ST+'bxq:'+U.id;
+function bxS(){P.booster=P.booster||{};P.booster.tests=P.booster.tests||{};return P.booster}
+function bxApply(p){let q=null;try{q=JSON.parse(store(bxQ())||'null')}catch(e){}if(!q||!q.tests)return;
+  const b=p.booster=p.booster||{};b.tests=b.tests||{};
+  Object.keys(q.tests).forEach(k=>{const n=q.tests[k],o=b.tests[k],was=!!(o&&o.kwt&&o.res);
+    if(!o||(n.res&&!o.res)||(n.kwt&&!o.kwt)){b.tests[k]=Object.assign({},o||{},n);if(!was&&n.kwt&&n.res){const x=bxp(p,n.res.score);p.xp.B+=x;p.xp.bn++;p.xp.T+=x}}});
+  const m=(p.board||[]).find(r=>r.me);if(m)m.t=p.xp.T}
+async function bxFlush(){if(!store(bxQ())||!P)return;const S=bxS();
+  const data=Object.assign({},S,{key:U.id,name:P.student.name,group:P.student.group,updated:Date.now()});
+  try{const j=await cpost({action:'save',app:'booster',key:U.id,data});if(j&&j.ok)store(bxQ(),null)}catch(e){}}
+function bxSave(){const S=bxS();S.updated=Date.now();store(bxQ(),JSON.stringify({tests:S.tests,updated:S.updated}));store(ST+'p:'+U.id,JSON.stringify(P));bxFlush()}
+const bxNorm=s=>String(s||'').toLowerCase().replace(/[’‘`]/g,"'").replace(/^[\s"'.,;:!?()]+|[\s"'.,;:!?()]+$/g,'').replace(/\s+/g,' ');
+const bxRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const bxFmt=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const bxShuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function bxLev(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
+function bxCls(t,i,u){const a=t.ans[i].toLowerCase();u=bxNorm(u);if(!u)return'blank';if(u===a)return'ok';if(u.split(' ').length>1)return'multi';
+  if(u+'s'===a||a+'s'===u||u+'es'===a||a+'es'===u||(u==='feet'&&a==='foot')||(u==='foot'&&a==='feet'))return'plural';
+  if(a.length>=4&&bxLev(u,a)<=2)return'spelling';if(!new RegExp('\\b'+bxRe(u)+'\\b','i').test(t.text.replace(/\{\d\}/g,' ')))return'notext';return'wrong'}
+const BXCAT={ok:'To‘g‘ri',blank:'Bo‘sh qoldirilgan',plural:'Birlik / ko‘plik xatosi',spelling:'Imlo xatosi',notext:'Bu so‘z matnda yo‘q',wrong:'Matndagi boshqa so‘z',multi:'Bittadan ko‘p so‘z'};
+const BXST=[['A','Matn'],['B','Kalit so‘zlar'],['C','Bo‘sh joy turi'],['D','So‘z juftliklari'],['E','Qisqa mazmun']];
+function bxGloss(t){const g={};Object.entries(t.gloss||{}).forEach(([k,v])=>g[k.toLowerCase()]=v);(t.table||[]).forEach(r=>{const k=r[0].toLowerCase();if(!t.ans.includes(k)&&!g[k])g[k]=r[2]});return g}
+function bxGlossify(txt,g){const ks=Object.keys(g).sort((a,b)=>b.length-a.length);if(!ks.length)return esc(txt);const re=new RegExp('\\b('+ks.map(bxRe).join('|')+')\\b','gi');return esc(txt).replace(re,m=>`<span class="bx-gl" data-k="${esc(m.toLowerCase())}">${m}</span>`)}
+function bxFull(t){return t.text.replace(/\{(\d)\}/g,(m,n)=>t.ans[n-1])}
+function bxSent(txt,re){const s=txt.replace(/\n\n/g,' ').match(/[^.!?]+[.!?]+/g)||[txt];return(s.find(x=>re.test(x))||'').trim()}
+function bxEvidence(t,i){const g=t.text.replace(/\{(\d)\}/g,'_____');const re=new RegExp('\\b('+bxRe(t.ans[i])+')\\b','i');const s=bxSent(g,re);return s?esc(s).replace(re,'<mark>$1</mark>'):''}
+function bxCtx(t,w){const re=new RegExp('\\b('+bxRe(w)+')\\b','i');let x=bxSent(bxFull(t),re);const m=x.search(re);
+  if(x.length>100){const a=Math.max(0,m-42),b=Math.min(x.length,m+w.length+46);x=(a>0?'…':'')+x.slice(a,b)+(b<x.length?'…':'')}return esc(x).replace(re,'<b>$1</b>')}
+function bxRing(v,max,col){const r=52,c=2*Math.PI*r,p=max?v/max:0;return `<svg viewBox="0 0 128 128" class="bx-ringsvg"><circle cx="64" cy="64" r="${r}" fill="none" stroke="var(--track)" stroke-width="12"/><circle cx="64" cy="64" r="${r}" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-o="${c*(1-p)}" class="bx-rg" transform="rotate(-90 64 64)"/></svg>`}
+function bxAnim(){requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('.bx-rg').forEach(e=>e.style.strokeDashoffset=e.dataset.o)))}
+function bxHead(t,step,extra){return `<div class="bx-head"><div class="bx-ht"><small>Reading Part 1 · Test ${t.id} / ${BOOSTER_TESTS}</small><h1>${esc(t.title)}</h1></div>${extra||''}</div>
+  <ol class="bx-steps">${BXST.filter(s=>t.extra||'AB'.includes(s[0])).map(([k,l])=>{const o=BXST.findIndex(x=>x[0]===k),c=BXST.findIndex(x=>x[0]===step);return `<li class="${o<c?'done':o===c?'on':''}"><i>${o<c?'✓':k}</i><span>${l}</span></li>`}).join('')}</ol>`}
+function bxPop(el,txt){document.querySelectorAll('.bx-pop').forEach(x=>x.remove());const r=el.getBoundingClientRect(),p=document.createElement('div');p.className='bx-pop';p.innerHTML=`<small>${esc(el.textContent)}</small>${esc(txt)}`;document.body.appendChild(p);
+  const w=p.offsetWidth;p.style.left=Math.max(10,Math.min(innerWidth-w-10,r.left+r.width/2-w/2))+'px';p.style.top=(r.top+scrollY-p.offsetHeight-8)+'px';setTimeout(()=>p.remove(),3200)}
+addEventListener('scroll',()=>document.querySelectorAll('.bx-pop').forEach(x=>x.remove()),{passive:true});
+
+async function bxOpen(n){
+  document.body.classList.add('st-mode');setBack('#/me/a/'+BOOSTER_AID,'Xarita');ui.stab='bx';
+  view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
+  let T;try{T=await bxTests()}catch(e){view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Test yuklanmadi</h3><p class="muted">Internetni tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="route()">Qayta urinish</button></div></div>`;return}
+  const t=T.find(x=>x.id===n);if(!t){go('#/me/a/'+BOOSTER_AID,true);return}
+  const d=bxS().tests[n]||{};ui.bx={t,n};
+  if(!d.res)bxTest(t);else if(!d.kwt)bxResult(t,true);else bxFinal(t,false);
+}
+/* ---------- A · the test ---------- */
+function bxTest(t){
+  const k=ST+'bxp:'+U.id+':'+t.id;let pr=null;try{pr=JSON.parse(store(k)||'null')}catch(e){}
+  pr=pr||{ans:['','','','','',''],acc:0,uz:0,blurs:0,started:false};pr.seg=Date.now();
+  const sv=()=>{const now=Date.now();if(pr.started){pr.acc+=now-pr.seg}pr.seg=now;store(k,JSON.stringify(pr))};
+  const g=bxGloss(t);
+  const paras=t.text.split('\n\n').map(p=>'<p>'+p.split(/\{(\d)\}/).map((s,i)=>i%2?`<span class="bx-gap ${pr.ans[s-1]?'f':''}"><b>${s}</b><input data-q="${s-1}" value="${esc(pr.ans[s-1])}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="${s}-bo‘sh joy"></span>`:bxGlossify(s,g)).join('')+'</p>').join('');
+  view().innerHTML=`<div class="wrap bx anim">${bxHead(t,'A',`<div class="bx-dots" id="bxDots">${[1,2,3,4,5,6].map(i=>`<i>${i}</i>`).join('')}</div>`)}
+    <div class="bx-help"><b>Har bir bo‘sh joyga BITTA so‘z yozing.</b> Kerakli so‘z matnning boshqa joyida albatta bor. Nuqtali chiziq ostidagi so‘zni bossangiz, o‘zbekcha ma’nosi chiqadi.<small>Fill each gap with ONE word from the text.</small></div>
+    <article class="bx-pass"><h2>${esc(t.title)}</h2>${paras}
+      ${pr.started?'':`<div class="bx-cover"><div class="bx-start"><small>Test ${t.id} · 6 savol · ~8 daqiqa</small><h3>${esc(t.title)}</h3>
+        <ul><li>6 ta bo‘sh joy — har biriga matndan bitta so‘z</li><li>Ekranda taymer yo‘q, lekin vaqtingiz yoziladi</li><li>Bitta urinish: tugatgach javoblarni ko‘rasiz</li></ul>
+        <button class="btn red big block" id="bxGo">Boshlash</button></div></div>`}</article>
+    <div class="bx-bar"><span id="bxCnt"></span><button class="btn red big" id="bxFin" ${pr.started?'':'disabled'}>Tugatish</button></div></div>`;
+  const upd=()=>{const c=pr.ans.filter(a=>a.trim()).length;$('#bxCnt').innerHTML=`<b>${c}</b> / 6 javob`;document.querySelectorAll('#bxDots i').forEach((d,i)=>d.classList.toggle('f',!!pr.ans[i].trim()))};upd();
+  const st=$('#bxGo');if(st)st.onclick=()=>{pr.started=true;pr.seg=Date.now();sv();sfx('open');$('.bx-cover').remove();$('#bxFin').disabled=false;const f=$('.bx-gap input');if(f)f.focus()};
+  document.querySelectorAll('.bx-gap input').forEach(inp=>{inp.oninput=()=>{pr.ans[+inp.dataset.q]=inp.value;inp.parentNode.classList.toggle('f',!!inp.value.trim());sv();upd()};
+    inp.onkeydown=e=>{if(e.key==='Enter'){const all=[...document.querySelectorAll('.bx-gap input')],nx=all[all.indexOf(inp)+1];nx?nx.focus():inp.blur()}}});
+  document.querySelectorAll('.bx-gl').forEach(el=>el.onclick=e=>{e.stopPropagation();bxPop(el,g[el.dataset.k]);if(pr.started){pr.uz++;sv()}});
+  ui.bxVis=()=>{if(!pr.started||!document.body.contains($('#bxFin')))return;if(document.hidden){sv();pr.blurs++;store(k,JSON.stringify(pr))}else pr.seg=Date.now()};
+  $('#bxFin').onclick=()=>{const blank=pr.ans.filter(a=>!a.trim()).length,multi=pr.ans.some(a=>a.trim().split(/\s+/).length>1);
+    modal(`<h3>Testni tugatasizmi?</h3>${blank?`<p style="margin-top:8px">⚠️ <b>${blank} ta bo‘sh joy</b> qoldi. Bo‘sh qoldirmang — taxmin ham to‘g‘ri chiqishi mumkin.</p>`:''}${multi?'<p style="margin-top:8px">⚠️ Ba’zi javoblarda bir nechta so‘z bor. Faqat BITTA so‘z yozing.</p>':''}${!blank&&!multi?'<p class="muted" style="margin-top:8px">Shundan keyin javoblarni o‘zgartirib bo‘lmaydi.</p>':''}`,
+      [{t:'Qaytish'},{t:'Tugatish',cls:'red',f:()=>{sv();const ans=pr.ans.map(a=>a.trim()),cat=ans.map((a,i)=>bxCls(t,i,a));
+        const S=bxS();S.tests[t.id]=Object.assign(S.tests[t.id]||{},{res:{ans,cat,score:cat.filter(c=>c==='ok').length,time:Math.max(1000,pr.acc),blurs:pr.blurs,uz:pr.uz,at:Date.now()}});
+        store(k,null);bxSave();bxResult(t,false)}}])};
+}
+document.addEventListener('visibilitychange',()=>{if(ui.bxVis)ui.bxVis()});
+/* ---------- result of A ---------- */
+function bxFeedback(t,r){const f=[],c=r.cat,m=r.time/60000;
+  f.push(r.score===6?['🏆','A’lo! Hamma so‘zni topdingiz.']:r.score>=4?['👍','Yaxshi! Qizil javoblarni va so‘z uchragan gapni qayta o‘qing.']:['📌','Bu matn qiyin bo‘ldi. Qayta sekin o‘qib, har bir javobni matndan toping.']);
+  if(c.includes('plural'))f.push(['🔤','Birlik / ko‘plik: bo‘sh joy atrofiga qarang — a / one / single → birlik; these / many / their → ko‘pincha ko‘plik.']);
+  if(c.includes('spelling'))f.push(['✍️','Imlo xatosi: javob matnda bor — harfma-harf ko‘chiring.']);
+  if(c.includes('notext'))f.push(['🔎','Matnda yo‘q so‘z yozdingiz. Qoida: javob doim matnning o‘zida bo‘ladi.']);
+  if(c.includes('blank'))f.push(['⛔','Hech qachon bo‘sh qoldirmang — matndagi istalgan so‘z bo‘sh joydan yaxshiroq.']);
+  if(c.includes('multi'))f.push(['1️⃣','Faqat BITTA so‘z. Imtihonda ikki so‘z — xato javob.']);
+  if(m<4&&r.score<5)f.push(['⚡','Juda tez ishladingiz, lekin ball yo‘qotdingiz. Shoshilmang, har bir bo‘sh joyni tekshiring.']);
+  if(m>12)f.push(['⏱',`Siz ${bxFmt(r.time)} sarfladingiz. Imtihonda 1-qismni taxminan 8 daqiqada tugating.`]);
+  if(r.blurs>0)f.push(['🚪',`Test vaqtida ${r.blurs} marta boshqa ilovaga chiqdingiz. Imtihonda diqqatni bir joyda saqlang.`]);
+  return f}
+function bxResult(t,resume){
+  const r=bxS().tests[t.id].res,col=r.score>=5?'#159947':r.score>=3?'#D98A06':'#E3101F';ui.bxVis=null;
+  view().innerHTML=`<div class="wrap bx anim">${bxHead(t,'A')}
+    <div class="bx-res"><div class="bx-ring">${bxRing(r.score,6,col)}<div><b>${r.score}/6</b><small>to‘g‘ri</small></div></div>
+      <div class="bx-rinfo"><div class="bx-mini"><div><b>${Math.round(r.score/6*100)}%</b><span>aniqlik</span></div><div><b>${bxFmt(r.time)}</b><span>vaqt (me’yor 8:00)</span></div><div><b>${r.uz}</b><span>UZ yordam</span></div><div><b>${r.blurs}</b><span>chiqib ketish</span></div></div>
+        <ul class="bx-fb">${bxFeedback(t,r).map(f=>`<li><i>${f[0]}</i><span>${f[1]}</span></li>`).join('')}</ul></div></div>
+    <h2 class="bx-h2">Javoblar — so‘z matnning qayerida edi?</h2>
+    <div class="bx-ans">${t.ans.map((a,i)=>{const ok=r.cat[i]==='ok';return `<div class="bx-an ${ok?'ok':'no'}"><span class="n">${ok?'✓':i+1}</span><div>
+      <div class="w">${ok?esc(a):`${r.ans[i]?`<s>${esc(r.ans[i])}</s>`:'<em>(bo‘sh)</em>'} → <b>${esc(a)}</b>`} <span class="tag">${BXCAT[r.cat[i]]}</span></div><div class="ev">📍 ${bxEvidence(t,i)}</div></div></div>`}).join('')}</div>
+    <div class="bx-bar"><button class="btn ghost" id="bxMap">Xarita</button><button class="btn red big" id="bxB">B · Kalit so‘zlar →</button></div></div>`;
+  bxAnim();if(!resume){sfx(r.score>=4?'win':'tap')}
+  $('#bxMap').onclick=()=>go('#/me/a/'+BOOSTER_AID);$('#bxB').onclick=()=>bxB(t,{});
+}
+/* ---------- tap-to-match (B and D) ---------- */
+function bxMatch(t,o){
+  const n=o.rows.length,k={placed:Array(n).fill(null),locked:Array(n).fill(false),rev:Array(n).fill(false),checks:0,first:null,chip:null,row:null,order:bxShuf([...Array(n).keys()])};
+  view().innerHTML=`<div class="wrap bx anim">${bxHead(t,o.step)}
+    <div class="bx-help">${o.help}</div>
+    <div class="bx-mt" id="bxRows"></div>
+    <div class="bx-bank"><div class="bx-bh"><b>So‘zlar banki</b><span id="bxHint"></span></div><div class="bx-chips" id="bxChips"></div></div>
+    <div class="bx-bar"><button class="btn ghost hide" id="bxRev">Javoblarni ko‘rsatish</button><span></span><button class="btn red big" id="bxChk">Tekshirish</button></div></div>`;
+  const draw=()=>{
+    $('#bxRows').innerHTML=o.rows.map((r,i)=>{const p=k.placed[i],cls=k.rev[i]?'rev':k.locked[i]?'ok':p!=null?'full':k.row===i?'sel':'';
+      return `<div class="bx-mr"><span class="i">${i+1}</span><div class="l"><b>${esc(r[0])}</b>${o.ctx?`<small>${bxCtx(t,r[0])}</small>`:''}${r[2]&&o.uz?`<button class="bx-uz" data-u="${i}">UZ</button><em class="hide" id="bxU${i}">${esc(r[2])}</em>`:''}</div>
+        <span class="a">→</span><button class="bx-slot ${cls}" data-i="${i}">${p!=null?esc(o.rows[p][1])+(k.locked[i]&&!k.rev[i]?' ✓':''):k.chip!=null?'shu yerga':'bo‘sh'}</button></div>`}).join('');
+    const used=new Set(k.placed.filter(x=>x!=null));
+    $('#bxChips').innerHTML=k.order.map(j=>`<button class="bx-chip ${used.has(j)?'used':''} ${k.chip===j?'sel':''}" data-j="${j}">${esc(o.rows[j][1])}</button>`).join('');
+    $('#bxHint').textContent=used.size===n?'Hammasi joylandi — “Tekshirish”ni bosing':k.chip!=null?'Endi bo‘sh katakni bosing':'So‘zni bosing, keyin katakni';
+    document.querySelectorAll('.bx-chip').forEach(c=>c.onclick=()=>{const j=+c.dataset.j;if(used.has(j))return;sfx('tap');if(k.row!=null){k.placed[k.row]=j;k.row=null;k.chip=null}else k.chip=k.chip===j?null:j;draw()});
+    document.querySelectorAll('.bx-slot').forEach(s=>s.onclick=()=>{const i=+s.dataset.i;if(k.locked[i])return;if(k.placed[i]!=null){k.placed[i]=null;k.row=null}else if(k.chip!=null){k.placed[i]=k.chip;k.chip=null}else k.row=k.row===i?null:i;draw()});
+    document.querySelectorAll('.bx-uz').forEach(b=>b.onclick=()=>$('#bxU'+b.dataset.u).classList.toggle('hide'))};
+  const finish=()=>{o.done(k.first==null?0:k.first);const b=$('#bxChk');b.textContent=o.nextLabel;b.onclick=o.next;$('#bxRev').classList.add('hide');sfx('win');toast(k.first===n?'Mukammal! 🎉':'Bajarildi ✓')};
+  $('#bxChk').onclick=()=>{if(k.placed.some(p=>p==null)){toast('Avval hamma katakni to‘ldiring');return}k.checks++;const wrong=[];let right=0;
+    k.placed.forEach((p,i)=>{if(k.locked[i])return;if(p===i){k.locked[i]=true;right++}else{wrong.push(i);k.placed[i]=null}});if(k.first==null)k.first=right;draw();
+    wrong.forEach(i=>{const s=document.querySelector(`.bx-slot[data-i="${i}"]`);s.classList.add('shake')});
+    if(k.locked.every(Boolean)){finish();return}sfx('lock');toast(`${n-wrong.length}/${n} to‘g‘ri — qolganlarini qayta urinib ko‘ring`);if(k.checks>=2)$('#bxRev').classList.remove('hide')};
+  $('#bxRev').onclick=()=>{o.rows.forEach((r,i)=>{if(!k.locked[i]){k.placed[i]=i;k.locked[i]=true;k.rev[i]=true}});draw();finish()};
+  draw();scrollTo(0,0);
+}
+function bxB(t,acc){bxMatch(t,{step:'B',rows:t.table,ctx:true,uz:true,
+  help:'<b>Chapdagi so‘zlar matndan olingan.</b> Bankdan ularga MA’NOSI YAQIN so‘zni tanlab, katakka qo‘ying. Imtihon tuzuvchilar so‘zlarni aynan shunday almashtiradi: <i>switched off → turned off</i>.<small>Find a word or phrase with a similar meaning.</small>',
+  done:f=>{acc.b=f},nextLabel:t.extra?'C · Bo‘sh joy turi →':'Tugatish',next:()=>t.extra?bxC(t,acc):bxDone(t,acc)})}
+/* ---------- C · gap detective ---------- */
+const BXWT={N:['Ot · bitta','Singular noun'],P:['Ot · ko‘p','Plural noun'],V:['Fe’l · harakat','Verb'],A:['Sifat','Adjective']};
+function bxC(t,acc){let i=0,ok=0;
+  const draw=()=>{const ex=t.extra.c[i],g=t.text.replace(/\n\n/g,' '),s=(g.match(/[^.!?]+[.!?]+/g)||[g]).find(x=>x.includes('{'+(i+1)+'}'))||'';
+    view().innerHTML=`<div class="wrap bx anim">${bxHead(t,'C')}
+      <div class="bx-help"><b>Yozishdan oldin so‘rang: bu bo‘sh joyga qanday so‘z kerak?</b> Bitta narsami, ko‘p narsami, harakatmi yoki sifatmi — atrofdagi so‘zlarga qarab tanlang.</div>
+      <div class="bx-card"><div class="bx-ck">Bo‘sh joy ${i+1} / 6</div><p class="bx-sent">${esc(s.trim()).replace(/\{(\d)\}/g,(m,dd)=>+dd===i+1?`<span class="bx-gx">${i+1}</span>`:'_____')}</p>
+        <div class="bx-wt">${['N','P','V','A'].map(k=>`<button data-k="${k}"><b>${BXWT[k][0]}</b><small>${BXWT[k][1]}</small></button>`).join('')}</div><div id="bxCf"></div></div>
+      <div class="bx-bar"><span><b>${ok}</b> to‘g‘ri</span><button class="btn red big hide" id="bxNx">${i<5?'Keyingi →':'D · So‘z juftliklari →'}</button></div></div>`;
+    let did=false;document.querySelectorAll('.bx-wt button').forEach(b=>b.onclick=()=>{if(did)return;did=true;const good=b.dataset.k===t.types[i];if(good)ok++;sfx(good?'win':'lock');
+      b.classList.add(good?'ok':'no');if(!good)document.querySelector(`.bx-wt [data-k="${t.types[i]}"]`).classList.add('ok');
+      $('#bxCf').innerHTML=`<div class="bx-cfb ${good?'ok':'no'}"><b>${good?'To‘g‘ri!':'Unchalik emas.'}</b> Belgi: <mark>${esc(ex[0])}</mark> ${esc(ex[2])}<div>Javob: <b>${esc(t.ans[i])}</b></div></div>`;
+      const nb=$('#bxNx');nb.classList.remove('hide');nb.onclick=()=>{if(i<5){i++;draw();scrollTo(0,0)}else{acc.c=ok;bxD(t,acc)}}})};draw()}
+function bxD(t,acc){bxMatch(t,{step:'D',rows:t.extra.d.map(r=>[r[0],r[1],r[2]]),ctx:false,uz:false,
+  help:'<b>Bu so‘z juftliklari matndan olingan.</b> Har bir boshlang‘ich qismni uning jufti bilan birlashtiring va ularni bitta ibora sifatida yodlang — ular boshqa testlarda ham chiqadi.',
+  done:f=>{acc.d=f},nextLabel:'E · Qisqa mazmun →',next:()=>bxE(t,acc)})}
+/* ---------- E · summary ---------- */
+function bxE(t,acc){const e=t.extra.e;
+  view().innerHTML=`<div class="wrap bx anim">${bxHead(t,'E')}
+    <div class="bx-help"><b>Bu — o‘sha matn, lekin boshqa so‘zlar bilan aytilgan.</b> Har bir bo‘sh joyga asl matndan BITTA so‘z yozing.</div>
+    <article class="bx-pass"><h2>Qisqa mazmun</h2><p>${esc(e.text).replace(/\{(\d)\}/g,(m,n)=>`<span class="bx-gap"><b>${n}</b><input data-e="${n-1}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="${n}-bo‘sh joy"></span>`)}</p></article>
+    <div id="bxEf"></div>
+    <div class="bx-bar"><button class="btn ghost" id="bxTx">Asl matn</button><button class="btn red big" id="bxEc">Tekshirish</button></div></div>`;
+  scrollTo(0,0);
+  $('#bxTx').onclick=()=>modal(`<h3>${esc(t.title)}</h3><div class="bx-modaltext">${bxFull(t).split('\n\n').map(p=>`<p>${esc(p)}</p>`).join('')}</div>`,[{t:'Yopish',cls:'red'}]);
+  $('#bxEc').onclick=()=>{const ins=[...document.querySelectorAll('[data-e]')];if(ins.some(x=>!x.value.trim())){toast('Avval hamma bo‘sh joyni to‘ldiring');return}
+    let ok=0;ins.forEach((x,i)=>{const good=e.ans[i].map(a=>a.toLowerCase()).includes(bxNorm(x.value));if(good)ok++;x.readOnly=true;x.parentNode.classList.add(good?'ok':'no');if(!good)x.value=x.value+' → '+e.ans[i][0]});
+    acc.e=ok;sfx(ok>=5?'win':'tap');
+    $('#bxEf').innerHTML=`<div class="bx-cfb ${ok>=5?'ok':'no'}"><b>${ok}/6 to‘g‘ri.</b> ${ok===6?'A’lo — matnni to‘liq tushundingiz!':'Qizil joylarni asl matndan toping.'}</div>`;
+    const b=$('#bxEc');b.textContent='Testni yakunlash 🏁';b.onclick=()=>bxDone(t,acc)}}
+/* ---------- finish: save, XP, then the final page ---------- */
+function bxDone(t,acc){const S=bxS(),d=S.tests[t.id]=S.tests[t.id]||{};const first=!d.kwt;
+  if(first){d.kwt={tFirst:acc.b||0,tTotal:(t.table||[]).length||8,hFirst:0,hTotal:0,at:Date.now()};if(t.extra)d.kwt.extra={c:acc.c||0,cT:6,d:acc.d||0,dT:t.extra.d.length,e:acc.e||0,eT:6};
+    let gained=0;if(d.res){gained=bxp(P,d.res.score);P.xp.B+=gained;P.xp.bn++;P.xp.T+=gained;const m=(P.board||[]).find(r=>r.me);if(m)m.t=P.xp.T}
+    bxSave();bxFinal(t,true,gained)}else bxFinal(t,false)}
+function bxFinal(t,fresh,gained){
+  const d=bxS().tests[t.id]||{},r=d.res,k=d.kwt||{},x=k.extra;ui.bxVis=null;const nx=t.id<BOOSTER_TESTS?t.id+1:null;
+  view().innerHTML=`<div class="wrap bx anim">
+    <div class="bx-win ${fresh?'fresh':''}"><div class="bx-trophy">🏆</div><div><small>Test ${t.id} · ${esc(t.title)}</small><h1>${fresh?'Test yakunlandi!':'Bu test bajarilgan'}</h1>
+      <p>${r?`O‘qish: <b>${r.score}/6</b> · vaqt ${bxFmt(r.time)}`:''}${gained?` · <b class="xp">+${gained} XP</b>`:''}</p></div></div>
+    <div class="bx-sum"><div><b>${k.tFirst||0}/${k.tTotal||8}</b><span>B · Kalit so‘zlar (1-urinish)</span></div>${x?`<div><b>${x.c}/${x.cT}</b><span>C · Bo‘sh joy turi</span></div><div><b>${x.d}/${x.dT}</b><span>D · Juftliklar</span></div><div><b>${x.e}/${x.eT}</b><span>E · Qisqa mazmun</span></div>`:''}</div>
+    <div class="card sec"><h3>Mening kalit so‘zlar jadvalim</h3><p class="muted">Bu jadvalni lug‘at daftaringizga ko‘chiring.</p>
+      <div class="bx-tw"><table class="bx-tbl"><thead><tr><th>#</th><th>Matnda</th><th>Ma’nosi yaqin</th><th>O‘zbekcha</th></tr></thead><tbody>${(t.table||[]).map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td class="u">${esc(r[2])}</td></tr>`).join('')}</tbody></table></div></div>
+    ${t.extra?`<div class="card sec"><h3>So‘z juftliklarim</h3><div class="bx-tw"><table class="bx-tbl"><tbody>${t.extra.d.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r[0])}</b> <span class="red">${esc(r[1])}</span></td></tr>`).join('')}</tbody></table></div></div>`:''}
+    <div class="bx-bar"><button class="btn ghost" id="bxAns">Javoblar</button><button class="btn ghost" id="bxAgain">Mashqlarni qayta ishlash</button>${nx?`<button class="btn red big" id="bxNext">Test ${nx} →</button>`:`<button class="btn red big" id="bxMap2">Xaritaga</button>`}</div></div>`;
+  if(fresh){confetti();sfx('grand');if(gained)xpPop(gained,false)}
+  $('#bxAns').onclick=()=>{if(r)bxResult(t,true)};$('#bxAgain').onclick=()=>bxB(t,{});
+  const nb=$('#bxNext');if(nb)nb.onclick=()=>go('#/me/b/'+nx);const mb=$('#bxMap2');if(mb)mb.onclick=()=>go('#/me/a/'+BOOSTER_AID);
+}
 
 /* ================= START ================= */
 (function start(){

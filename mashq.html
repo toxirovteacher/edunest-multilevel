@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#ffffff">
 <title>EDUNEST · Mashq</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{--ink:#141B2D;--red:#E3101F;--red2:#B80C18;--mist:#EEF1F6;--slate:#5A6378;--line:#DCE1EA;--ok:#0E8A4F;--okbg:#E4F5EC;--bad:#C4121D;--badbg:#FDE8E9;--fs:17px;--bar:64px}
 *{box-sizing:border-box}
@@ -118,6 +118,13 @@ main{max-width:1240px;margin:0 auto;padding:14px 12px 130px}
 .score p{margin:0;font-size:15px;line-height:1.45;color:var(--slate)}.score p b{display:block;color:var(--ink);font-size:17px}
 .reveal{display:block;width:100%;min-height:58px;border:2px dashed #b9c1d3;background:#fff;border-radius:16px;font-size:16px;font-weight:800;color:var(--ink);cursor:pointer;margin:12px 0 0}
 .script{margin-top:12px}
+.script mark.qm{background:#FFE58A;color:#141B2D;border-radius:6px;padding:0 4px;margin:0 2px;font-size:.8em;vertical-align:1px}
+.script .hint{font-size:.85em;opacity:.7;margin-top:-4px}
+.mapfig{margin:4px 0 16px;text-align:center}
+.mapfig img{max-width:100%;max-height:62vh;border-radius:12px;border:1px solid rgba(20,27,45,.12);background:#fff;cursor:zoom-in;box-shadow:0 8px 24px rgba(20,27,45,.08)}
+.mapfig figcaption{font-size:12px;opacity:.6;margin-top:4px}
+.mapfig.zoom{position:fixed;inset:0;z-index:999;background:rgba(10,14,25,.92);display:grid;place-items:center;margin:0;padding:12px}
+.mapfig.zoom img{max-height:94vh;max-width:96vw;cursor:zoom-out}.mapfig.zoom figcaption{display:none}
 .script mark{background:#FFE58A;color:inherit;border-radius:4px;padding:0 2px;box-shadow:0 0 0 1px #F2C94C}
 .script mark b{font-size:.75em;color:var(--red2);margin-right:3px}
 
@@ -149,6 +156,9 @@ textarea{-webkit-user-select:text;user-select:text;font-family:inherit}
 .nt{margin-top:12px;padding:11px 13px;border-radius:12px;background:#FFF7DB;border-left:4px solid #E0A800;font-size:calc(var(--fs) - 2px);line-height:1.52}
 .nt .k{display:inline-block;margin:0 8px 4px 0;padding:2px 9px;border-radius:7px;background:#7A5A00;color:#fff;font-size:.8em;font-weight:800;white-space:nowrap}
 .nt i{font-style:italic;font-weight:600}
+.box>.boxh+div{white-space:pre-line}
+.nt.nx{margin:8px 0 14px;padding:0}.nt.nx summary{cursor:pointer;list-style:none;padding:9px 13px;display:flex;align-items:center;gap:6px}.nt.nx summary::-webkit-details-marker{display:none}
+.nt.nx summary em{font-style:normal;font-weight:700;color:#7A5A00}.nt.nx summary em::after{content:' ▾'}.nt.nx[open] summary em::after{content:' ▴'}.nt.nx summary .k{margin:0}.nt.nx>div{padding:0 13px 12px}
 .after{margin-top:12px}
 .after h3{margin:22px 0 8px;font-size:1.02em;font-weight:800;color:var(--red2);padding-top:16px;border-top:2px solid var(--mist)}
 .after h3:first-child{margin-top:0;padding-top:0;border-top:0}
@@ -436,14 +446,25 @@ function watermark(){const t=esc(who());const svg=`<svg xmlns='http://www.w3.org
   document.documentElement.style.setProperty('--wm',`url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`)}
 
 function fail(h,p,link){$('#main').innerHTML=`<div class="msg"><h2>${esc(h)}</h2><p>${esc(p)}</p><a href="${link||'./#/login'}">${link?'Xaritaga qaytish':'Platformaga kirish'}</a></div>`;$('#foot').hidden=true}
+async function sha8(s){const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));return [...h.slice(0,4)].map(b=>b.toString(16).padStart(2,'0')).join('')}
 async function decrypt(buf){
   const K=ls(ST+'k');if(!K)throw new Error('nokey');
   if(String.fromCharCode(...buf.slice(0,4))!=='EDN1')throw new Error('bad');
-  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(K),'PBKDF2',false,['deriveKey']);
-  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:buf.slice(4,20),iterations:150000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+  const salt=buf.slice(4,20),sk=ST+'dk:'+(await sha8(K))+':'+btoa(String.fromCharCode(...salt));let key=null;
+  try{const c=sessionStorage.getItem(sk);if(c)key=await crypto.subtle.importKey('raw',Uint8Array.from(atob(c),x=>x.charCodeAt(0)),'AES-GCM',false,['decrypt'])}catch(e){}
+  if(!key){  /* the 150 000-round key derivation is slow on phones: do it once per tab session, then reuse */
+    const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(K),'PBKDF2',false,['deriveKey']);
+    const k2=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['decrypt']);
+    try{sessionStorage.setItem(sk,btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.exportKey('raw',k2)))))}catch(e){}
+    key=k2}
   return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(20,32)},key,buf.slice(32)));
 }
 async function load(name){const r=await fetch(name+'.bin',{cache:'no-cache'});if(!r.ok)throw new Error('net');return decrypt(new Uint8Array(await r.arrayBuffer()))}
+/* new materials are plain JSON in d/ (fast: no decryption); older ones stay encrypted .bin */
+const PLAIN=/^(lm|nm|ml|lp3|rm\d|rn\d|r1[pb]|dc)/;
+async function loadDoc(id){
+  if(PLAIN.test(id)){try{const r=await fetch('d/'+id+'.json?v=1');if(r.ok)return await r.json()}catch(e){throw new Error('net')}}
+  return JSON.parse(new TextDecoder().decode(await load(id)))}
 
 /* ---------- answer checking ---------- */
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’‘`]/g,"'").replace(/[£$€]/g,'').replace(/[.,;:!?]+$/,'').replace(/\bcan't\b/g,'cannot').replace(/won't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ve\b/g,' have').replace(/'re\b/g,' are').replace(/'m\b/g,' am').replace(/'ll\b/g,' will').replace(/\s+/g,' ').trim();
@@ -470,6 +491,7 @@ function blockHTML(b){
   if(b.t==='sub')return `<h3 class="sub">${esc(b.x)}</h3>`;
   if(b.t==='ex')return `<div class="row exm"><b>Namuna</b>${esc(b.x)}</div>`;
   if(b.t==='chips')return `<div class="chips">${b.x.map(w=>w[0]==='~'?`<s>${esc(w.slice(1))}</s>`:`<span>${esc(w)}</span>`).join('')}</div>`;
+  if(b.t==='img')return `<figure class="mapfig"><img src="${esc(b.src)}" alt="${esc(b.alt||'')}" loading="lazy" onclick="this.parentNode.classList.toggle('zoom')"><figcaption>Kattalashtirish uchun bosing</figcaption></figure>`;
   if(b.t==='box')return `<div class="box" data-q="${b.n}"><div class="boxh"><span class="num">${b.n}</span><strong>${esc(b.title)}</strong>${pickHTML(b.n)}</div><div>${esc(b.x)}</div><div class="nt" data-nt="${b.n}" hidden></div></div>`;
   return '';
 }
@@ -552,7 +574,11 @@ function showResult(scroll){
     else if(!good){const host=document.querySelector(`.gapw[data-q="${n}"]`)||document.querySelector(`.box[data-q="${n}"] .boxh`);if(host&&!host.querySelector('.fix'))host.insertAdjacentHTML('beforeend',`<span class="fix">✓ ${esc(SEC.ans[n].join(' / '))}</span>`)}
   });
   if(SEC.kind==='listen'){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
-  if(SEC.notes)document.querySelectorAll('[data-nt]').forEach(el=>{const n=el.dataset.nt;if(!SEC.notes[n])return;el.innerHTML=`<span class="k">${n} · Javob: ${esc(SEC.ans[n][0])}</span>${rich(SEC.notes[n])}`;el.hidden=false});
+  if(SEC.notes){Object.keys(SEC.notes).forEach(n=>{if(document.querySelector(`[data-nt="${n}"]`))return;
+      const g=document.querySelector(`.gapw[data-q="${n}"]`);const host=document.querySelector(`.q[data-q="${n}"],.row[data-q="${n}"]`)||(g&&g.closest('p,.row,.q'));
+      if(host)host.insertAdjacentHTML('afterend',`<details class="nt nx" data-nt="${n}"><summary></summary><div></div></details>`)});
+    document.querySelectorAll('[data-nt]').forEach(el=>{const n=el.dataset.nt;if(!SEC.notes[n])return;const h=`<span class="k">${n} · Javob: ${esc(SEC.ans[n][0])}</span>`,b=rich(SEC.notes[n]).replace(/\n/g,'<br>');
+      if(el.tagName==='DETAILS'){el.querySelector('summary').innerHTML=h+'<em>Tahlil</em>';el.querySelector('div').innerHTML=b}else el.innerHTML=h+b;el.hidden=false})}
   if(SEC.after&&$('#aft')&&!$('#aft').innerHTML){$('#aft').innerHTML=`<button class="reveal" id="rva">${esc(SEC.afterLabel||'Tarjimani ochish')}</button>`;$('#rva').onclick=()=>{$('#aft').innerHTML=`<div class="paper after">${SEC.after.map(afterHTML).join('')}</div>`;watermark()}}
   if(scroll)scrollTo({top:0,behavior:'smooth'});
 }
@@ -1052,6 +1078,7 @@ function examResult(){
 }
 function script(){
   let html=SEC.script.map(p=>esc(p)).join('</p><p>');
+  if(SEC.marks){html=html.replace(/\[(\d{1,2})\]/g,'<mark class="qm"><b>$1</b></mark>');$('#scr').innerHTML=`<div class="script"><h2>Script</h2><p class="hint">Raqamli belgilar — javob aytilgan joy.</p><p>${html}</p></div>`;return}
   (SEC.hl||[]).forEach((h,i)=>{const e=esc(h);const at=html.indexOf(e);if(at>=0)html=html.slice(0,at)+`<mark><b>${9+i}</b>${e}</mark>`+html.slice(at+e.length)});
   $('#scr').innerHTML=`<div class="script"><h2>Script</h2><p>${html}</p></div>`;
 }
@@ -1059,17 +1086,22 @@ function script(){
 /* ---------- audio ---------- */
 async function player(){
   const pl=$('#pl');pl.innerHTML=`<div class="player"><div class="spin" style="width:30px;height:30px;margin:0;border-color:rgba(255,255,255,.25);border-top-color:#fff"></div><span class="lbl">Audio yuklanmoqda…</span></div>`;
+  const direct=/\.mp3$/i.test(SEC.audio||'');
   try{
-    if(!audioUrl){const raw=await load(SEC.audio);audioUrl=URL.createObjectURL(new Blob([raw],{type:'audio/mpeg'}))}
+    if(!audioUrl||(direct&&audioUrl!==SEC.audio)){if(direct)audioUrl=SEC.audio;else{const raw=await load(SEC.audio);audioUrl=URL.createObjectURL(new Blob([raw],{type:'audio/mpeg'}))}}
   }catch(e){pl.innerHTML=`<div class="player"><span class="lbl">Audio yuklanmadi. Internetni tekshirib, sahifani yangilang.</span></div>`;return}
-  const au=new Audio(audioUrl);au.preload='auto';
+  // one audio object for the whole page: switching parts in a mock does not stop or restart it
+  if(!window.AU||AU._src!==audioUrl){if(window.AU)AU.pause();window.AU=new Audio(audioUrl);AU._src=audioUrl;AU.preload=direct?'metadata':'auto'}
+  const au=AU;
   const P='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',Pa='<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-  pl.innerHTML=`<div class="player"><button class="pp" id="pp" aria-label="Ijro etish">${P}</button><div class="pr"><input type="range" id="sb" min="0" max="1000" value="0" aria-label="Audio joyi"><div class="tm"><span id="t0">0:00</span><span id="t1">–:––</span></div></div><button class="sk" id="bk" aria-label="10 soniya orqaga">−10s</button></div>`;
+  pl.innerHTML=`<div class="player"><button class="pp" id="pp" aria-label="Ijro etish">${au.paused?P:Pa}</button><div class="pr"><input type="range" id="sb" min="0" max="1000" value="0" aria-label="Audio joyi"><div class="tm"><span id="t0">0:00</span><span id="t1">–:––</span></div></div><button class="sk" id="bk" aria-label="10 soniya orqaga">−10s</button></div>`;
   const f=t=>isFinite(t)?Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0'):'–:––';
-  au.addEventListener('loadedmetadata',()=>$('#t1').textContent=f(au.duration));
-  au.addEventListener('timeupdate',()=>{$('#t0').textContent=f(au.currentTime);if(au.duration)$('#sb').value=Math.round(au.currentTime/au.duration*1000)});
-  au.addEventListener('play',()=>{$('#pp').innerHTML=Pa;$('#pp').setAttribute('aria-label','Pauza')});
-  au.addEventListener('pause',()=>{$('#pp').innerHTML=P;$('#pp').setAttribute('aria-label','Ijro etish')});
+  const tu=()=>{const a=$('#t0'),b=$('#sb');if(!a)return;a.textContent=f(au.currentTime);if(au.duration&&b)b.value=Math.round(au.currentTime/au.duration*1000)};
+  au.onloadedmetadata=()=>{const t=$('#t1');if(t)t.textContent=f(au.duration)};au.ontimeupdate=tu;
+  au.onplay=()=>{const b=$('#pp');if(b){b.innerHTML=Pa;b.setAttribute('aria-label','Pauza')}};
+  au.onpause=()=>{const b=$('#pp');if(b){b.innerHTML=P;b.setAttribute('aria-label','Ijro etish')}};
+  au.onerror=()=>{const l=$('#t1');if(l)l.textContent='xato'};
+  if(au.duration)$('#t1').textContent=f(au.duration);tu();
   $('#pp').onclick=()=>au.paused?au.play():au.pause();
   $('#bk').onclick=()=>{au.currentTime=Math.max(0,au.currentTime-10)};
   $('#sb').oninput=e=>{if(au.duration)au.currentTime=e.target.value/1000*au.duration};
@@ -1092,7 +1124,7 @@ async function boot(){
   if(!H.d||!/^[a-z0-9-]+$/.test(H.d)){fail('Mashq topilmadi','Havola noto‘g‘ri. Xaritadan qayta oching.','./#/me');return}
   if(H.a)$('#back').href='./#/me/a/'+encodeURIComponent(H.a);
   if(!ls(ST+'k')){fail('Avval kiring','Bu mashq faqat EDUNEST o‘quvchilari uchun. Platformaga kiring va xaritadan oching.');return}
-  try{DOC=JSON.parse(new TextDecoder().decode(await load(H.d)))}
+  try{DOC=await loadDoc(H.d)}
   catch(e){e.message==='net'?fail('Yuklanmadi','Internetni tekshirib, sahifani yangilang.','./#/me'):fail('Qayta kiring','Kirish muddati tugagan. Platformaga qaytadan kiring.');return}
   if(H.x==='all'&&DOC.exam){examBoot();return}
   SEC=DOC.sections.find(s=>s.id===H.x);

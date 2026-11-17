@@ -964,6 +964,8 @@ body.dark .aiblk .pre{background:#1d2436}
 .aimi{padding:8px 0;border-bottom:1px solid var(--line);line-height:1.5}.aimi:last-child{border-bottom:0}
 .aimi del{color:#C4121D}.aimi ins{color:#0E8A4F;text-decoration:none;font-weight:800}.aimi small{display:block;color:var(--mute);font-size:13.5px;margin-top:2px}
 #aiOf svg{color:#6C4DF6}
+.aicard.sp{background:radial-gradient(120% 160% at 100% 0%,#14A08E 0%,#0B3B47 55%,#141B2D 100%);margin-top:10px}.aicard .aicon{font-size:24px}
+
 </style>
 </head>
 <body class="uz-on">
@@ -1492,7 +1494,8 @@ function homeHTML(p){
       <em>${!rk?'':rk.me.r===1?(p.xp.T?'Siz birinchisiz!':'Birinchi XP’ni hozir oling.'):`Keyingi o‘ringa ${rk.gap} XP`}</em></div>
   </a>
   ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
-  ${!G3&&p.ai?`<a class="aicard" href="mashq.html#ai"><span class="aicon">${AI_SVG}</span><span class="aitx"><b>AI Writing yordamchi</b><small>Xat va esselaringizni AI tekshiradi: ball, daraja, har bir xato o‘zbekcha tushuntirish bilan</small></span><em>Ochish</em></a>`:''}
+  ${!G3&&p.ai?`<a class="aicard" href="mashq.html#ai"><span class="aicon">${AI_SVG}</span><span class="aitx"><b>AI Writing yordamchi</b><small>Xat va esselaringizni AI tekshiradi: ball, daraja, har bir xato o‘zbekcha tushuntirish bilan</small></span><em>Ochish</em></a>
+  <a class="aicard sp" href="mashq.html#speak"><span class="aicon">🎙️</span><span class="aitx"><b>AI Speaking yordamchi</b><small>Imtihondagidek gapiring: AI tinglaydi, transkript qiladi va 4 mezon bo‘yicha baholaydi</small></span><em>Ochish</em></a>`:''}
   ${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
   <div class="tgrid">${ts.map(t=>{const i=T.indexOf(t);return `<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
       ${coverHTML(t.cover,i,`<span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}`)}
@@ -1684,14 +1687,14 @@ async function teacherHome(tab){
 }
 /* ---------- AI Writing (Gemini): settings + every check students made ---------- */
 const AI_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
-const AI_TN={'1.1':'Task 1.1 · norasmiy xat','1.2':'Task 1.2 · rasmiy xat','2':'Part 2 · esse'};
-const AI_CN=[['task','Topshiriq'],['grammar','Grammatika'],['vocabulary','Lug‘at'],['organisation','Bog‘lanish'],['mechanics','Imlo']];
+const AI_TN={'1.1':'Task 1.1 · norasmiy xat','1.2':'Task 1.2 · rasmiy xat','2':'Part 2 · esse','S1.1':'Speaking 1.1 · suhbat','S1.2':'Speaking 1.2 · taqqoslash','S2':'Speaking 2 · monolog','S3':'Speaking 3 · munozara'};
+const AI_CN=[['task','Topshiriq'],['fluency','Ravonlik'],['grammar','Grammatika'],['vocabulary','Lug‘at'],['organisation','Bog‘lanish'],['mechanics','Imlo'],['pronunciation','Talaffuz']];
 const aiLvC=l=>l==='C1'?'#159947':l==='B2'?'#2F80ED':l==='B1'?'#D98A06':'#E3101F';
 function aiDetail(c){const r=c.r||{},all=r.mistakes||[],er=all.filter(m=>m.kind!=='tip'),tp=all.filter(m=>m.kind==='tip');
   const mi=(m,i)=>`<div class="aimi"><b>${i+1}.</b> <del>${esc(m.original)}</del> → <ins>${esc(m.correction)}</ins><small>${esc(m.explain_uz)}</small></div>`;
   return `<div class="aidet">${c.task?`<div class="aiblk"><h4>Topshiriq</h4><p class="pre">${esc(c.task)}</p></div>`:''}
-    <div class="aiblk"><h4>O‘quvchi matni · ${c.words} so‘z</h4><p class="pre">${esc(c.text)}</p></div>
-    <div class="aiblk"><h4>Ballar</h4><div class="aisc">${AI_CN.filter(([k])=>k in (r.scores||{})).map(([k,n])=>`<span><b>${r.scores[k]}/10</b>${n}</span>`).join('')}<span><b>${r.max?r.points+'/'+r.max:c.score+'/75'}</b>${esc(c.level)}</span></div><p>${esc(r.summary_uz||'')}</p>${r.word_note_uz?`<p>⚠️ ${esc(r.word_note_uz)}</p>`:''}</div>
+    <div class="aiblk"><h4>${/^S/.test(c.type)?'Aytgani (AI transkripti)':'O‘quvchi matni'} · ${c.words} so‘z</h4><p class="pre">${esc(c.text)}</p></div>
+    <div class="aiblk"><h4>Ballar</h4><div class="aisc">${AI_CN.filter(([k])=>k in (r.scores||{})).map(([k,n])=>`<span><b>${r.scores[k]}/10</b>${n}</span>`).join('')}<span><b>${r.max?r.points+'/'+r.max:r.kind==='speaking'?r.pct+'%':c.score+'/75'}</b>${esc(c.level)}</span></div><p>${esc(r.summary_uz||'')}</p>${r.word_note_uz?`<p>⚠️ ${esc(r.word_note_uz)}</p>`:''}</div>
     <div class="aiblk"><h4>Xatolar (${er.length})</h4>${er.length?er.map(mi).join(''):'<p>Xato topilmadi.</p>'}</div>
     ${tp.length?`<div class="aiblk"><h4>Tavsiyalar (${tp.length}) — xato emas</h4>${tp.map(mi).join('')}</div>`:''}
     ${r.improved?`<div class="aiblk"><h4>AI yaxshilagan variant</h4><p class="pre">${esc(r.improved)}</p></div>`:''}</div>`}
@@ -1711,11 +1714,11 @@ async function tAI(){
       <div class="card kpi"><div class="l">Shu hafta</div><div class="v">${wk.length}</div><div class="muted ks">${new Set(wk.map(c=>c.id)).size} o‘quvchi</div></div>
       <div class="card kpi"><div class="l">O‘rtacha ball</div><div class="v">${avg}</div><div class="muted ks">75 dan, taxminiy</div></div>
       <div class="card kpi"><div class="l">Foydalanganlar</div><div class="v">${new Set(C.map(c=>c.id)).size}</div><div class="muted ks">o‘quvchi</div></div></div>
-    <div class="tfil"><input id="aiQ" placeholder="Ism yoki ID" value="${esc(F.q)}" aria-label="Qidirish"><select id="aiT" aria-label="Topshiriq turi"><option value="">Barcha turlar</option>${['1.1','1.2','2'].map(k=>`<option value="${k}" ${F.t===k?'selected':''}>${AI_TN[k]}</option>`).join('')}</select></div>
+    <div class="tfil"><input id="aiQ" placeholder="Ism yoki ID" value="${esc(F.q)}" aria-label="Qidirish"><select id="aiT" aria-label="Topshiriq turi"><option value="">Barcha turlar</option>${['1.1','1.2','2','S1.1','S1.2','S2','S3'].map(k=>`<option value="${k}" ${F.t===k?'selected':''}>${AI_TN[k]}</option>`).join('')}</select></div>
     <div id="aiList" class="ailist"></div>`;
   const draw=()=>{const q=F.q.toLowerCase();const L=C.filter(c=>(!F.t||c.type===F.t)&&(!q||(c.name+' '+c.id).toLowerCase().includes(q)));
     $('#aiList').innerHTML=L.length?L.map(c=>{const i=C.indexOf(c);return `<div class="card aichk"><button class="aihd" data-ai="${i}" aria-expanded="false">
-        <span class="ailv" style="background:${aiLvC(c.level)}">${esc(c.level==='B1 dan past'?'B1−':c.level)}<small>${c.r&&c.r.max?c.r.points+'/'+c.r.max:c.score}</small></span>
+        <span class="ailv" style="background:${aiLvC(c.level)}">${esc(c.level==='B1 dan past'?'B1−':c.level)}<small>${c.r&&c.r.max?c.r.points+'/'+c.r.max:c.r&&c.r.kind==='speaking'?c.r.pct+'%':c.score}</small></span>
         <span class="aitx"><b>${esc(c.name)}</b><small>${esc(c.group)} · ${AI_TN[c.type]||esc(c.type)} · ${c.words} so‘z · ${new Date(c.at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</small></span>
         <span class="aiar">›</span></button><div class="aibody" hidden></div></div>`}).join(''):'<p class="muted empty">Hali tekshiruvlar yo‘q.</p>';
     document.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const bd=b.nextElementSibling,open=bd.hidden;if(open&&!bd.innerHTML)bd.innerHTML=aiDetail(C[+b.dataset.ai]);bd.hidden=!open;b.setAttribute('aria-expanded',open)})};

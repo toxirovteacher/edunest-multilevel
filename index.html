@@ -966,6 +966,120 @@ body.dark .aiblk .pre{background:#1d2436}
 #aiOf svg{color:#6C4DF6}
 .aicard.sp{background:radial-gradient(120% 160% at 100% 0%,#14A08E 0%,#0B3B47 55%,#141B2D 100%);margin-top:10px}.aicard .aicon{font-size:24px}
 
+/* ===================== v21 REDESIGN: landing (hx), login (lx), roster tools (rs) ===================== */
+body:not(.g3) .g3,body.g3 .ml{display:none!important}
+.lp-nav{display:flex;gap:4px;margin-left:auto;margin-right:8px}
+.lp-nav a{padding:10px 14px;border-radius:10px;font-weight:600;font-size:15px;color:var(--slate)!important;text-decoration:none}
+.lp-nav a:hover{background:var(--mist);color:var(--ink)!important}
+.hx{max-width:1180px;margin:0 auto;padding:clamp(28px,5vw,72px) clamp(20px,5vw,56px) clamp(36px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,4vw,64px);align-items:center}
+.hx-pill{display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;padding:7px 14px 7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:600;font-size:14px;color:var(--ink);box-shadow:0 2px 10px rgba(20,27,45,.05)}
+.hx-pill i{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(227,16,31,.15)}
+.hx-h1{font-weight:800;font-size:clamp(38px,5.6vw,72px);line-height:1.02;letter-spacing:-.035em;margin:0;color:var(--ink)}
+.hx-h1 em{font-style:normal;color:var(--red);position:relative;white-space:nowrap}
+.hx-h1 em:after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.12em;background:rgba(227,16,31,.16);border-radius:4px;z-index:-1}
+.hx-lead{font-size:clamp(17px,1.5vw,19.5px);color:var(--slate);max-width:34em;margin:22px 0 0;line-height:1.6}
+.hx-trust{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14.5px;font-weight:600;color:var(--slate)}
+.hx-trust li:before{content:"✓";color:#159947;font-weight:800;margin-right:7px}
+.hx-vis{position:relative;min-height:480px}
+.hx-photo{position:absolute;inset:0 6% 0 14%;border-radius:28px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#fff 0%,#EEF1F6 60%,#E1E6EF 100%)}
+.hx-photo:before{content:"";position:absolute;left:-20%;right:-20%;bottom:-30%;height:70%;background:radial-gradient(closest-side,rgba(227,16,31,.22),transparent);}
+.hx-photo img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:96%;width:auto;mix-blend-mode:multiply}
+.hx-card{position:absolute;background:#fff;border-radius:18px;box-shadow:0 18px 50px rgba(20,27,45,.16);border:1px solid rgba(20,27,45,.06)}
+.hx-res{left:0;top:9%;width:230px;padding:16px 18px}
+.hx-rh{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700;color:var(--slate)}
+.hx-lv{background:#2F80ED;color:#fff;font-size:12px;padding:3px 9px;border-radius:999px}
+.hx-big{font-size:46px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1;margin:8px 0 12px}.hx-big small{font-size:16px;color:var(--slate);font-weight:600;margin-left:2px}
+.hx-bars{display:grid;gap:7px}.hx-bars span{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--slate)}
+.hx-bars i{order:2;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--red) var(--w),#EEF1F6 var(--w))}
+.hx-sp{right:0;top:52%;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px}
+.hx-sp b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:4px}
+.hx-mic{width:42px;height:42px;border-radius:12px;background:#0B3B47;display:grid;place-items:center}.hx-mic svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.hx-wave{display:flex;align-items:center;gap:3px;height:22px}.hx-wave i{width:4px;border-radius:3px;background:#14A08E;height:30%}
+.hx-wave i:nth-child(2n){height:70%}.hx-wave i:nth-child(3n){height:100%}.hx-wave i:nth-child(5n){height:45%}
+.hx-plate{position:absolute;left:4%;bottom:5%;background:#fff;padding:12px 16px 12px 14px;border-left:4px solid var(--red);border-radius:0 12px 12px 0;box-shadow:0 12px 30px rgba(20,27,45,.14)}
+.hx-plate b{display:block;font-size:17px;font-weight:800}.hx-plate span{display:block;font-size:13px;color:var(--slate)}.hx-plate a{display:inline-block;margin-top:4px;font-weight:700;font-size:14px;color:var(--red)!important;text-decoration:none}
+.hx-band{background:var(--ink);color:#fff;padding:26px 0}
+.hx-band .lp-in{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.hx-band b{display:block;font-size:clamp(24px,2.6vw,32px);font-weight:800;letter-spacing:-.02em;color:#fff}.hx-band span{font-size:14px;color:#B9C1D3}
+.hx-kick{margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.sk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}.sk-grid.g3{grid-template-columns:repeat(3,1fr)}
+.sk{position:relative;padding:24px 22px 26px;border-radius:20px;background:#fff;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
+.sk:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(20,27,45,.1)}
+.sk-n{font-weight:800;font-size:15px;color:var(--slate);letter-spacing:.06em}
+.sk h3{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:26px 0 8px;color:var(--ink)}.sk p{margin:0;color:var(--slate);font-size:15.5px;line-height:1.55}
+.sk em{position:absolute;right:18px;top:20px;font-style:normal;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,#6C4DF6,#E3101F);padding:4px 10px;border-radius:999px}
+.sk-ai{background:linear-gradient(180deg,#fff 0%,#FFF6F7 100%)}
+.qz-wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,72px);align-items:center}
+.qz{background:#fff;border-radius:22px;padding:24px;border:1px solid var(--line);box-shadow:0 18px 50px rgba(20,27,45,.08);min-height:290px}
+.qz-top{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--slate);font-size:14px}
+.qz-dots{display:flex;gap:5px}.qz-dots i{width:18px;height:5px;border-radius:5px;background:var(--line)}.qz-dots i.on{background:var(--ink)}.qz-dots i.cur{background:var(--red)}
+.qz-q{font-size:clamp(19px,2vw,23px);font-weight:700;color:var(--ink);margin:22px 0 18px;line-height:1.4}.qz-q u{text-decoration:none;border-bottom:2px solid var(--ink);display:inline-block;min-width:44px}
+.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qz-opts button{min-height:54px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font:inherit;font-weight:600;font-size:16px;color:var(--ink);text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.qz-opts button:hover:not(:disabled){border-color:var(--ink)}.qz-opts button.ok{border-color:#159947;background:#E6F6EC}.qz-opts button.no{border-color:var(--red);background:#FDECEE}
+.qz-res small{font-weight:700;color:var(--slate);font-size:14px}.qz-res>b{display:block;font-size:72px;font-weight:800;letter-spacing:-.04em;color:var(--red);line-height:1.05}.qz-res p{color:var(--slate);margin:6px 0 0}
+.qz-res .lp-actions{margin-top:20px}.qz-res button.lp-btn{border:0;cursor:pointer;font:inherit;font-weight:700;font-size:17px}
+@media (max-width:980px){.lp-nav{display:none}.sk-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){.hx{grid-template-columns:1fr}.hx-vis{min-height:420px;max-width:520px;width:100%;justify-self:center}.hx-band .lp-in{grid-template-columns:1fr 1fr}.qz-wrap{grid-template-columns:1fr}.sk-grid.g3{grid-template-columns:1fr}}
+@media (max-width:520px){.hx-vis{min-height:380px}.hx-photo{inset:0 0 0 10%}.hx-res{width:190px;padding:12px 14px}.hx-big{font-size:36px}.hx-sp{top:auto;bottom:24%}.sk-grid{grid-template-columns:1fr}.qz-opts{grid-template-columns:1fr}.qz{padding:18px}.hx-h1 em{white-space:normal}}
+@media (prefers-reduced-motion:no-preference){.hx-copy>*{animation:lpUp .6s cubic-bezier(.2,.7,.2,1) both}.hx-copy>*:nth-child(2){animation-delay:.05s}.hx-copy>*:nth-child(3),.hx-copy>*:nth-child(4){animation-delay:.1s}.hx-copy>*:nth-child(5){animation-delay:.15s}
+ .hx-card{animation:hxFloat 6s ease-in-out infinite}.hx-sp{animation-delay:-3s}.hx-wave i{animation:hxWave 1.1s ease-in-out infinite}.hx-wave i:nth-child(2n){animation-delay:-.3s}.hx-wave i:nth-child(3n){animation-delay:-.6s}}
+@keyframes hxFloat{50%{transform:translateY(-8px)}}@keyframes hxWave{50%{transform:scaleY(.4)}}
+
+/* ---------- login ---------- */
+#login{display:block;min-height:100vh;background:var(--paper)}
+.lx{min-height:100vh;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr)}
+.lx-side{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:36px;padding:clamp(28px,4vw,56px);background:#141B2D;color:#fff;font-family:"Onest",system-ui,sans-serif}
+.lx-side:before{content:"";position:absolute;width:620px;height:620px;right:-260px;top:-220px;border-radius:50%;background:radial-gradient(closest-side,rgba(227,16,31,.55),transparent)}
+.lx-side:after{content:"";position:absolute;width:520px;height:520px;left:-240px;bottom:-260px;border-radius:50%;background:radial-gradient(closest-side,rgba(108,77,246,.35),transparent)}
+.lx-side>*{position:relative;z-index:1}
+.lx-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}.lx-brand img{width:44px;height:44px;border-radius:12px;background:#fff}
+.lx-brand b{display:block;font-size:19px;font-weight:800}.lx-brand small{display:block;font-size:13.5px;color:#B9C1D3}
+.lx-msg{margin-top:auto}.lx-msg h1{font-size:clamp(36px,4.4vw,60px);font-weight:800;letter-spacing:-.035em;line-height:1.02;margin:0;color:#fff}
+.lx-msg h1 em{font-style:normal;color:#FF5A66}.lx-msg p{color:#B9C1D3;font-size:17.5px;max-width:28em;margin:18px 0 0;line-height:1.6}
+.lx-feat{display:flex;flex-wrap:wrap;gap:8px}.lx-feat span{padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:600}
+.lx-teacher{display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);align-self:flex-start}
+.lx-teacher img{width:48px;height:48px;border-radius:50%;object-fit:cover;object-position:top;background:#EEF1F6}
+.lx-teacher small{display:block;color:#B9C1D3;font-size:13px}.lx-teacher b{font-size:17px}
+.lx-main{display:flex;align-items:center;justify-content:center;padding:clamp(24px,5vw,64px) clamp(16px,4vw,48px);font-family:"Onest",system-ui,sans-serif}
+.lx-card{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(22px,3vw,34px);box-shadow:0 24px 60px rgba(20,27,45,.08)}
+.lx-h{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:6px 0 6px;color:var(--ink)}
+.lx-sub{color:var(--mute);margin:0 0 18px;font-size:15.5px;line-height:1.5}
+.lx-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:14px;background:var(--paper);border:1px solid var(--line);margin-bottom:18px}
+.lx-seg button{min-height:42px;border:0;border-radius:10px;background:transparent;font:inherit;font-weight:700;font-size:15px;color:var(--mute);cursor:pointer}
+.lx-seg button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 8px rgba(20,27,45,.1)}
+.lx-hint{font-size:14px;color:var(--mute);margin:14px 0 0;line-height:1.5}
+.lx-alt{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font-size:14px}
+.lx-alt a,.lx-alt button{background:none;border:0;padding:4px 0;font:inherit;font-weight:700;color:var(--mute);text-decoration:none;cursor:pointer}.lx-alt a:hover,.lx-alt button:hover{color:var(--red)}
+.lx-card .lback{font-size:14.5px}
+body.dark .lx-seg button.on{box-shadow:none;background:var(--hover)}
+@media (max-width:860px){.lx{grid-template-columns:1fr}.lx-side{gap:18px;padding:20px 20px 26px}.lx-msg{margin-top:4px}.lx-msg h1{font-size:30px}.lx-msg p{font-size:15.5px;margin-top:8px}.lx-feat,.lx-teacher{display:none}.lx-main{align-items:flex-start;padding-top:20px}}
+
+/* ---------- teacher: roster management ---------- */
+.rs-chips{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.rs-chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font:inherit;font-weight:700;font-size:14.5px;color:var(--ink);cursor:pointer}
+.rs-chip b{font-size:12.5px;background:var(--paper);padding:2px 8px;border-radius:999px;color:var(--mute)}
+.rs-chip.on{background:var(--navy);border-color:var(--navy);color:#fff}.rs-chip.on b{background:rgba(255,255,255,.18);color:#fff}
+.rs-chip.new{border-color:#9FD9B5}.rs-chip.warn{border-color:#F3C77A}
+body.dark .rs-chip.on{background:#E4E8F1;color:#141B2D;border-color:#E4E8F1}body.dark .rs-chip.on b{background:rgba(0,0,0,.12);color:#141B2D}
+.srow .rs-ck{width:22px;height:22px;accent-color:var(--red);flex:none;cursor:pointer}
+.rs-new{display:inline-block;font-size:11.5px;font-weight:800;color:#0E7A3B;background:#DDF3E5;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:2px}
+body.dark .rs-new{background:#11301E;color:#8be0b2}
+.rs-bulk{position:sticky;bottom:12px;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border-radius:16px;background:var(--navy);color:#fff;box-shadow:0 16px 40px rgba(20,27,45,.3)}
+.rs-bulk b{margin-right:auto}.rs-bulk select{min-height:44px;border-radius:10px;padding:0 10px;font:inherit;font-weight:600}
+.rs-bulk .btn{min-height:44px}
+.rs-form{display:grid;gap:12px;margin-top:10px}.rs-form label{display:block;font-weight:700;font-size:14px;margin-bottom:5px}
+.rs-form input,.rs-form select{width:100%;min-height:48px;border-radius:12px;border:1.5px solid var(--line);padding:0 12px;font:inherit;font-size:16px;background:var(--input,#fff);color:var(--ink)}
+.rs-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rs-danger{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rs-danger p{margin:0;font-size:13.5px;color:var(--mute)}
+.rs-tabs{display:flex;gap:6px;margin:8px 0 6px}
+#login h1,#login h2,#login h3{font-family:"Onest",system-ui,sans-serif;text-transform:none}.lp-btn{gap:8px}
+.srow.rsrow{grid-template-columns:24px 46px minmax(160px,1.6fr) 1fr .6fr .9fr auto}
+@media (max-width:760px){.srow.rsrow{grid-template-columns:24px 46px 1fr auto;grid-template-areas:"c a n b" "c p1 p2 p3"}.srow.rsrow .rs-ck{grid-area:c}}
+
+.rs-bulk[hidden]{display:none}
+
 </style>
 </head>
 <body class="uz-on">
@@ -975,34 +1089,73 @@ body.dark .aiblk .pre{background:#1d2436}
 <section id="landing" class="hide">
  <div class="lp">
   <header class="lp-bar">
-    <a class="lp-brand" href="#/" aria-label="EDUNEST Multi-Level"><img class="lg" alt=""><span><b>EDUNEST</b><small>Multi-Level hamjamiyati</small></span></a>
+    <a class="lp-brand" href="#/" aria-label="EDUNEST"><img class="lg" alt=""><span><b>EDUNEST</b><small class="ml">Multi-Level hamjamiyati</small><small class="g3">General English · Level 3</small></span></a>
+    <nav class="lp-nav" aria-label="Bo‘limlar"><a href="#lp-skills" data-scroll="lp-skills">Imkoniyatlar</a><a class="ml" href="#lp-check" data-scroll="lp-check">Darajani bilish</a><a class="ml" href="#/c1">C1 qo‘llanma</a><a href="#lp-enroll" data-scroll="lp-enroll">Aloqa</a></nav>
     <a class="lp-btn lp-btn-sm" href="#/login">Kirish</a>
   </header>
 
-  <div class="lp-hero">
-    <div class="lp-copy">
-      <h1 class="lp-h1"><span>EDUNEST</span> <span>Multi-Level</span> <span>hamjamiyatiga</span> <span>xush kelibsiz</span></h1>
-      <p class="lp-lead">Milliy sertifikat imtihoniga tayyorlanayotgan o‘quvchilar uchun shaxsiy o‘quv makoni. Mashqlar, ustoz topshiriqlari va natijalaringiz bir joyda.</p>
+  <div class="hx">
+    <div class="hx-copy">
+      <p class="hx-pill"><i></i><span class="ml">Milliy sertifikat · Multi-Level (CEFR)</span><span class="g3">DOLPHINS · PENGUINS guruhlari</span></p>
+      <h1 class="hx-h1"><span class="ml">Imtihonga ustoz bilan, <em>mashqqa AI bilan</em> tayyorlaning.</span><span class="g3">Darslikdagi har bir mavzu <em>bitta xaritada.</em></span></h1>
+      <p class="hx-lead ml">Mashqlar, ustoz topshiriqlari, AI Writing va AI Speaking tekshiruvi bitta platformada. Har bir xato o‘zbekcha tushuntiriladi, natijangizni ustozingiz ham ko‘radi.</p>
+      <p class="hx-lead g3">Darslikdagi mashqlar, ustoz topshiriqlari va guruh reytingi bir joyda. Har bir bosqichni bajarib, XP yig‘asiz.</p>
       <div class="lp-actions">
-        <a class="lp-btn" href="#/login">Platformaga kirish</a>
-        <a class="lp-btn lp-btn-line" href="#lp-enroll" data-scroll="lp-enroll">Darsga yozilish</a>
+        <a class="lp-btn" href="#/login">Platformaga kirish <span aria-hidden="true">→</span></a>
+        <a class="lp-btn lp-btn-line ml" href="#lp-check" data-scroll="lp-check">Darajamni bilish</a>
+        <a class="lp-btn lp-btn-line g3" href="#lp-enroll" data-scroll="lp-enroll">Darsga yozilish</a>
       </div>
-      <figure class="lp-track" aria-label="Daraja yo‘li: A2, B1, B2, C1. Maqsad C1">
-        <div class="lp-rail"><i class="lp-fill"></i>
-          <span style="--x:0%">A2</span><span style="--x:33.33%">B1</span><span style="--x:66.66%">B2</span><span class="goal" style="--x:100%">C1</span>
-          <b class="lp-dot"></b></div>
-        <figcaption>Maqsad: C1</figcaption>
-      </figure>
+      <ul class="hx-trust"><li>Telegram orqali bir bosishda kirish</li><li class="ml">0–75 ball shkalasi</li><li>Natijalar saqlanadi</li></ul>
     </div>
-    <div class="lp-portrait">
-      <img id="tPhoto" alt="A'zamjon Toxirov">
-      <div class="lp-plate">
-        <b>A'zamjon Toxirov</b>
-        <span>C1 o‘qituvchi, EDUNEST Academy</span>
-        <a href="https://t.me/teachertx" target="_blank" rel="noopener">@teachertx</a>
+    <div class="hx-vis">
+      <div class="hx-photo"><img id="tPhoto" alt="A'zamjon Toxirov"></div>
+      <div class="hx-card hx-res ml" aria-hidden="true">
+        <div class="hx-rh"><span>AI Writing · namuna</span><b class="hx-lv">B2</b></div>
+        <div class="hx-big">52<small>/75</small></div>
+        <div class="hx-bars"><span><i style="--w:80%"></i>Topshiriq</span><span><i style="--w:60%"></i>Grammatika</span><span><i style="--w:70%"></i>Lug‘at</span><span><i style="--w:70%"></i>Bog‘lanish</span></div>
       </div>
+      <div class="hx-card hx-sp ml" aria-hidden="true">
+        <span class="hx-mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+        <div><b>Speaking · Part 1.1</b><span class="hx-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+      </div>
+      <div class="hx-plate"><b>A'zamjon Toxirov</b><span>C1 o‘qituvchi, EDUNEST Academy</span><a href="https://t.me/teachertx" target="_blank" rel="noopener">@teachertx</a></div>
     </div>
   </div>
+
+  <div class="hx-band"><div class="lp-in">
+    <div class="ml"><b>4</b><span>ko‘nikma: Listening, Reading, Writing, Speaking</span></div>
+    <div class="ml"><b>~1 daq.</b><span>AI tekshiruvi natijasi</span></div>
+    <div class="g3"><b>XP</b><span>har bir bosqich uchun</span></div>
+    <div class="g3"><b>2</b><span>guruh: DOLPHINS va PENGUINS</span></div>
+    <div><b>UZ</b><span>barcha izohlar o‘zbek tilida</span></div>
+    <div><b>C1</b><span>ustoz har bir natijani ko‘radi</span></div>
+  </div></div>
+
+  <section class="lp-sec" id="lp-skills">
+    <div class="lp-in">
+      <p class="hx-kick">Platformada nima bor</p>
+      <h2 class="lp-h2 ml">To‘rt ko‘nikma, bitta tizim</h2><h2 class="lp-h2 g3">Darsdan keyin ham dars davom etadi</h2>
+      <div class="sk-grid ml">
+        <div class="sk"><span class="sk-n">01</span><h3>Listening</h3><p>Part 2 Pack: 9 ta mashq, skript va javoblar bilan. Audio, transcript va so‘zlar bilan ishlash usuli.</p></div>
+        <div class="sk"><span class="sk-n">02</span><h3>Reading</h3><p>Part 1 Booster: 30 ta matn, har birida 5 xil mashq. To‘liq mock test real imtihon formatida.</p></div>
+        <div class="sk sk-ai"><span class="sk-n">03</span><em>AI</em><h3>Writing</h3><p>Task 1.1, 1.2 va Part 2. AI 5 mezon bo‘yicha baholaydi, xatolarni belgilaydi va o‘zbekcha tushuntiradi.</p></div>
+        <div class="sk sk-ai"><span class="sk-n">04</span><em>AI</em><h3>Speaking</h3><p>Imtihondagidek 4 qism: savol o‘qiladi, tayyorgarlik vaqti, yozib olish. Transkript, talaffuz va namunaviy javoblar.</p></div>
+      </div>
+      <div class="sk-grid g3">
+        <div class="sk"><span class="sk-n">01</span><h3>Darslik mashqlari</h3><p>Har bir unit bo‘yicha grammatika va so‘z mashqlari, darhol tekshiriladi.</p></div>
+        <div class="sk"><span class="sk-n">02</span><h3>Topshiriqlar xaritasi</h3><p>Ustoz bergan topshiriqlar bosqichma-bosqich ochiladi. Oxirida sertifikat.</p></div>
+        <div class="sk"><span class="sk-n">03</span><h3>Guruh reytingi</h3><p>XP yig‘ing va guruhingizdagi o‘rningizni kuzating.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-mist ml" id="lp-check">
+    <div class="lp-in qz-wrap">
+      <div><p class="hx-kick">1 daqiqalik test</p><h2 class="lp-h2">Darajangiz qanday?</h2>
+        <p class="lp-sub">8 ta qisqa grammatika va so‘z savoli. Ro‘yxatdan o‘tish shart emas, javoblaringiz hech qayerga yuborilmaydi.</p></div>
+      <div class="qz" id="lpQuiz"></div>
+    </div>
+  </section>
 
   <section class="lp-sec lp-c1">
     <div class="lp-in lp-c1g">
@@ -1033,9 +1186,9 @@ body.dark .aiblk .pre{background:#1d2436}
     <div class="lp-in">
       <h2 class="lp-h2">Qanday boshlanadi</h2>
       <ol class="lp-steps">
-        <li><b>ID raqamingizni oling</b><p>EDUNEST o‘quvchilari markazdagi ID raqamidan foydalanadi. Darsga yangi kelganlar ustoz aytgan mehmon kodi bilan vaqtincha kiradi.</p></li>
-        <li><b>Platformaga kiring</b><p>ID raqamingiz va parolingizni yozing. Birinchi kirishda 4–8 xonali parolni o‘zingiz o‘ylab topasiz.</p></li>
-        <li><b>Mashq qiling</b><p>Natijalaringiz profilingizda saqlanadi va ustozingiz ularni ko‘radi.</p></li>
+        <li><b>Kiring</b><p>Telegram orqali bir bosishda yoki markazdagi ID raqamingiz va parolingiz bilan. Yangi kelganlar ustoz aytgan mehmon kodi bilan kiradi.</p></li>
+        <li><b>Xarita bo‘yicha yuring</b><p>Har bir topshiriq bosqichma-bosqich ochiladi. XP yig‘asiz va guruh reytingida ko‘rinasiz.</p></li>
+        <li><b>Fikr oling</b><p><span class="ml">AI Writing va Speaking xatolaringizni o‘zbekcha tushuntiradi. </span>Ustozingiz har bir natijangizni ko‘rib boradi.</p></li>
       </ol>
     </div>
   </section>
@@ -1102,21 +1255,15 @@ body.dark .aiblk .pre{background:#1d2436}
 
 <!-- ================= LOGIN ================= -->
 <section id="login" class="hide">
-  <div class="hero">
-    <div class="logo-card"><img class="lg" alt="EDUNEST academy"></div>
-    <div>
-      <div class="eyebrow" style="color:#fff;opacity:.85">EDUNEST · Milliy sertifikat</div>
-      <h1>EDUNEST<br><span>Multi-Level</span></h1>
-      <p class="lead">ID raqamingiz bilan kiring. Mehmonlar ism va telefon raqami bilan ro‘yxatdan o‘tadi.</p>
-      <div class="chips"><span>👤 My profile</span><span>📚 Assignments</span><span>📊 My results</span><span>🇺🇿 O‘zbekcha yordam</span></div>
-    </div>
-    <div class="teacher">
-      <div class="av ph"><img class="tph" alt=""></div>
-      <div><small>Ustozingiz</small><b>A'zamjon Toxirov <span class="lvl">C1</span></b><small>C1 o‘qituvchi, EDUNEST Academy</small></div>
-    </div>
-  </div>
-  <div class="form-side">
-    <div class="form anim" id="loginForm"></div>
+  <div class="lx">
+    <aside class="lx-side">
+      <a class="lx-brand" href="#/"><img class="lg" alt=""><span><b>EDUNEST</b><small class="ml">Multi-Level</small><small class="g3">General English · Level 3</small></span></a>
+      <div class="lx-msg"><h1>Qaytganingizdan <em>xursandmiz.</em></h1>
+        <p>Topshiriqlaringiz, XP va reytingingiz saqlangan. Kirib, to‘xtagan joyingizdan davom eting.</p></div>
+      <div class="lx-feat"><span>Topshiriqlar xaritasi</span><span>Guruh reytingi</span><span class="ml">AI Writing</span><span class="ml">AI Speaking</span><span>Sertifikat</span></div>
+      <div class="lx-teacher"><img class="tph" alt=""><div><small>Ustozingiz</small><b>A'zamjon Toxirov <span class="lvl">C1</span></b></div></div>
+    </aside>
+    <div class="lx-main"><div class="lx-card anim" id="loginForm"></div></div>
   </div>
 </section>
 
@@ -1197,7 +1344,7 @@ document.querySelectorAll('[data-scroll]').forEach(a=>a.onclick=e=>{e.preventDef
 function modal(html,btns){closeModals();const bg=document.createElement('div');bg.className='modal-bg';
   bg.innerHTML=`<div class="card modal" role="dialog">${html}<div class="mbtns">${(btns||[]).map((b,i)=>`<button class="btn ${b.cls||'ghost'} big" data-i="${i}">${b.t}</button>`).join('')}</div></div>`;
   document.body.appendChild(bg);bg.onclick=e=>{if(e.target===bg)closeModals()};
-  bg.querySelectorAll('[data-i]').forEach(x=>x.onclick=()=>{const b=btns[+x.dataset.i];closeModals();if(b.f)b.f()});}
+  bg.querySelectorAll('[data-i]').forEach(x=>x.onclick=async()=>{const b=btns[+x.dataset.i];if(b.keep){x.disabled=true;let r;try{r=await b.f()}finally{x.disabled=false}if(r!==false)closeModals();return}closeModals();if(b.f)b.f()});}
 function closeModals(){document.querySelectorAll('.modal-bg').forEach(m=>m.remove())}
 
 /* ================= LOGIN ================= */
@@ -1206,32 +1353,32 @@ function showLogin(role){
   $('#app').classList.add('hide');$('#landing').classList.add('hide');$('#c1page').classList.add('hide');$('#login').classList.remove('hide');$('#themeFloat').classList.remove('hide');
   role=role||ui.role||'student';ui.role=role;ui.lstep=null;
   const last=store(ST+'lastId');
+  if(G3&&role==='guest')role=ui.role='student';
   $('#loginForm').innerHTML=`
     <a class="lback" href="#/">← Bosh sahifa</a>
-    <h2>Kim kirmoqda?</h2>
-    <div class="rolecards three">
-      <button class="role ${role==='student'?'on':''}" data-r="student"><span class="ri">🎓</span>O‘quvchi<small>ID + parol</small></button>
-      <button class="role ${role==='guest'?'on':''} ${G3?'hide':''}" data-r="guest"><span class="ri">👋</span>Mehmon<small>Vaqtinchalik</small></button>
-      <button class="role ${role==='teacher'?'on':''}" data-r="teacher"><span class="ri">👨‍🏫</span>Ustoz<small>Panel</small></button>
-    </div>
+    ${role==='teacher'?`<h2 class="lx-h">Ustoz paneli</h2><p class="lx-sub">Faqat ustoz uchun. Parolni hech kimga bermang.</p>`:`
+    <h2 class="lx-h">${role==='guest'?'Mehmon sifatida kirish':'Hisobingizga kiring'}</h2>
+    <p class="lx-sub">${role==='guest'?'Darsga endi kelgan bo‘lsangiz, ustoz aytgan kod bilan 3 kun foydalanasiz.':'Telegram orqali yoki ID raqamingiz va parolingiz bilan.'}</p>
+    ${G3?'':`<div class="lx-seg" role="tablist"><button role="tab" aria-selected="${role==='student'}" class="${role==='student'?'on':''}" data-r="student">O‘quvchi</button><button role="tab" aria-selected="${role==='guest'}" class="${role==='guest'?'on':''}" data-r="guest">Mehmon</button></div>`}`}
     ${role==='student'?`
       <div id="tgBox"></div>
       <div class="field"><label for="inId">ID raqamingiz</label><input id="inId" class="bigin" inputmode="numeric" autocomplete="username" placeholder="63001" value="${esc(last||'')}" enterkeyhint="next"></div>
       <div id="pinBox"></div>
       <button class="btn red big block" style="margin-top:18px" id="btnGo">Davom etish</button>
-      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>ID raqamingizni EDUNEST o‘quv markazidan bilib olasiz. Birinchi kirishda o‘zingizga 4–8 xonali parol o‘ylab topasiz.</p>`
+      <p class="lx-hint">ID raqamingizni EDUNEST o‘quv markazidan bilib olasiz. Birinchi kirishda o‘zingizga 4–8 xonali parol o‘ylab topasiz.</p>`
     :role==='guest'?`
       <div class="field"><label for="inName">Ism va familiya</label><input id="inName" autocomplete="name" placeholder="Qo'zivoy Qo'chqorov" enterkeyhint="next"></div>
       <div class="field"><label for="inPhone">Telefon raqam</label>
         <div class="phonebox"><span>+998</span><input id="inPhone" inputmode="numeric" autocomplete="tel-national" placeholder="90 123 45 67" maxlength="14" enterkeyhint="next"></div></div>
       <div class="field"><label for="inCode">Mehmon kodi</label><input id="inCode" class="bigin" inputmode="numeric" autocomplete="off" placeholder="Ustozdan so‘rang" enterkeyhint="go"></div>
       <button class="btn red big block" style="margin-top:18px" id="btnGo">Kirish</button>
-      <p class="uz" style="margin-top:14px"><span class="flag">UZ</span>Mehmon kodini ustoz darsda aytadi. Mehmon sifatida ${3} kun kira olasiz. +998 ni yozmang, faqat 9 ta raqam.</p>`
+      <p class="lx-hint">Mehmon kodini ustoz darsda aytadi. +998 ni yozmang, faqat 9 ta raqam.</p>`
     :`
       <div class="field"><label for="inPass">Ustoz paroli</label><input id="inPass" type="password" autocomplete="current-password" enterkeyhint="go"></div>
       <button class="btn navy big block" style="margin-top:18px" id="btnGo">Ustoz paneliga kirish</button>`}
-    <div id="loginMsg"></div>`;
-  document.querySelectorAll('.role').forEach(b=>b.onclick=()=>showLogin(b.dataset.r));
+    <div id="loginMsg"></div>
+    <div class="lx-alt">${role==='teacher'?'<button type="button" data-r="student">← O‘quvchi sifatida kirish</button>':'<a href="https://t.me/teachertx" target="_blank" rel="noopener">Kira olmayapsizmi? Ustozga yozing</a><button type="button" data-r="teacher">Ustoz kirishi</button>'}</div>`;
+  document.querySelectorAll('#loginForm [data-r]').forEach(b=>b.onclick=()=>showLogin(b.dataset.r));
   const go_=role==='student'?studentLogin:role==='guest'?guestLogin:teacherLogin;
   $('#btnGo').onclick=go_;
   bindEnter(go_);
@@ -1333,7 +1480,27 @@ $('#brandHome').onclick=()=>$('#homeBtn').click();
 $('#backBtn').onclick=()=>go(ui.parent||'#/');
 
 addEventListener('scroll',()=>{const x=document.querySelector('.lp-bar');if(x)x.classList.toggle('stuck',scrollY>8)},{passive:true});
-function showLanding(){document.title=G3?'EDUNEST · General English 3':'EDUNEST · Multi-Level';renderShow();document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
+document.body.classList.toggle('g3',G3);
+/* ---------- landing: 1-minute level check (own questions, nothing is sent) ---------- */
+const QZ=[['My sister ___ in a bank since 2019.',['works','has worked','is working','worked'],1],
+  ['If I ___ more free time, I would learn Japanese.',['have','will have','had','am having'],2],
+  ['The report must ___ by Friday.',['finish','be finished','finished','be finishing'],1],
+  ['She is used to ___ up early for work.',['get','got','getting','be getting'],2],
+  ['The new rule had a strong ___ on prices.',['impact','affect','effort','reason'],0],
+  ['I wish I ___ that to her. It really hurt her feelings.',['didn’t say','hadn’t said','wouldn’t say','don’t say'],1],
+  ['Hardly ___ the station when the train left.',['we had reached','had we reached','we reached','did we reached'],1],
+  ['The decision was made ___ the fact that costs were rising.',['despite of','in spite','in light of','because'],2]];
+function renderQuiz(){const box=$('#lpQuiz');if(!box||G3||box.dataset.on)return;box.dataset.on=1;let i=0,ok=0;
+  const draw=()=>{if(i>=QZ.length){const lv=ok>=7?'C1':ok>=5?'B2':ok>=3?'B1':'A2';
+      box.innerHTML=`<div class="qz-res"><small>Taxminiy darajangiz</small><b>${lv}</b><p>${ok}/${QZ.length} to‘g‘ri. Bu faqat grammatika va so‘z bo‘yicha qisqa taxmin. To‘liq natija uchun Writing va Speaking’ni AI bilan tekshiring.</p>
+        <div class="lp-actions"><a class="lp-btn" href="#/login">Platformaga kirish</a><button class="lp-btn lp-btn-line" id="qzAgain" type="button">Qayta</button></div></div>`;
+      $('#qzAgain').onclick=()=>{i=0;ok=0;draw()};return}
+    const q=QZ[i];box.innerHTML=`<div class="qz-top"><span>${i+1} / ${QZ.length}</span><span class="qz-dots">${QZ.map((_,k)=>`<i class="${k<i?'on':k===i?'cur':''}"></i>`).join('')}</span></div>
+      <p class="qz-q">${esc(q[0]).replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>')}</p><div class="qz-opts">${q[1].map((o,k)=>`<button type="button" data-k="${k}">${esc(o)}</button>`).join('')}</div>`;
+    box.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(k===q[2])ok++;
+      box.querySelectorAll('[data-k]').forEach(x=>{x.disabled=true;if(+x.dataset.k===q[2])x.classList.add('ok');else if(x===b)x.classList.add('no')});
+      setTimeout(()=>{i++;draw()},650)})};draw()}
+function showLanding(){document.title=G3?'EDUNEST · General English 3':'EDUNEST · Multi-Level';renderShow();renderQuiz();document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
 function showC1(){document.body.classList.remove('st-mode');['#app','#login','#landing'].forEach(x=>$(x).classList.add('hide'));$('#themeFloat').classList.add('hide');$('#c1page').classList.remove('hide');scrollTo(0,0);
   document.title='C1 Listening yo‘li · A\'zamjon Toxirov · EDUNEST'}
 function renderShow(){const box=$('#lpShow');if(!box||box.dataset.done)return;box.dataset.done=1;
@@ -1673,7 +1840,7 @@ async function teacherHome(tab){
   view().innerHTML=`<div class="wrap anim tab-${tab}">
     <h1 class="pgh">Ustoz paneli</h1>
     <div class="kpis">
-      <div class="card kpi"><div class="l">O‘quvchilar</div><div class="v">${st.length}</div><div class="muted ks">${GROUPS.filter(g=>g!=='GUEST').map(g=>g+' '+st.filter(r=>r.s.group===g).length).join(', ')}</div></div>
+      <div class="card kpi"><div class="l">O‘quvchilar</div><div class="v">${st.length}</div><div class="muted ks">${tGroups().map(g=>g+' '+st.filter(r=>r.s.group===g).length).join(', ')}</div></div>
       <div class="card kpi ${G3?'hide':''}"><div class="l">Mehmonlar</div><div class="v">${gu.length}</div><div class="muted ks">${gu.filter(r=>r.s.joined&&new Date(r.s.joined).getTime()>week).length} ta shu hafta</div></div>
       <div class="card kpi"><div class="l">Shu hafta faol</div><div class="v">${rows.filter(r=>r.last>week).length}</div><div class="muted ks">${G3?'topshiriq ochganlar':'Booster ochganlar'}</div></div>
       <div class="card kpi"><div class="l">Jami XP</div><div class="v">${rows.reduce((s,r)=>s+r.xp,0)}</div><div class="muted ks">hamma o‘quvchilar</div></div>
@@ -1729,50 +1896,110 @@ async function tAI(){
   if($('#aiLimSave'))$('#aiLimSave').onclick=()=>save({limit:+$('#aiLim').value||0},'Limit saqlandi');
   if($('#aiOn'))$('#aiOn').onclick=()=>save({on:!A.on},A.on?'AI o‘chirildi':'AI yoqildi');
 }
+/* ---------- students: groups, new students, edit, move, remove ---------- */
+const tGroups=()=>{const s=new Set(GROUPS.filter(g=>g!=='GUEST'));(TD?TD.roster:[]).forEach(r=>{if(r.type!=='guest'&&r.group&&mineG(r.group))s.add(String(r.group))});return [...s]};
+const isNewS=s=>!!s.joined&&Date.now()-new Date(s.joined).getTime()<14*864e5;
+const normG=g=>String(g||'').toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,20);
 function tList(rows,guests){
   ui.tf=ui.tf||{q:'',g:'ALL',sort:'xp'};const f=ui.tf;if(guests)f.g='ALL';
+  if(f.g!=='ALL'&&f.g!=='NEW'&&f.g!=='NOPIN'&&!tGroups().includes(f.g))f.g='ALL';
+  const sel=ui.sel=ui.sel instanceof Set?ui.sel:new Set();[...sel].forEach(id=>{if(!rows.some(x=>x.s.id===id))sel.delete(id)});
+  const pass=x=>f.g==='ALL'||(f.g==='NEW'?isNewS(x.s):f.g==='NOPIN'?(!x.s.hasPin&&!x.s.tg):x.s.group===f.g);
+  const chips=()=>guests?'':[['ALL','Barchasi',rows.length,''],...tGroups().map(g=>[g,g,rows.filter(x=>x.s.group===g).length,'']),
+      ['NEW','Yangi (14 kun)',rows.filter(x=>isNewS(x.s)).length,'new'],['NOPIN','Hali kirmagan',rows.filter(x=>!x.s.hasPin&&!x.s.tg).length,'warn']]
+    .map(([k,l,n,c])=>`<button class="rs-chip ${c} ${f.g===k?'on':''}" data-fg="${esc(k)}">${esc(l)} <b>${n}</b></button>`).join('');
+  const bulk=()=>{const n=sel.size,box=$('#rsBulk');if(!box)return;if(!n){box.innerHTML='';box.hidden=true;return}box.hidden=false;
+    box.innerHTML=`<b>${n} ta tanlandi</b><select id="rsTo" aria-label="Qaysi guruhga">${tGroups().map(g=>`<option>${esc(g)}</option>`).join('')}<option value="+">+ Yangi guruh…</option></select>
+      <button class="btn red" id="rsMove">Ko‘chirish</button><button class="btn ghost" id="rsDel" style="color:#fff">O‘chirish</button><button class="btn ghost" id="rsClr" style="color:#fff">Bekor</button>`;
+    $('#rsClr').onclick=()=>{sel.clear();draw()};
+    $('#rsMove').onclick=async()=>{let g=$('#rsTo').value;if(g==='+'){g=normG(prompt('Yangi guruh nomi (lotin harflari, masalan: TIGERS)')||'');if(!g)return}
+      if(G3&&!SITE_GROUPS.includes(g)){toast('Bu saytda faqat DOLPHINS va PENGUINS');return false}
+      const b=$('#rsMove');b.disabled=true;b.textContent='Saqlanmoqda…';
+      try{const j=await cpost({action:'importRoster',key:U.pass,rows:[...sel].map(id=>[id,'',g,''])});if(!j.ok)throw 0;toast(`${sel.size} ta o‘quvchi ${g} guruhiga o‘tkazildi`);sel.clear();ui.tf.g=g;TD=null;teacherHome('students')}
+      catch(e){toast('Saqlanmadi');b.disabled=false;b.textContent='Ko‘chirish'}};
+    $('#rsDel').onclick=()=>{const ids=[...sel];modal(`<h3>${ids.length} ta o‘quvchini o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">Ular ro‘yxatdan butunlay o‘chadi va saytga kira olmaydi. Buni qaytarib bo‘lmaydi (kerak bo‘lsa qaytadan qo‘shasiz).</p>`,
+      [{t:'Bekor qilish'},{t:'Ha, o‘chirish',cls:'red',f:async()=>{toast('O‘chirilmoqda…');let n=0;for(const id of ids){try{const j=await cpost({action:'editStudent',key:U.pass,id,remove:true});if(j.ok)n++}catch(e){}}
+        toast(`${n} ta o‘quvchi o‘chirildi`);sel.clear();TD=null;teacherHome(guests?'guests':'students')}}])}};
   const draw=()=>{
-    let r=rows.filter(x=>(f.g==='ALL'||x.s.group===f.g)&&(!f.q||(x.s.name+' '+x.s.id+' '+x.s.phone).toLowerCase().includes(f.q.toLowerCase())));
-    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
-    $('#tTbl').innerHTML=r.length?r.map(x=>`<div class="card srow">
+    let r=rows.filter(x=>pass(x)&&(!f.q||(x.s.name+' '+x.s.id+' '+x.s.phone).toLowerCase().includes(f.q.toLowerCase())));
+    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):f.sort==='new'?(a,b)=>new Date(b.s.joined||0)-new Date(a.s.joined||0):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
+    if($('#rsChips'))$('#rsChips').innerHTML=chips();
+    $('#tTbl').innerHTML=r.length?`<label class="muted" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;margin:0 0 6px 16px"><input type="checkbox" class="rs-ck" id="rsAll" ${r.every(x=>sel.has(x.s.id))?'checked':''}> Hammasini tanlash (${r.length})</label>`+r.map(x=>`<div class="card srow rsrow">
+      <input type="checkbox" class="rs-ck" data-ck="${esc(x.s.id)}" ${sel.has(x.s.id)?'checked':''} aria-label="${esc(x.s.name)} ni tanlash">
       <div class="sav">${esc(initials(x.s.name))}</div>
-      <div class="sn"><b>${esc(x.s.name)}</b><small>${guests?(x.s.joined?'kelgan: '+new Date(x.s.joined).toLocaleDateString('en-GB'):'mehmon'):`ID ${esc(x.s.id)}, ${esc(x.s.group)}, ${x.s.hasPin?'parol bor':x.s.tg?'Telegram':'<span class="nopin">parol yo‘q</span>'}${x.s.tgu?', '+esc(x.s.tgu):x.s.tg?', Telegram ✓':''}`}</small></div>
+      <div class="sn"><b>${esc(x.s.name)}${isNewS(x.s)?'<span class="rs-new">YANGI</span>':''}</b><small>${guests?(x.s.joined?'kelgan: '+new Date(x.s.joined).toLocaleDateString('en-GB'):'mehmon'):`ID ${esc(x.s.id)}, ${esc(x.s.group)}, ${x.s.hasPin?'parol bor':x.s.tg?'Telegram':'<span class="nopin">hali kirmagan</span>'}${x.s.tgu?', '+esc(x.s.tgu):x.s.tg?', Telegram ✓':''}`}</small></div>
       <div class="sp2"><b>${x.xp} XP</b><small>${x.rank?x.rank+'-o‘rin':''}</small></div>
       <div class="sp2 ${G3?'hide':''}"><b>${x.done}/${BOOSTER_TESTS}</b><div class="minibar"><b style="width:${x.done/BOOSTER_TESTS*100}%"></b></div><small>Booster</small></div>
       <div class="sp2"><b>${x.sdone}/${x.stot}</b><small>bosqichlar</small></div>
-      <div class="sbtns">${x.s.phone&&x.s.phone.length===9?`<a class="btn ghost call" href="${tel(x.s.phone)}" aria-label="Qo‘ng‘iroq ${phoneNice(x.s.phone)}">📞<span>${phoneNice(x.s.phone)}</span></a>`:''}<button class="btn navy" data-s="${esc(x.s.id)}">Profil</button></div>
+      <div class="sbtns">${x.s.phone&&x.s.phone.length===9?`<a class="btn ghost call" href="${tel(x.s.phone)}" aria-label="Qo‘ng‘iroq ${phoneNice(x.s.phone)}">📞<span>${phoneNice(x.s.phone)}</span></a>`:''}<button class="btn ghost" data-ed="${esc(x.s.id)}" aria-label="${esc(x.s.name)}: tahrirlash">✎</button><button class="btn navy" data-s="${esc(x.s.id)}">Profil</button></div>
     </div>`).join(''):'<p class="muted empty">Bu yerda hali hech kim yo‘q.</p>';
     document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
+    document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>editStudentBox(TD.roster.find(s=>s.id===b.dataset.ed)));
+    document.querySelectorAll('[data-ck]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.dataset.ck):sel.delete(c.dataset.ck);bulk();const a=$('#rsAll');if(a)a.checked=r.every(x=>sel.has(x.s.id))});
+    const a=$('#rsAll');if(a)a.onchange=()=>{r.forEach(x=>a.checked?sel.add(x.s.id):sel.delete(x.s.id));draw()};
+    document.querySelectorAll('[data-fg]').forEach(b=>b.onclick=()=>{f.g=b.dataset.fg;draw()});
+    bulk();
   };
-  $('#tBody').innerHTML=`<div class="tfil">
+  $('#tBody').innerHTML=`${guests?'':'<div class="rs-chips" id="rsChips"></div>'}<div class="tfil">
     <input id="tQ" placeholder="Ism, ID yoki telefon" value="${esc(f.q)}" aria-label="Qidirish">
-    ${guests?'':`<select id="tG" aria-label="Guruh"><option value="ALL">Barcha guruhlar</option>${GROUPS.filter(g=>g!=='GUEST').map(g=>`<option ${f.g===g?'selected':''}>${g}</option>`).join('')}</select>`}
-    <select id="tS" aria-label="Tartib"><option value="xp">XP bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option></select>
-    ${guests?'':'<button class="btn red" id="tImp">O‘quvchi qo‘shish</button>'}
-  </div><div id="tTbl" class="slist"></div>`;
-  $('#tQ').oninput=e=>{f.q=e.target.value;draw()};if($('#tG'))$('#tG').onchange=e=>{f.g=e.target.value;draw()};$('#tS').onchange=e=>{f.sort=e.target.value;draw()};
-  if($('#tImp'))$('#tImp').onclick=importBox;
+    <select id="tS" aria-label="Tartib"><option value="xp">XP bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="new" ${f.sort==='new'?'selected':''}>Yangi qo‘shilganlar</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option></select>
+    ${guests?'':'<button class="btn red" id="tImp">+ O‘quvchi qo‘shish</button>'}
+  </div><div id="tTbl" class="slist"></div><div class="rs-bulk" id="rsBulk" hidden></div>`;
+  $('#tQ').oninput=e=>{f.q=e.target.value;draw()};$('#tS').onchange=e=>{f.sort=e.target.value;draw()};
+  if($('#tImp'))$('#tImp').onclick=()=>addStudentBox();
   draw();
 }
+function grpSelect(id,cur){const gs=tGroups();if(cur&&!gs.includes(cur))gs.push(cur);
+  return `<select id="${id}">${gs.map(g=>`<option ${g===cur?'selected':''}>${esc(g)}</option>`).join('')}${G3?'':'<option value="+">+ Yangi guruh…</option>'}</select><input id="${id}N" placeholder="Yangi guruh nomi, masalan: TIGERS" hidden style="margin-top:8px">`}
+function bindGrp(id,F){const s=$('#'+id),n=$('#'+id+'N');F.group=s.value;s.onchange=()=>{n.hidden=s.value!=='+';F.group=s.value==='+'?normG(n.value):s.value;if(!n.hidden)n.focus()};n.oninput=()=>{n.value=n.value.toUpperCase();F.group=normG(n.value)}}
+function editStudentBox(s){if(!s)return;const guest=s.type==='guest';const F={name:s.name,phone:s.phone||'',group:s.group};
+  modal(`<h3>O‘quvchini tahrirlash</h3><p class="muted" style="margin-top:4px">${guest?'Mehmon':'ID '+esc(s.id)}${isNewS(s)?' · yangi qo‘shilgan':''}</p>
+    <div class="rs-form"><div><label for="esN">Ism familiya</label><input id="esN" value="${esc(s.name)}" autocomplete="off"></div>
+      <div class="rs-row2">${guest?'':`<div><label for="esG">Guruh</label>${grpSelect('esG',s.group)}</div>`}<div><label for="esP">Telefon (9 raqam)</label><input id="esP" inputmode="numeric" value="${esc(s.phone||'')}" placeholder="901234567"></div></div></div>
+    <div class="rs-danger"><p>${guest?'Mehmonni':'O‘quvchini'} ro‘yxatdan butunlay o‘chirish</p><button class="btn ghost" id="esDel" style="color:var(--red)">O‘chirish</button></div>`,
+    [{t:'Bekor qilish'},{t:'Saqlash',cls:'red',keep:1,f:async()=>{const name=cleanName(F.name).trim(),phone=F.phone.replace(/\D/g,'').slice(-9);
+      if(name.split(' ').filter(Boolean).length<2){toast('Ism va familiyani yozing');return false}
+      if(!guest&&!F.group){toast('Guruh nomini yozing');return false}
+      if(phone&&phone.length!==9){toast('Telefon 9 ta raqam bo‘lsin');return false}
+      const body={action:'editStudent',key:U.pass,id:s.id,name,phone};if(!guest)body.group=F.group;
+      try{const j=await cpost(body);if(!j.ok)throw 0;toast('Saqlandi');TD=null;route()}catch(e){toast('Saqlanmadi')}}}]);
+  $('#esN').oninput=e=>F.name=e.target.value;$('#esP').oninput=e=>F.phone=e.target.value;if(!guest)bindGrp('esG',F);
+  $('#esDel').onclick=()=>modal(`<h3>${esc(s.name)} ni o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">U ro‘yxatdan o‘chadi va saytga kira olmaydi. Buni qaytarib bo‘lmaydi (kerak bo‘lsa qaytadan qo‘shasiz).</p>`,
+    [{t:'Bekor qilish'},{t:'Ha, o‘chirish',cls:'red',f:async()=>{try{const j=await cpost({action:'editStudent',key:U.pass,id:s.id,remove:true});if(!j.ok)throw 0;toast('O‘chirildi');TD=null;
+      if(location.hash.startsWith('#/teacher/s/'))go('#/teacher/'+(guest?'guests':'students'),true);else route()}catch(e){toast('Xatolik')}}}]);
+}
+function nextId(){const n=TD.roster.map(s=>+s.id).filter(x=>x>0&&x<1e7);return n.length?String(Math.max(...n)+1):''}
 function parseRoster(txt){
   return txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^(\S*?\d{3,}\S*)[\s,;|\t]+(.*)$/)||l.match(/^(\S*?\d{3,}\S*)$/);if(!m)return null;
     const name=cleanName((m[2]||'').replace(/[\t|;]+/g,' ').replace(/\+?\d[\d\s-]{8,}$/,'')).trim();return{id:m[1].replace(/[^\w-]/g,''),name}}).filter(Boolean);
 }
-function importBox(){
+function addStudentBox(mode){mode=mode||'one';const F={id:nextId(),name:'',phone:'',group:ui.tf&&tGroups().includes(ui.tf.g)?ui.tf.g:tGroups()[0]};
+  const known=new Set(TD.roster.map(s=>s.id));
   modal(`<h3>O‘quvchi qo‘shish</h3>
-    <p class="muted" style="margin:6px 0 10px">Har bir qatorda: ID va to‘liq ism familiya. Ro‘yxatda allaqachon bor o‘quvchilar o‘zgarmaydi, faqat yangilari qo‘shiladi.</p>
-    <div class="seg" id="impG" style="margin-bottom:10px">${GROUPS.filter(g=>g!=='GUEST').map((g,i)=>`<button class="${i?'':'on'}" data-g="${g}">${g}</button>`).join('')}</div>
-    <textarea id="impT" class="imptxt" rows="7" placeholder="63050 Ali Valiyev&#10;63051 Vali Aliyev"></textarea>
-    <p class="muted" id="impInfo" style="font-size:14px;margin:8px 0 0"></p>`,
-    [{t:'Bekor qilish'},{t:'Qo‘shish',cls:'red',f:async()=>{const g=ui.impG||'SHARKS';const rows=ui.impRows||[];if(!rows.length){toast('Ro‘yxat bo‘sh');return}
-      const known=new Set(TD.roster.map(s=>s.id));const bad=rows.filter(r=>!r.name&&!known.has(r.id));
-      if(bad.length){toast(`${bad.length} ta yangi ID uchun ism yo‘q`);return}
-      try{const j=await cpost({action:'importRoster',key:U.pass,rows:rows.map(r=>[r.id,r.name,known.has(r.id)?'':g,''])});if(!j.ok)throw 0;toast(`Qo‘shildi: ${j.added}, yangilandi: ${j.updated}`);TD=null;teacherHome('students')}catch(e){toast('Saqlanmadi')}}}]);
-  ui.impRows=[];ui.impG=GROUPS[0];
-  document.querySelectorAll('#impG button').forEach(b=>b.onclick=()=>{ui.impG=b.dataset.g;document.querySelectorAll('#impG button').forEach(x=>x.classList.toggle('on',x===b))});
-  const t=$('#impT');t.oninput=()=>{ui.impRows=parseRoster(t.value);const known=new Set(TD.roster.map(s=>s.id));const nw=ui.impRows.filter(r=>!known.has(r.id)).length;
-    $('#impInfo').textContent=ui.impRows.length?`${ui.impRows.length} ta qator: ${nw} ta yangi, ${ui.impRows.length-nw} ta bor`:''};
-  t.focus();
+    <div class="seg rs-tabs"><button class="${mode==='one'?'on':''}" id="adOne">Bitta</button><button class="${mode==='list'?'on':''}" id="adList">Ro‘yxat bilan</button></div>
+    ${mode==='one'?`<div class="rs-form">
+      <div class="rs-row2"><div><label for="adI">ID raqam</label><input id="adI" inputmode="numeric" value="${esc(F.id)}"></div><div><label for="adG">Guruh</label>${grpSelect('adG',F.group)}</div></div>
+      <div><label for="adN">Ism familiya</label><input id="adN" placeholder="Ali Valiyev" autocomplete="off"></div>
+      <div><label for="adP">Telefon (ixtiyoriy, 9 raqam)</label><input id="adP" inputmode="numeric" placeholder="901234567"></div>
+      <p class="muted" style="margin:0;font-size:14px">O‘quvchi birinchi kirishda shu ID bilan o‘ziga parol o‘ylab topadi.</p></div>`
+    :`<p class="muted" style="margin:6px 0 10px">Har bir qatorda: ID va to‘liq ism familiya. Ro‘yxatda bor o‘quvchilar o‘zgarmaydi, faqat yangilari qo‘shiladi.</p>
+      <div class="rs-form" style="margin-bottom:10px"><div><label for="adG">Guruh</label>${grpSelect('adG',F.group)}</div></div>
+      <textarea id="impT" class="imptxt" rows="7" placeholder="63050 Ali Valiyev&#10;63051 Vali Aliyev"></textarea>
+      <p class="muted" id="impInfo" style="font-size:14px;margin:8px 0 0"></p>`}`,
+    [{t:'Bekor qilish'},{t:'Qo‘shish',cls:'red',keep:1,f:async()=>{const g=F.group;if(!g){toast('Guruh nomini yozing');return false}
+      if(G3&&!SITE_GROUPS.includes(g)){toast('Bu saytda faqat DOLPHINS va PENGUINS');return false}
+      let rows;
+      if(mode==='one'){const id=F.id.trim().replace(/[^\w-]/g,''),name=cleanName(F.name).trim(),ph=F.phone.replace(/\D/g,'').slice(-9);
+        if(!id){toast('ID yozing');return false}if(known.has(id)){toast('Bu ID allaqachon bor');return false}
+        if(name.split(' ').filter(Boolean).length<2){toast('Ism va familiyani yozing');return false}if(ph&&ph.length!==9){toast('Telefon 9 ta raqam bo‘lsin');return false}
+        rows=[[id,name,g,ph]]}
+      else{const rr=F.rows||[];if(!rr.length){toast('Ro‘yxat bo‘sh');return false}const bad=rr.filter(r=>!r.name&&!known.has(r.id));if(bad.length){toast(`${bad.length} ta yangi ID uchun ism yo‘q`);return false}
+        rows=rr.map(r=>[r.id,r.name,known.has(r.id)?'':g,''])}
+      try{const j=await cpost({action:'importRoster',key:U.pass,rows});if(!j.ok)throw 0;toast(mode==='one'?'O‘quvchi qo‘shildi ✓':`Qo‘shildi: ${j.added}, yangilandi: ${j.updated}`);ui.tf=Object.assign(ui.tf||{},{g:'NEW',sort:'new'});TD=null;teacherHome('students')}catch(e){toast('Saqlanmadi')}}}]);
+  $('#adOne').onclick=()=>addStudentBox('one');$('#adList').onclick=()=>addStudentBox('list');bindGrp('adG',F);
+  if(mode==='one'){$('#adI').oninput=e=>F.id=e.target.value;$('#adN').oninput=e=>F.name=e.target.value;$('#adP').oninput=e=>F.phone=e.target.value;$('#adN').focus()}
+  else{const t=$('#impT');t.oninput=()=>{F.rows=parseRoster(t.value);const nw=F.rows.filter(r=>!known.has(r.id)).length;
+    $('#impInfo').textContent=F.rows.length?`${F.rows.length} ta qator: ${nw} ta yangi, ${F.rows.length-nw} ta bor`:''};t.focus()}
 }
 function tSettings(){
   $('#tBody').innerHTML=`<div class="setg">
@@ -1902,6 +2129,7 @@ async function teacherStudent(id){
       ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}
       ${r.tgu?`<a class="btn ghost tgb" href="https://t.me/${esc(r.tgu.slice(1))}" target="_blank" rel="noopener">${TGI}<span>${esc(r.tgu)}</span></a>`:''}
       ${r.tg?`<button class="btn ghost" id="tgUn">Telegramni uzish</button>`:''}
+      <button class="btn ghost" id="stEdit">✎ Tahrirlash</button>
       ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}
       ${G3?'':`<button class="btn ghost" id="aiOf">${AI_SVG.replace('<svg','<svg width="18" height="18"')}<span>AI tekshiruvlari</span></button>`}</div>
     <h2 class="sech">Topshiriqlar</h2>
@@ -1912,6 +2140,7 @@ async function teacherStudent(id){
     <a class="btn navy big ${G3?'hide':''}" style="margin-top:16px" href="${BOOSTER_URL}" target="_blank" rel="noopener">Booster bo‘yicha batafsil hisobot</a></div>`;
   const tu=$('#tgUn');if(tu)tu.onclick=()=>modal(`<h3>${esc(j.student.name)} Telegramini uzasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchi keyin profilidan qaytadan ulashi mumkin.${r.tgp?' Telegram raqami: '+phoneNice(r.tgp)+'.':''}</p>`,
     [{t:'Bekor qilish'},{t:'Uzish',cls:'red',f:async()=>{try{const x=await cpost({action:'tgUnlink',key:U.pass,id});if(!x.ok)throw 0;toast('Uzildi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}]);
+  $('#stEdit').onclick=()=>editStudentBox(r.id?r:null);
   const ao=$('#aiOf');if(ao)ao.onclick=()=>{ui.aiq=j.student.id;go('#/teacher/ai')};
   const pr=$('#pinReset');if(pr)pr.onclick=()=>{if(!r.hasPin){toast('O‘quvchi hali parol o‘rnatmagan');return}
     modal(`<h3>${esc(j.student.name)} uchun parolni yangilaysizmi?</h3><p class="muted" style="margin-top:6px">Eski parol ishlamay qoladi. Keyingi kirishda o‘quvchi yangi parol o‘ylab topadi.</p>`,

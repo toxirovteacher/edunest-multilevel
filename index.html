@@ -1302,6 +1302,26 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
 @media (max-width:860px){.hx-vis{min-height:460px;max-width:460px}.hx-photo{inset:0 0 0 6%}.lp-show{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.hx-vis{min-height:400px}.hx-photo{inset:0 0 0 10px}.hx-plate{left:0;bottom:5%}.hx-band .lp-in{gap:22px 14px}.hx-band .lp-in>div{padding-left:12px}.lp-show{grid-template-columns:1fr}.sk-grid{grid-template-columns:1fr}}
 
+/* ===== v24 landing: photo fills a true portrait frame (no cut shoulders), no red/pink glows anywhere ===== */
+.hx-wrap{background:linear-gradient(180deg,#fff 0%,#F7F8FB 100%)}
+.hx-vis{min-height:0;display:flex;justify-content:flex-end;align-items:center;animation:none}
+.hx-photo{position:relative;inset:auto;width:min(100%,470px);aspect-ratio:1086/1448;border-radius:28px;overflow:hidden;background:#fff;
+  box-shadow:0 30px 70px -30px rgba(20,27,45,.35),0 0 0 1px rgba(20,27,45,.06)}
+.hx-photo:before,.hx-photo:after{display:none}
+.hx-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:none;left:0;bottom:auto;mix-blend-mode:normal}
+.hx-plate{left:0;bottom:7%;border-left-color:var(--red)}
+.hx-h1 em:after{display:none}
+.lp-btn{box-shadow:none}
+.lp-steps li:before{background:var(--ink);box-shadow:none}
+.hx-pill i{box-shadow:none}
+.hx-band{background:#141B2D}
+.hx-band .ml b{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#fff}
+.sk-ai{background:#fff}
+.sk-ic{box-shadow:none}
+@media (max-width:860px){.hx-vis{justify-content:center}.hx-photo{width:min(100%,420px);inset:auto}}
+@media (max-width:520px){.hx-photo{width:100%;inset:auto}.hx-plate{left:-6px;bottom:6%}}
+.lp-btn.lp-btn-line{box-shadow:inset 0 0 0 2px var(--ink)}.lp-c1 .lp-btn.lp-btn-line{box-shadow:inset 0 0 0 2px #fff}
+
 </style>
 </head>
 <body class="uz-on">
@@ -1331,7 +1351,7 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
       <ul class="hx-trust"><li>Telegram orqali bir bosishda kirish</li><li class="ml">Har testdan keyin natija va sertifikat</li><li class="ml">0–75 ball shkalasi</li><li class="g3">Natijalar saqlanadi</li></ul>
     </div>
     <div class="hx-vis">
-      <div class="hx-photo"><img id="tPhoto" alt="A'zamjon Toxirov"></div>
+      <div class="hx-photo"><img id="tPhoto" src="teacher.jpg" width="1086" height="1448" fetchpriority="high" decoding="async" alt="A'zamjon Toxirov"></div>
       <div class="hx-plate"><b>A'zamjon Toxirov</b><span>C1 o‘qituvchi, EDUNEST Academy</span><a href="https://t.me/teachertx" target="_blank" rel="noopener">@teachertx</a></div>
     </div>
   </div>
@@ -1561,7 +1581,9 @@ async function cpost(body){const r=await fetch(CLOUD_URL,{method:'POST',body:JSO
 function setTheme(d){document.body.classList.toggle('dark',d);document.querySelectorAll('#themeToggle,#themeToggle2,#themeToggle3').forEach(b=>b.textContent=d?'☀️':'🌙');store(ST+'dark',d?'1':'0')}
 setTheme(store(ST+'dark')==='1'||(store(ST+'dark')==null&&matchMedia('(prefers-color-scheme: dark)').matches));
 document.querySelectorAll('#themeToggle,#themeToggle2,#themeToggle3').forEach(b=>b.onclick=()=>setTheme(!document.body.classList.contains('dark')));
-document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelectorAll('#tPhoto,img.tph').forEach(i=>i.src=PHOTO);
+document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelectorAll('img.tph').forEach(i=>i.src=PHOTO);
+/* hero uses the full-resolution teacher.jpg; if that file is missing, fall back to the small built-in copy */
+{const t=document.getElementById('tPhoto');if(t){const fb=()=>{if(t.src!==PHOTO)t.src=PHOTO};t.addEventListener('error',fb);if(t.complete&&!t.naturalWidth)fb()}}
 $('#c1share').onclick=async()=>{const url=location.href.split('#')[0]+'#/c1';const d={title:'Listening 5.0 dan 7.5–8.0 ga: A\'zamjon Toxirovning usuli',text:'1.5 oyda Listening’ni 7.5–8.0 ga chiqargan 10 qadam',url};try{if(navigator.share){await navigator.share(d);return}await navigator.clipboard.writeText(url);toast('Havola nusxalandi')}catch(e){}};
 document.querySelectorAll('[data-scroll]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.scroll).scrollIntoView({behavior:'smooth'})});
 

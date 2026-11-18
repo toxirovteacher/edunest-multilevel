@@ -1254,6 +1254,53 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
 @media(prefers-reduced-motion:reduce){.sth,.sth-go,.lvbar b,.st .tgrid .tcard,.bx-an{animation:none}}
 .sth-lvb{white-space:nowrap;flex:none;display:inline-block}
 
+/* ===== v23 landing: clean hero (no floating cards), richer sections ===== */
+.hx-wrap{position:relative;overflow:hidden;background:
+  radial-gradient(55% 70% at 88% 18%,rgba(227,16,31,.10),transparent 62%),
+  radial-gradient(45% 60% at 4% 96%,rgba(108,77,246,.07),transparent 60%),#fff}
+.hx-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(rgba(20,27,45,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,27,45,.045) 1px,transparent 1px);background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(70% 80% at 30% 40%,#000,transparent 75%);mask-image:radial-gradient(70% 80% at 30% 40%,#000,transparent 75%)}
+.hx{position:relative;padding-top:clamp(28px,5vw,64px);padding-bottom:clamp(40px,6vw,80px)}
+.hx-h1{position:relative;z-index:0;font-size:clamp(40px,5.8vw,76px)}
+.hx-h1 em{white-space:normal}
+.hx-pill{background:rgba(255,255,255,.85)}
+.hx-vis{min-height:540px}
+.hx-photo{inset:0 0 0 8%;border-radius:32px;background:linear-gradient(165deg,#F7F8FB 0%,#E9EDF4 70%,#DFE5EE 100%);box-shadow:0 40px 80px -40px rgba(20,27,45,.35),inset 0 0 0 1px rgba(20,27,45,.05)}
+.hx-photo:after{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--red),#7a0a14)}
+.hx-photo img{height:94%}
+.hx-plate{left:0;right:auto;bottom:6%;border-radius:0 14px 14px 0;padding:14px 20px 14px 16px;box-shadow:0 18px 40px -12px rgba(20,27,45,.28)}
+.hx-res,.hx-sp{display:none!important}
+.lp-btn{box-shadow:0 10px 24px -12px rgba(227,16,31,.7)}.lp-btn-line,.lp-btn-sm{box-shadow:inset 0 0 0 2px var(--ink)}.lp-btn-sm{box-shadow:none}
+.lp-btn:hover{transform:translateY(-1px)}
+.hx-band{position:relative;padding:34px 0;background:linear-gradient(120deg,#141B2D 0%,#1B2440 60%,#2A1426 100%)}
+.hx-band .lp-in>div{padding-left:18px;border-left:2px solid rgba(255,255,255,.12)}
+.hx-band b{font-size:clamp(32px,3.4vw,44px);line-height:1.05;font-variant-numeric:tabular-nums}
+.hx-band .ml b{background:linear-gradient(90deg,#fff,#FFC2C6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hx-band span{display:block;margin-top:4px;line-height:1.4}
+.sk{display:flex;flex-direction:column;padding:26px 24px}
+.sk-ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--c,#141B2D);box-shadow:0 12px 24px -12px var(--c,#141B2D)}
+.sk-ic svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sk-l{--c:#7B3FE4}.sk-r{--c:#178A8E}.sk-w{--c:#1E9A56}.sk-s{--c:#D8336A}
+.sk h3{margin:20px 0 8px}
+.sk p{flex:1}
+.sk-li{list-style:none;padding:14px 0 0;margin:16px 0 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px}
+.sk-li li{font-size:13px;font-weight:600;color:var(--slate);background:var(--mist);padding:5px 10px;border-radius:999px}
+.sk-li b{color:var(--ink);font-weight:800}
+.sk:hover{border-color:transparent;box-shadow:0 22px 50px -18px rgba(20,27,45,.25)}
+.lp-show{gap:18px}
+.lp-sc{transition:transform .2s,box-shadow .2s}.lp-sc:hover{transform:translateY(-4px);box-shadow:0 24px 50px -20px rgba(20,27,45,.3)}
+.lp-steps li:before{background:linear-gradient(135deg,var(--red),#7a0a14);box-shadow:0 10px 20px -8px rgba(227,16,31,.6)}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.sk-grid .rv:nth-child(2),.lp-show .rv:nth-child(3n+2),.hx-band .rv:nth-child(2){transition-delay:.07s}
+.sk-grid .rv:nth-child(3),.lp-show .rv:nth-child(3n),.hx-band .rv:nth-child(3){transition-delay:.14s}
+.sk-grid .rv:nth-child(4),.hx-band .rv:nth-child(4){transition-delay:.21s}
+@media (prefers-reduced-motion:no-preference){.hx-vis{animation:lpUp .8s .1s cubic-bezier(.2,.7,.2,1) both}}
+@media (max-width:980px){.sk-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){.hx-vis{min-height:460px;max-width:460px}.hx-photo{inset:0 0 0 6%}.lp-show{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.hx-vis{min-height:400px}.hx-photo{inset:0 0 0 10px}.hx-plate{left:0;bottom:5%}.hx-band .lp-in{gap:22px 14px}.hx-band .lp-in>div{padding-left:12px}.lp-show{grid-template-columns:1fr}.sk-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body class="uz-on">
@@ -1268,41 +1315,36 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
     <a class="lp-btn lp-btn-sm" href="#/login">Kirish</a>
   </header>
 
+  <div class="hx-wrap">
   <div class="hx">
     <div class="hx-copy">
       <p class="hx-pill"><i></i><span class="ml">Milliy sertifikat · Multi-Level (CEFR)</span><span class="g3">DOLPHINS · PENGUINS guruhlari</span></p>
-      <h1 class="hx-h1"><span class="ml">Imtihonga ustoz bilan, <em>mashqqa AI bilan</em> tayyorlaning.</span><span class="g3">Darslikdagi har bir mavzu <em>bitta xaritada.</em></span></h1>
-      <p class="hx-lead ml">Mashqlar, ustoz topshiriqlari, AI Writing va AI Speaking tekshiruvi bitta platformada. Har bir xato o‘zbekcha tushuntiriladi, natijangizni ustozingiz ham ko‘radi.</p>
+      <h1 class="hx-h1"><span class="ml">Multi-Level’ga <em>real mock testlar</em> bilan tayyorlaning.</span><span class="g3">Darslikdagi har bir mavzu <em>bitta xaritada.</em></span></h1>
+      <p class="hx-lead ml">15 ta Listening va 6 ta Reading mock test, Writing va Speaking uchun AI tekshiruv. Har bir savolga o‘zbekcha tahlil, natijangizni ustozingiz ham ko‘radi.</p>
       <p class="hx-lead g3">Darslikdagi mashqlar, ustoz topshiriqlari va guruh reytingi bir joyda. Har bir bosqichni bajarib, XP yig‘asiz.</p>
       <div class="lp-actions">
         <a class="lp-btn" href="#/login">Platformaga kirish <span aria-hidden="true">→</span></a>
         <a class="lp-btn lp-btn-line ml" href="#lp-check" data-scroll="lp-check">Darajamni bilish</a>
         <a class="lp-btn lp-btn-line g3" href="#lp-enroll" data-scroll="lp-enroll">Darsga yozilish</a>
       </div>
-      <ul class="hx-trust"><li>Telegram orqali bir bosishda kirish</li><li class="ml">0–75 ball shkalasi</li><li>Natijalar saqlanadi</li></ul>
+      <ul class="hx-trust"><li>Telegram orqali bir bosishda kirish</li><li class="ml">Har testdan keyin natija va sertifikat</li><li class="ml">0–75 ball shkalasi</li><li class="g3">Natijalar saqlanadi</li></ul>
     </div>
     <div class="hx-vis">
       <div class="hx-photo"><img id="tPhoto" alt="A'zamjon Toxirov"></div>
-      <div class="hx-card hx-res ml" aria-hidden="true">
-        <div class="hx-rh"><span>AI Writing · namuna</span><b class="hx-lv">B2</b></div>
-        <div class="hx-big">52<small>/75</small></div>
-        <div class="hx-bars"><span><i style="--w:80%"></i>Topshiriq</span><span><i style="--w:60%"></i>Grammatika</span><span><i style="--w:70%"></i>Lug‘at</span><span><i style="--w:70%"></i>Bog‘lanish</span></div>
-      </div>
-      <div class="hx-card hx-sp ml" aria-hidden="true">
-        <span class="hx-mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
-        <div><b>Speaking · Part 1.1</b><span class="hx-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-      </div>
       <div class="hx-plate"><b>A'zamjon Toxirov</b><span>C1 o‘qituvchi, EDUNEST Academy</span><a href="https://t.me/teachertx" target="_blank" rel="noopener">@teachertx</a></div>
     </div>
   </div>
+  </div>
 
   <div class="hx-band"><div class="lp-in">
-    <div class="ml"><b>4</b><span>ko‘nikma: Listening, Reading, Writing, Speaking</span></div>
-    <div class="ml"><b>~1 daq.</b><span>AI tekshiruvi natijasi</span></div>
+    <div class="ml"><b data-n="15">15</b><span>Listening mock test: audio, natija va sertifikat</span></div>
+    <div class="ml"><b data-n="6">6</b><span>Reading mock test: har bir savolga tahlil</span></div>
+    <div class="ml"><b data-n="120">120</b><span>Writing namuna javob (C1)</span></div>
+    <div class="ml"><b data-n="60">60</b><span>Speaking iborasi, misollar bilan</span></div>
     <div class="g3"><b>XP</b><span>har bir bosqich uchun</span></div>
     <div class="g3"><b>2</b><span>guruh: DOLPHINS va PENGUINS</span></div>
-    <div><b>UZ</b><span>barcha izohlar o‘zbek tilida</span></div>
-    <div><b>C1</b><span>ustoz har bir natijani ko‘radi</span></div>
+    <div class="g3"><b>UZ</b><span>barcha izohlar o‘zbek tilida</span></div>
+    <div class="g3"><b>C1</b><span>ustoz har bir natijani ko‘radi</span></div>
   </div></div>
 
   <section class="lp-sec" id="lp-skills">
@@ -1310,10 +1352,18 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
       <p class="hx-kick">Platformada nima bor</p>
       <h2 class="lp-h2 ml">To‘rt ko‘nikma, bitta tizim</h2><h2 class="lp-h2 g3">Darsdan keyin ham dars davom etadi</h2>
       <div class="sk-grid ml">
-        <div class="sk"><span class="sk-n">01</span><h3>Listening</h3><p>Part 2 Pack: 9 ta mashq, skript va javoblar bilan. Audio, transcript va so‘zlar bilan ishlash usuli.</p></div>
-        <div class="sk"><span class="sk-n">02</span><h3>Reading</h3><p>Part 1 Booster: 30 ta matn, har birida 5 xil mashq. To‘liq mock test real imtihon formatida.</p></div>
-        <div class="sk sk-ai"><span class="sk-n">03</span><em>AI</em><h3>Writing</h3><p>Task 1.1, 1.2 va Part 2. AI 5 mezon bo‘yicha baholaydi, xatolarni belgilaydi va o‘zbekcha tushuntiradi.</p></div>
-        <div class="sk sk-ai"><span class="sk-n">04</span><em>AI</em><h3>Speaking</h3><p>Imtihondagidek 4 qism: savol o‘qiladi, tayyorgarlik vaqti, yozib olish. Transkript, talaffuz va namunaviy javoblar.</p></div>
+        <div class="sk sk-l"><span class="sk-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span><h3>Listening</h3>
+          <p>To‘liq mock testlar: 6 qism, 35 savol, real imtihondagi audio. Oxirida natija, sertifikat va xatolar tahlili.</p>
+          <ul class="sk-li"><li><b>15</b> mock test</li><li><b>9</b> ta Part 2 mashqi</li></ul></div>
+        <div class="sk sk-r"><span class="sk-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></svg></span><h3>Reading</h3>
+          <p>60 daqiqalik to‘liq mock testlar va qism bo‘yicha mashqlar. Har bir savolga o‘zbekcha tahlil va tarjima.</p>
+          <ul class="sk-li"><li><b>6</b> mock test</li><li><b>30</b> ta Booster matni</li><li>Part 2 va Part 3</li></ul></div>
+        <div class="sk sk-w sk-ai"><em>AI</em><span class="sk-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></span><h3>Writing</h3>
+          <p>Task 1.1, 1.2 va Part 2. AI 5 mezon bo‘yicha baholaydi, xatolarni belgilaydi va o‘zbekcha tushuntiradi.</p>
+          <ul class="sk-li"><li><b>120</b> C1 namuna</li><li>AI tekshiruv</li></ul></div>
+        <div class="sk sk-s sk-ai"><em>AI</em><span class="sk-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><h3>Speaking</h3>
+          <p>Imtihondagidek 4 qism: savol o‘qiladi, tayyorgarlik vaqti, yozib olish. AI transkript, baho va maslahat beradi.</p>
+          <ul class="sk-li"><li><b>60</b> ibora</li><li>AI tekshiruv</li></ul></div>
       </div>
       <div class="sk-grid g3">
         <div class="sk"><span class="sk-n">01</span><h3>Darslik mashqlari</h3><p>Har bir unit bo‘yicha grammatika va so‘z mashqlari, darhol tekshiriladi.</p></div>
@@ -1362,7 +1412,7 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
       <ol class="lp-steps">
         <li><b>Kiring</b><p>Telegram orqali bir bosishda yoki markazdagi ID raqamingiz va parolingiz bilan. Yangi kelganlar ustoz aytgan mehmon kodi bilan kiradi.</p></li>
         <li><b>Xarita bo‘yicha yuring</b><p>Har bir topshiriq bosqichma-bosqich ochiladi. XP yig‘asiz va guruh reytingida ko‘rinasiz.</p></li>
-        <li><b>Fikr oling</b><p><span class="ml">AI Writing va Speaking xatolaringizni o‘zbekcha tushuntiradi. </span>Ustozingiz har bir natijangizni ko‘rib boradi.</p></li>
+        <li><b>Natijani biling</b><p><span class="ml">Har bir mock testdan keyin ball, sertifikat va har bir savol tahlili. AI Writing va Speaking xatolaringizni o‘zbekcha tushuntiradi. </span>Ustozingiz har bir natijangizni ko‘rib boradi.</p></li>
       </ol>
     </div>
   </section>
@@ -1678,8 +1728,16 @@ function showLanding(){document.title=G3?'EDUNEST · General English 3':'EDUNEST
 function showC1(){document.body.classList.remove('st-mode');['#app','#login','#landing'].forEach(x=>$(x).classList.add('hide'));$('#themeFloat').classList.add('hide');$('#c1page').classList.remove('hide');scrollTo(0,0);
   document.title='C1 Listening yo‘li · A\'zamjon Toxirov · EDUNEST'}
 function renderShow(){const box=$('#lpShow');if(!box||box.dataset.done)return;box.dataset.done=1;
-  const items=G3?[['u4a','4A · Have you finished yet?','Uy ishlari, make / do, present perfect'],['u4b','4B · How we shop','Xarid so‘zlari, present perfect yoki past simple'],['rc34','Revise & Check 3&4','Grammatika va so‘zlar bo‘yicha takrorlash']]:[['booster','Reading Part 1 Booster','30 ta matn, har birida 5 xil mashq'],['reading','Reading Full Mock Test','5 qism, real imtihon formatida'],['listening','Listening Part 2 Pack','9 ta mashq, skript va javoblar bilan']];
-  box.innerHTML=items.map(([k,t,d],i)=>`<div class="lp-sc">${coverHTML(k,i,'<span class="tbadge">🔒 O‘quvchilar uchun</span>')}<div class="lp-scb"><b>${t}</b><small>${d}</small></div></div>`).join('')}
+  const items=G3?[['u4a','4A · Have you finished yet?','Uy ishlari, make / do, present perfect'],['u4b','4B · How we shop','Xarid so‘zlari, present perfect yoki past simple'],['rc34','Revise & Check 3&4','Grammatika va so‘zlar bo‘yicha takrorlash']]:[['lmock','Listening Mock Tests','15 ta to‘liq test: audio, natija va sertifikat'],['reading','Reading Mock Tests','6 ta to‘liq test, har bir savolga tahlil'],['booster','Reading Part 1 Booster','30 ta matn, har birida 5 xil mashq'],
+    ['rp3','Reading Part 3 · Sarlavhalar','12 ta matn, tahlil va tarjima bilan'],['wr2','Writing namunalari','30 ta Part 1 savol va 60 ta Part 2 mavzu, C1 javoblar'],['vocab','Speaking iboralari','60 ta ibora: tarjima, misol va mashqlar']];
+  box.innerHTML=items.map(([k,t,d],i)=>`<div class="lp-sc">${coverHTML(k,i,'<span class="tbadge">🔒 O‘quvchilar uchun</span>')}<div class="lp-scb"><b>${t}</b><small>${d}</small></div></div>`).join('');lpFx()}
+/* landing motion: sections rise in as they scroll into view; band numbers count up once. Content stays visible without JS. */
+function lpFx(){const L=$('#landing');if(!L||L.dataset.fx||!('IntersectionObserver' in window))return;L.dataset.fx=1;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const els=L.querySelectorAll('.lp-sec .lp-in>*,.lp-sc,.sk,.hx-band .lp-in>div');els.forEach(e=>e.classList.add('rv'));
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const e=en.target;io.unobserve(e);e.classList.add('in');
+    const n=e.querySelector&&e.querySelector('b[data-n]');if(n){const to=+n.dataset.n,t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/1100);n.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(e=>io.observe(e))}
 /* ================= ROUTER ================= */
 function go(h,replace){if(location.hash===h){route();return}if(replace){history.replaceState(null,'',h);route()}else location.hash=h}
 addEventListener('hashchange',route);

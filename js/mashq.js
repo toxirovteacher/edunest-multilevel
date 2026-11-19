@@ -41,7 +41,8 @@ async function loadDoc(id){
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’‘`]/g,"'").replace(/[£$€]/g,'').replace(/[.,;:!?]+$/,'').replace(/\bcan't\b/g,'cannot').replace(/won't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ve\b/g,' have').replace(/'re\b/g,' are').replace(/'m\b/g,' am').replace(/'ll\b/g,' will').replace(/\s+/g,' ').trim();
 const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 
-const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>');
+/* markers: \x01..\x02 bold, \x03..\x04 italic, \x05..\x06 highlight, \x0e..\x0f red text, \x10..\x11 strikethrough */
+const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>').replace(/\x05/g,'<mark class="hl">').replace(/\x06/g,'</mark>').replace(/\x0e/g,'<span class="rd">').replace(/\x0f/g,'</span>').replace(/\x10/g,'<s>').replace(/\x11/g,'</s>');
 let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null,EX=null,WR={};
 const OPENED=Date.now();
 function toast(m){let d=document.getElementById('mtoast');if(!d){d=document.createElement('div');d.id='mtoast';d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:96px;transform:translateX(-50%);max-width:min(92vw,460px);background:#141B2D;color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;z-index:9999;box-shadow:0 12px 30px rgba(0,0,0,.3);text-align:center;transition:opacity .2s';document.body.appendChild(d)}d.textContent=m;d.style.opacity=1;clearTimeout(d._t);d._t=setTimeout(()=>d.style.opacity=0,3200)}
@@ -50,16 +51,17 @@ function save(){if(EX){lset(key(),JSON.stringify({a:ANS,t0:EX.t0,part:EX.part,r:
 function restore(){let s=null;try{s=JSON.parse(ls(key())||'null')}catch(e){}ANS=(s&&s.a)||{};DONE=(s&&s.r)||null;WR=(s&&s.w)||{}}
 
 function gapHTML(n){return `<span class="gapw" data-q="${n}"><span class="num">${n}</span><input class="gap" data-n="${n}" aria-label="Savol ${n}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next"></span>`}
-const fillGaps=x=>esc(x).replace(/\{\{(\d+)(?::([^}]+))?\}\}/g,(_,n,o)=>o?`<span class="gapw" data-q="${n}"><span class="num">${n}</span><span class="pick in"><select data-n="${n}" aria-label="Savol ${n}"><option value="">…</option>${o.split('|').map(v=>`<option>${v}</option>`).join('')}</select></span></span>`:gapHTML(n));
+const fillGaps=x=>rich(x).replace(/\{\{(\d+)(?::([^}]+))?\}\}/g,(_,n,o)=>o?`<span class="gapw" data-q="${n}"><span class="num">${n}</span><span class="pick in"><select data-n="${n}" aria-label="Savol ${n}"><option value="">…</option>${o.split('|').map(v=>`<option>${v}</option>`).join('')}</select></span></span>`:gapHTML(n));
 function sizeGaps(){document.querySelectorAll('input.gap').forEach(i=>{if(SEC.gapw){i.style.width=SEC.gapw+'em';return}const a=(SEC.ans[i.dataset.n]||[''])[0];const L=Math.max(5,Math.min(30,a.length+2));i.style.width=L*.62+'em'})}
 function pickHTML(n){const o=SEC.sel[n];if(!o)return '';const side=(SEC.side&&SEC.side.items)||[];
   return `<span class="pick"><select data-n="${n}" aria-label="Savol ${n} uchun javob"><option value="">Tanlang</option>${o.map(L=>{const t=(side.find(s=>s[0]===L)||[])[1]||'';return `<option value="${L}">${L}${t?' — '+esc(t.length>58?t.slice(0,56)+'…':t):''}</option>`}).join('')}</select></span>`}
 
 function blockHTML(b){
-  if(b.t==='h')return `<h2>${esc(b.x)}</h2>`;
+  if(b.t==='h')return `<h2>${rich(b.x)}</h2>`;
   if(b.t==='p')return `<p>${fillGaps(b.x)}</p>`;
+  if(b.t==='rp')return `<p class="rp">${rich(b.x).replace(/\n/g,'<br>')}</p>`;
   if(b.t==='row'){const g=b.x.match(/\{\{(\d+)/g)||[];if(g.length===1){const n=g[0].slice(2);return `<div class="row one" data-q="${n}"><span class="num">${n}</span><span>${fillGaps(b.x).replace(/<span class="num">\d+<\/span>/,'')}</span></div>`}return `<div class="row">${fillGaps(b.x)}</div>`}
-  if(b.t==='sub')return `<h3 class="sub">${esc(b.x)}</h3>`;
+  if(b.t==='sub')return `<h3 class="sub">${rich(b.x)}</h3>`;
   if(b.t==='ex')return `<div class="row exm"><b>Namuna</b>${esc(b.x)}</div>`;
   if(b.t==='chips')return `<div class="chips">${b.x.map(w=>w[0]==='~'?`<s>${esc(w.slice(1))}</s>`:`<span>${esc(w)}</span>`).join('')}</div>`;
   if(b.t==='img')return `<figure class="mapfig"><img src="${esc(b.src)}" alt="${esc(b.alt||'')}" loading="lazy" onclick="this.parentNode.classList.toggle('zoom')"><figcaption>Kattalashtirish uchun bosing</figcaption></figure>`;
@@ -79,6 +81,7 @@ function answered(){return nums().filter(n=>norm(ANS[n])).length}
 function render(){
   if(SEC.kind==='study'){renderStudy();return}
   if(SEC.kind==='write'){renderWrite();return}
+  if(SEC.kind==='note'){renderNote();return}
   const s=SEC,split=s.layout==='split';
   $('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.label;
   let left='',right='';
@@ -111,10 +114,10 @@ function goDone(){const canDone=H.a&&H.s!=null;location.href=canDone?'./#/me/a/'
 function foot(){
   if(EX){examFoot();return}
   const f=$('#footin');$('#foot').hidden=false;
-  if(SEC.kind==='study'||SEC.kind==='write'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;
+  if(SEC.kind==='study'||SEC.kind==='write'||SEC.kind==='note'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;
     $('#dn').onclick=()=>{if(H.a&&H.s!=null){
       if(SEC.kind==='write'&&!Object.values(WR.t||{}).some(x=>typeof x==='string'&&x.trim().split(/\s+/).length>=30)){toast('Avval kamida bitta javobni yozing (30 so‘zdan ko‘p). Shundan keyin “Bajardim” ishlaydi.');return}
-      if(SEC.kind==='study'){if(Date.now()-OPENED<60000){toast('Avval iboralarni o‘qib chiqing. Kamida 1 daqiqa ishlang.');return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR,v:Date.now()}))}}
+      if(SEC.kind==='study'||SEC.kind==='note'){if(Date.now()-OPENED<60000){toast(SEC.kind==='note'?'Avval materialni o‘qib chiqing. Kamida 1 daqiqa ishlang.':`Avval ${SEC.unit==='so‘z'?'so‘zlarni':'iboralarni'} o‘qib chiqing. Kamida 1 daqiqa ishlang.`);return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR,v:Date.now()}))}}
       goDone()};return}
   const total=nums().length,a=answered();
   if(!DONE){
@@ -144,7 +147,7 @@ function showResult(scroll){
     if(btns.length){btns.forEach(b=>{b.disabled=true;if(b.dataset.v===right)b.classList.add('right');else if(b.dataset.v===ANS[n])b.classList.add('wrong')})}
     else if(!good){const host=document.querySelector(`.gapw[data-q="${n}"]`)||document.querySelector(`.box[data-q="${n}"] .boxh`);if(host&&!host.querySelector('.fix'))host.insertAdjacentHTML('beforeend',`<span class="fix">✓ ${esc(SEC.ans[n].join(' / '))}</span>`)}
   });
-  if(SEC.kind==='listen'){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
+  if(SEC.kind==='listen'&&$('#scr')){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
   if(SEC.notes){Object.keys(SEC.notes).forEach(n=>{if(document.querySelector(`[data-nt="${n}"]`))return;
       const g=document.querySelector(`.gapw[data-q="${n}"]`);const host=document.querySelector(`.q[data-q="${n}"],.row[data-q="${n}"]`)||(g&&g.closest('p,.row,.q'));
       if(host)host.insertAdjacentHTML('afterend',`<details class="nt nx" data-nt="${n}"><summary></summary><div></div></details>`)});
@@ -165,17 +168,25 @@ function afterHTML(b){
 /* ---------- vocabulary: study cards ---------- */
 function renderStudy(){
   const s=SEC;$('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+s.label+' · '+s.title;$('#jump').hidden=true;
-  const card=it=>`<article class="paper vc"><header><span class="num">${it.n}</span><h3>${esc(it.w)}</h3><em>${esc(it.ty)}</em></header><div class="vb">
-    <p class="tr">${esc(it.tr)}</p>${it.df?`<p class="df"><b>Ta’rif:</b> ${esc(it.df)}</p>`:''}
-    <ol>${it.ex.map(e=>`<li>${rich(e[0])}<span class="uz">${esc(e[1])}</span></li>`).join('')}</ol>
-    <div class="sp"><span class="spk">${esc(it.sp[0])}</span><p class="sq">Q: ${esc(it.sp[1])}</p><p>A: ${rich(it.sp[2])}</p><span class="uz">${esc(it.sp[3])}</span></div></div></article>`;
+  const card=it=>`<article class="paper vc"><header><span class="num">${it.n}</span><h3>${esc(it.w)}</h3>${it.ty?`<em>${esc(it.ty)}</em>`:''}</header><div class="vb">
+    <p class="tr">${esc(it.tr)}</p>${it.df?`<p class="df"><b>Ta’rif:</b> ${esc(it.df)}</p>`:''}${it.sy?`<p class="df sy"><b>Sinonimlar:</b> ${esc(it.sy)}</p>`:''}
+    ${it.ex&&it.ex.length?`<ol>${it.ex.map(e=>`<li>${rich(e[0])}<span class="uz">${esc(e[1])}</span></li>`).join('')}</ol>`:''}
+    ${it.sp?`<div class="sp"><span class="spk">${esc(it.sp[0])}</span><p class="sq">Q: ${esc(it.sp[1])}</p><p>A: ${rich(it.sp[2])}</p><span class="uz">${esc(it.sp[3])}</span></div>`:''}</div></article>`;
+  const cnt=s.items.length+' ta '+(s.unit||'ibora');
   $('#main').innerHTML=`<div class="instr"><b>${esc(s.label)} · ${esc(s.title)}</b>${esc(s.instr)}</div>
-    <div class="vtools"><button id="hz" aria-pressed="false">Tarjimani yashirish</button><span id="hzt">${s.items.length} ta ibora</span></div>
+    <div class="vtools"><button id="hz" aria-pressed="false">Tarjimani yashirish</button><span id="hzt">${esc(cnt)}</span></div>
     <div class="vgrid" id="vg">${s.items.map(card).join('')}</div>`;
   watermark();
-  $('#hz').onclick=()=>{const on=$('#vg').classList.toggle('hideuz');$('#hz').setAttribute('aria-pressed',on);$('#hz').textContent=on?'Tarjimani ko‘rsatish':'Tarjimani yashirish';$('#hzt').textContent=on?'O‘zingizni sinang: tarjimani ko‘rish uchun ustiga bosing':s.items.length+' ta ibora';document.querySelectorAll('.uz.show,.tr.show').forEach(e=>e.classList.remove('show'))};
+  $('#hz').onclick=()=>{const on=$('#vg').classList.toggle('hideuz');$('#hz').setAttribute('aria-pressed',on);$('#hz').textContent=on?'Tarjimani ko‘rsatish':'Tarjimani yashirish';$('#hzt').textContent=on?'O‘zingizni sinang: tarjimani ko‘rish uchun ustiga bosing':cnt;document.querySelectorAll('.uz.show,.tr.show').forEach(e=>e.classList.remove('show'))};
   $('#vg').onclick=e=>{const t=e.target.closest('.uz,.tr');if(t&&$('#vg').classList.contains('hideuz'))t.classList.toggle('show')};
   foot();
+}
+
+/* ---------- reading material: rule notes, templates, samples (text only, no questions) ---------- */
+function renderNote(){
+  const s=SEC;$('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.title;$('#jump').hidden=true;
+  $('#main').innerHTML=`<div class="wwrap">${s.instr?`<div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>`:''}<div class="paper nd">${s.blocks.map(blockHTML).join('')}</div></div>`;
+  watermark();foot();
 }
 
 /* ---------- writing: task, own attempt, model answer ---------- */
@@ -189,7 +200,7 @@ function renderWrite(){
     <textarea data-w="${i}" placeholder="Javobingizni shu yerga yozib ko‘ring…" aria-label="${esc(t.tag)} uchun javobingiz" autocapitalize="sentences" spellcheck="false"></textarea>
     <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span>${ai?'':'<span class="ai">AI tekshiruvi — tez kunda</span>'}</div>
     ${ai?`<button class="aib" type="button" data-ai="${i}">${AI_ICON} AI bilan tekshirish</button><div data-ar="${i}"></div>`:''}
-    <button class="reveal" data-m="${i}">Namuna javobni ko‘rish</button><div data-mb="${i}"></div></div>`;
+    ${t.m?`<button class="reveal" data-m="${i}">Namuna javobni ko‘rish</button><div data-mb="${i}"></div>`:''}</div>`;
   $('#main').innerHTML=`<div class="wwrap"><div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>${head}${s.tasks.map(task).join('')}<p class="whint">${ai?'Yozganingiz shu qurilmada saqlanadi. «AI bilan tekshirish»ni bossangiz, matn tekshiruvga yuboriladi (ismingiz emas) va natijani ustozingiz ham ko‘radi.':'Yozganingiz faqat shu qurilmada saqlanadi, ustozga yuborilmaydi.'}</p></div>`;
   watermark();
   const model=i=>{const t=s.tasks[i];document.querySelector(`[data-mb="${i}"]`).innerHTML=`<div class="model"><div class="mh"><span>${esc(t.mk)}</span><span>${t.mw} so‘z</span></div>${paras(t.m)}</div>`;const b=document.querySelector(`[data-m="${i}"]`);if(b)b.remove()};
@@ -344,43 +355,33 @@ const SP_P={
   '1.2':{n:'Part 1.2 · Taqqoslash',lv:'B1',d:'Ikki holatni taqqoslang, so‘ng 2 ta savol',t:'45 s + 2 × 30 s',tip:['Avval ikkala holatni tasvirlang, keyin o‘xshash va farqli tomonlarini ayting.','“whereas”, “on the other hand”, “both… and…” kabi bog‘lovchilarni ishlating.','O‘z fikringizni sabab bilan bildiring.']},
   '2':{n:'Part 2 · Monolog',lv:'B2',d:'Bitta mavzu, 3 ta savol',t:'1 daq tayyorgarlik · 2 daq nutq',tip:['1 daqiqa ichida har bir savol uchun 2–3 ta kalit so‘z o‘ylab qo‘ying.','Uchala savolga ham tartib bilan javob bering.','2 daqiqa davomida to‘xtamasdan gapirishga harakat qiling.']},
   '3':{n:'Part 3 · Munozara',lv:'C1',d:'Fikrni ikki tomondan muhokama qiling',t:'1 daq tayyorgarlik · 2 daq nutq',tip:['Jadvaldagi “tarafdor” va “qarshi” fikrlardan kamida ikkitadan foydalaning.','O‘z fikringizni aniq ayting va asoslang.','Xulosa bilan yakunlang.']}};
-const SP_BANK={
-  '1.1':[['Where do you usually study, and why do you like that place?','What did you do last weekend?','Do you prefer mornings or evenings? Why?'],
-    ['What kind of music do you enjoy?','How often do you use public transport?','What is your favourite dish, and who usually cooks it?'],
-    ['Do you like spending time outdoors? Why or why not?','What was the last book or film you enjoyed?','How do you usually celebrate your birthday?'],
-    ['What do you like most about your neighbourhood?','How much time do you spend on your phone every day?','What did you want to be when you were a child?'],
-    ['Do you prefer shopping online or in shops? Why?','What sport or game did you play when you were younger?','Who is the best cook in your family?'],
-    ['What do you usually do in the evenings?','Which season of the year do you like most, and why?','Have you ever learned something new on the internet? What was it?'],
-    ['How do you usually get to school or work?','What is the most useful app on your phone?','Do you like travelling with friends or with family?'],
-    ['What is a typical breakfast in your home?','Do you prefer quiet places or busy places? Why?','What was the last gift you gave to someone?']],
-  '1.2':[{a:['🏙️','Living in a big city'],b:['🌄','Living in a small village'],qs:['Which of the two would suit you better, and why?','Do you think more young people will move to cities in the future?']},
-    {a:['📚','Studying in a library'],b:['🏠','Studying at home'],qs:['Where do you study better, and why?','How has technology changed the way students study?']},
-    {a:['🚌','Travelling by bus'],b:['🚲','Travelling by bicycle'],qs:['Which is better for the environment, and why?','How could cities make cycling safer?']},
-    {a:['🍲','Eating home-cooked food'],b:['🍔','Eating at fast-food restaurants'],qs:['Which do you prefer, and why?','Why do you think fast food is so popular with young people?']},
-    {a:['👥','Working in a team'],b:['🧑‍💻','Working alone'],qs:['Which do you find more productive, and why?','What skills does a person need to work well in a team?']},
-    {a:['📱','Reading the news on a phone'],b:['📰','Reading a printed newspaper'],qs:['How do you usually find out about the news?','Do you think printed newspapers will disappear? Why?']}],
-  '2':[{t:'A skill you would like to learn',qs:['What skill would you like to learn?','Why is this skill important to you?','How are you going to learn it?']},
-    {t:'A memorable journey',qs:['Where did you go, and who did you go with?','What happened during the journey?','Why do you still remember it?']},
-    {t:'A person who inspires you',qs:['Who is this person, and how do you know them?','What has this person achieved?','How has this person influenced your life?']},
-    {t:'An important decision you made',qs:['What was the decision?','How did you make it, and who helped you?','How did this decision change your life?']},
-    {t:'A place in your country you would recommend to tourists',qs:['Where is this place, and what is it like?','What can visitors do there?','Why would you recommend it?']},
-    {t:'A time you helped someone',qs:['Who did you help, and what was the situation?','How did you help them?','How did you feel afterwards?']}],
-  '3':[{s:'Social media does more harm than good to young people.',f:['It wastes a lot of time','It can cause stress and low self-esteem','False information spreads quickly'],g:['It helps people stay in touch','It is a source of free learning','Young people can share their talents']},
-    {s:'Students should be allowed to use phones in class.',f:['Phones help to find information quickly','Students can use learning apps','Parents can contact them in an emergency'],g:['Phones distract students','Cheating becomes easier','There is less face-to-face communication']},
-    {s:'Online learning is better than learning in a classroom.',f:['Students can study at their own speed','It saves travel time and money','Lessons can be watched again'],g:['It is hard to stay motivated alone','There is little contact with teachers','Not everyone has a good internet connection']},
-    {s:'Tourism brings more benefits than problems to a country.',f:['It creates jobs','It helps the local economy','People learn about other cultures'],g:['Prices rise for local people','It can damage nature and old buildings','Some places become too crowded']},
-    {s:'Homework should be banned in schools.',f:['Students need time to rest and do sports','Homework causes stress','Learning should happen in class'],g:['Homework helps students practise','It teaches responsibility','Parents can see what children are learning']},
-    {s:'Every young person should learn to cook at school.',f:['It is an important life skill','It helps people eat healthily','It saves money in the future'],g:['Schools already have too many subjects','Cooking can be learned at home','Schools need special equipment']}]};
+/* question bank: sp/bank.json (Part 1.1 questions by topic, Part 1.2 pairs with real photos in sp/, Parts 2 and 3).
+ * Built from speaking/ by platform/build.py. A set is not repeated until the student has seen every set of that part. */
+let SP_BANK=null;
+async function spLoad(){if(SP_BANK)return SP_BANK;const r=await fetch('sp/bank.json',{cache:'no-cache'});if(!r.ok)throw new Error('bank');SP_BANK=await r.json();return SP_BANK}
+function spPick(part){
+  const B=SP_BANK,key=ST+'sp:seen:'+part,rnd=a=>a[Math.floor(Math.random()*a.length)],shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+  let seen=[];try{seen=JSON.parse(ls(key)||'[]')}catch(e){}if(!Array.isArray(seen))seen=[];
+  if(part==='1.1'){   // 3 questions from 3 different topics
+    const all=[];Object.keys(B.p11).forEach(t=>B.p11[t].forEach((q,i)=>all.push({id:t+':'+i,t,q})));
+    let fresh=all.filter(x=>seen.indexOf(x.id)<0);if(new Set(fresh.map(x=>x.t)).size<3){seen=[];fresh=all}
+    const out=shuf([...new Set(fresh.map(x=>x.t))]).slice(0,3).map(t=>rnd(fresh.filter(x=>x.t===t)));
+    lset(key,JSON.stringify(seen.concat(out.map(x=>x.id))));return out.map(x=>x.q)}
+  const L=part==='1.2'?B.p12:part==='2'?B.p2:B.p3;
+  let fresh=L.map(x=>x.id).filter(id=>seen.indexOf(id)<0);if(!fresh.length){seen=[];fresh=L.map(x=>x.id)}
+  const id=rnd(fresh),x=L.find(y=>y.id===id);lset(key,JSON.stringify(seen.concat([id])));
+  return part==='1.2'?{a:[x.a.img,x.a.t],b:[x.b.img,x.b.t],q1:x.q1,qs:x.qs}:part==='2'?{t:x.t,qs:x.qs}:{s:x.s,f:x.f,g:x.g}}
+function spPreload(set){if(set&&set.a&&set.b)[set.a[0],set.b[0]].forEach(u=>{const im=new Image();im.decoding='async';im.src=u})}
 function spSteps(part,set){   // what is asked, what the student sees, preparation and speaking time (seconds)
   if(part==='1.1')return set.map(q=>({q,prep:5,rec:30,say:q}));
-  if(part==='1.2'){const cmp=`Look at the two pictures: A) ${set.a[1]}, B) ${set.b[1]}. Compare them. What are the advantages and disadvantages of each?`;
-    return [{q:cmp,prep:10,rec:45,say:'Compare the two situations. What are the advantages and disadvantages of each?'}].concat(set.qs.map(q=>({q,prep:5,rec:30,say:q})))}
-  if(part==='2')return [{q:'Talk about: '+set.t+'. '+set.qs.join(' '),prep:60,rec:120,say:'You have one minute to prepare. Talk about '+set.t.toLowerCase()+'.'}];
+  if(part==='1.2'){const q1=set.q1||'Describe and compare the two pictures.';   // the AI cannot see the photos: the question carries what they show
+    return [{q:`${q1} (Describe and compare two photos. Picture A: ${set.a[1]}. Picture B: ${set.b[1]}.)`,h:q1,prep:10,rec:45,say:q1}].concat(set.qs.map(q=>({q,prep:5,rec:30,say:q})))}
+  if(part==='2')return [{q:set.t+' You should say: '+set.qs.map(x=>x.replace(/[.?!\s]+$/,'')).join('; ')+'.',prep:60,rec:120,say:'You have one minute to prepare. '+set.t}];
   return [{q:'Discuss the statement: "'+set.s+'" Arguments for: '+set.f.join('; ')+'. Arguments against: '+set.g.join('; ')+'. Discuss both sides and give your own opinion.',prep:60,rec:120,say:'You have one minute to prepare. Discuss both sides of the statement and give your opinion.'}];
 }
 function spCard(part,set){   // the prompt card shown on screen during the part
-  if(part==='1.2')return `<div class="spics">${[set.a,set.b].map((p,i)=>`<div class="spic"><span>${p[0]}</span><b>${'AB'[i]}</b><em>${esc(p[1])}</em></div>`).join('')}</div>`;
-  if(part==='2')return `<div class="sptopic"><b>${esc(set.t)}</b><ul>${set.qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></div>`;
+  if(part==='1.2')return `<div class="spics" onclick="this.classList.toggle('zoom')">${[set.a,set.b].map((p,i)=>`<figure class="spic"><img src="${esc(p[0])}" alt="${esc(p[1])}" decoding="async"><b>${'AB'[i]}</b></figure>`).join('')}</div>`;
+  if(part==='2')return `<div class="sptopic"><b>${esc(set.t)}</b><p class="spsay">You should say:</p><ul>${set.qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></div>`;
   if(part==='3')return `<div class="sptopic"><b>“${esc(set.s)}”</b><div class="spfg"><div><h5>Tarafdor (For)</h5><ul>${set.f.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div><h5>Qarshi (Against)</h5><ul>${set.g.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div></div>`;
   return '';
 }
@@ -452,12 +453,14 @@ function speakPage(){
   const pick=()=>{stopRun();run=null;
     M.innerHTML=`<div class="aip"><div class="aihero sp"><h1>AI Speaking yordamchi</h1><p>Imtihondagidek gapiring — AI ovozingizni tinglaydi, transkript qiladi, 4 mezon bo‘yicha baholaydi va har bir xatoni o‘zbekcha tushuntiradi.</p>
       <div class="feat"><span>Savollar ovozli o‘qiladi</span><span>Tayyorgarlik va javob taymeri</span><span>Transkript + xatolar</span><span>Namuna javoblar</span></div></div>
+      <button type="button" class="spmock" id="smock"><span class="tyh"><i class="tyl">A2 → C1</i><em>≈ 12 daqiqa · 8 ta javob</em></span><b>🎓 To‘liq mock imtihon</b><small>4 qism ketma-ket, xuddi imtihondagidek: savollar ovozli o‘qiladi, tayyorgarlik va javob vaqti avtomatik. Oxirida umumiy ball va har bir qism tahlili.</small></button>
       <div class="spparts">${['1.1','1.2','2','3'].map(k=>`<button type="button" class="sppart" data-p="${k}"><span class="tyh"><i class="tyl">${SP_P[k].lv}</i><em>${SP_P[k].t}</em></span><b>${SP_P[k].n}</b><small>${SP_P[k].d}</small></button>`).join('')}</div>
       <div class="aistep" id="shs" hidden><h2>Mening natijalarim</h2><div id="sres"></div><div class="aihist" id="shl"></div></div>
       <p class="whint">Mikrofon kerak. Ovozingiz faqat baholash uchun AI'ga yuboriladi va hech qayerda saqlanmaydi. Matn (transkript) va natija ustozingizga ko‘rinadi.</p></div>`;
-    document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>intro(b.dataset.p));hist()};
-  const intro=part=>{stopRun();const B=SP_BANK[part],k=ST+'sp:last:'+part;let i=Math.floor(Math.random()*B.length);if(String(i)===ls(k))i=(i+1)%B.length;lset(k,String(i));
-    run={part,set:B[i],steps:spSteps(part,B[i]),i:0,ans:[]};const P=SP_P[part];
+    document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>intro(b.dataset.p));$('#smock').onclick=mockIntro;hist()};
+  const bankErr=()=>{M.innerHTML=`<div class="aip"><div class="aistep"><div class="aierr">Savollar yuklanmadi. Internetni tekshirib, sahifani yangilang.</div><button class="spback" type="button" id="sbk">← Orqaga</button></div></div>`;$('#sbk').onclick=pick};
+  const intro=async part=>{stopRun();try{await spLoad()}catch(e){bankErr();return}const set=spPick(part);spPreload(set);
+    run={part,set,steps:spSteps(part,set),i:0,ans:[]};const P=SP_P[part];
     M.innerHTML=`<div class="aip"><div class="aistep"><h2>${esc(P.n)} <i class="tyl">${P.lv}</i></h2><div class="sptips">${P.tip.map(t=>`<p>› ${esc(t)}</p>`).join('')}</div>
       <p class="sub2">${esc(P.t)}. Savollar ovoz bilan o‘qiladi, so‘ng signal chalinadi va yozib olish boshlanadi. Tinch joyda bo‘ling.</p>
       <button class="aib" type="button" id="sgo">🎙️ Boshlash</button><button class="spback" type="button" id="sbk">← Boshqa qismni tanlash</button><div id="smsg"></div></div></div>`;
@@ -466,8 +469,8 @@ function speakPage(){
       catch(e){b.disabled=false;$('#smsg').innerHTML=`<div class="aierr">${e&&e.message==='nosupport'?'Bu brauzer ovoz yozishni qo‘llab-quvvatlamaydi. Chrome yoki Safari’ning yangi versiyasini oching.':'Mikrofonga ruxsat berilmadi. Manzil satridagi 🔒 belgisini bosib, mikrofonga ruxsat bering va qayta urinib ko‘ring.'}</div>`}}};
   const frame=(phase,big,sub,btn)=>{const s=run.steps[run.i];
     M.innerHTML=`<div class="aip"><div class="spbar">${run.steps.map((_,j)=>`<i class="${j<run.i?'ok':j===run.i?'on':''}"></i>`).join('')}</div>
-      <div class="aistep"><small class="spk">${esc(SP_P[run.part].n)} · ${run.steps.length>1?`savol ${run.i+1} / ${run.steps.length}`:'monolog'}</small>
-        ${run.part==='1.1'||run.i>0?`<h2 class="spqq">${esc(run.part==='1.2'&&run.i===0?'':s.q)}</h2>`:''}${run.part!=='1.1'&&run.i===0?spCard(run.part,run.set):''}${run.part==='1.2'&&run.i===0?'<h2 class="spqq">Compare the two situations. What are the advantages and disadvantages of each?</h2>':''}</div>
+      <div class="aistep"><small class="spk">${run.mock?'To‘liq mock · ':''}${esc(SP_P[run.part].n)} · ${run.steps.length>1?`savol ${run.i+1} / ${run.steps.length}`:'monolog'}</small>
+        ${run.part==='1.1'||run.i>0?`<h2 class="spqq">${esc(run.part==='1.2'&&run.i===0?'':s.q)}</h2>`:''}${run.part!=='1.1'&&run.i===0?spCard(run.part,run.set):''}${run.part==='1.2'&&run.i===0?`<h2 class="spqq">${esc(s.h||s.q)}</h2>`:''}</div>
       <div class="spclock ${phase}"><div class="ring"><b>${big}</b></div><p>${sub}</p>${btn||''}</div>
       ${run.ans.length?`<div class="aistep sprec"><h2>Yozib olinganlar</h2>${run.ans.map((a,j)=>`<div class="sprow"><em>Q${j+1}</em><audio controls preload="none" src="${a.url}"></audio><span>${Math.round(a.sec)} s</span></div>`).join('')}</div>`:''}
       <button class="spback" type="button" id="scx">Bekor qilish</button></div>`;
@@ -484,7 +487,7 @@ function speakPage(){
     const out=await run.rec.stop();run.rec=null;frame('save','…','Saqlanmoqda…');
     let w=null;try{w=await spWav(out.blob)}catch(e){w=null}if(me.stopped)return;
     run.ans.push(w?{b64:w.b64,sec:w.sec,rms:w.rms,url:w.url}:{b64:'',sec:0,rms:0,url:''});run.i++;
-    if(run.i<run.steps.length)step();else review()};
+    if(run.i<run.steps.length)step();else if(run.mock)mockNext();else review()};
   const review=()=>{spMicOff();const quiet=run.ans.map((a,j)=>(!a.b64||a.rms<.004||a.sec<2)?j+1:0).filter(Boolean);
     M.innerHTML=`<div class="aip"><div class="spbar">${run.steps.map(()=>'<i class="ok"></i>').join('')}</div><div class="aistep"><h2>✅ Hammasi yozib olindi</h2>
       ${run.ans.map((a,j)=>`<div class="sprow"><em>Q${j+1}</em>${a.url?`<audio controls preload="none" src="${a.url}"></audio>`:''}<span>${Math.round(a.sec)} s</span></div>`).join('')}
@@ -507,6 +510,53 @@ function speakPage(){
       document.querySelectorAll('#shl [data-h]').forEach(b=>b.onclick=()=>{const c=C[+b.dataset.h];M.innerHTML='<div class="aip"><div id="sfin"></div></div>';spResult($('#sfin'),c.r,{onAgain:()=>intro(c.type.slice(1)),onOther:pick});scrollTo({top:0})});
     }catch(e){}
   }
+  /* ---------- full mock: Part 1.1 → 1.2 → 2 → 3 in one go, like the real exam; graded part by part at the end ---------- */
+  let mock=null;
+  const mockIntro=async()=>{stopRun();try{await spLoad()}catch(e){bankErr();return}
+    const parts=['1.1','1.2','2','3'].map(p=>({part:p,set:spPick(p)}));spPreload(parts[1].set);
+    M.innerHTML=`<div class="aip"><div class="aistep"><h2>🎓 To‘liq mock imtihon</h2><div class="sptips">
+      <p>› 4 qism ketma-ket: Part 1.1 → 1.2 → 2 → 3, xuddi haqiqiy imtihondagidek.</p><p>› Savollar ovoz bilan o‘qiladi, signaldan keyin javob yozib olinadi. Vaqt tugasa, keyingi savol avtomatik boshlanadi.</p>
+      <p>› Imtihon orasida to‘xtab qolmang — tinch joyda, mikrofonni tekshirib boshlang.</p><p>› Oxirida AI 4 qismni ham tekshiradi: umumiy ball (75 dan), daraja va har bir qism tahlili.</p></div>
+      <p class="sub2">Taxminan 12 daqiqa · 8 ta javob · har safar yangi savollar</p>
+      <button class="aib" type="button" id="mgo">🎙️ Imtihonni boshlash</button><button class="spback" type="button" id="sbk">← Orqaga</button><div id="smsg"></div></div></div>`;
+    $('#sbk').onclick=pick;$('#mgo').onclick=async()=>{const b=$('#mgo');b.disabled=true;
+      try{if(!navigator.mediaDevices||!window.MediaRecorder)throw new Error('nosupport');await spMic();mock={parts,k:0,done:[],res:{}};mockPart()}
+      catch(e){b.disabled=false;$('#smsg').innerHTML=`<div class="aierr">${e&&e.message==='nosupport'?'Bu brauzer ovoz yozishni qo‘llab-quvvatlamaydi. Chrome yoki Safari’ning yangi versiyasini oching.':'Mikrofonga ruxsat berilmadi. Manzil satridagi 🔒 belgisini bosib, mikrofonga ruxsat bering va qayta urinib ko‘ring.'}</div>`}}};
+  const mockBar=()=>`<div class="spbar">${mock.parts.map((_,j)=>`<i class="${j<mock.k?'ok':j===mock.k?'on':''}"></i>`).join('')}</div>`;
+  const mockPart=async()=>{const p=mock.parts[mock.k],me={part:p.part,set:p.set,steps:spSteps(p.part,p.set),i:0,ans:[],mock:true};run=me;
+    M.innerHTML=`<div class="aip">${mockBar()}<div class="aistep spnext"><small class="spk">To‘liq mock · ${mock.k+1} / 4</small><h2>${esc(SP_P[p.part].n)}</h2><p class="sub2">${esc(SP_P[p.part].t)}</p></div>
+      <button class="spback" type="button" id="scx">Imtihonni bekor qilish</button></div>`;
+    $('#scx').onclick=()=>{if(confirm('Mock imtihon bekor qilinsinmi? Yozilganlar o‘chadi.'))pick()};
+    await spSay(['Part one point one.','Part one point two.','Part two.','Part three.'][mock.k]);await new Promise(r=>setTimeout(r,1200));
+    if(me.stopped||run!==me)return;step()};
+  const mockNext=()=>{mock.done.push({part:run.part,set:run.set,steps:run.steps,ans:run.ans});mock.k++;if(mock.k<mock.parts.length)mockPart();else mockReview()};
+  const mockReview=()=>{spMicOff();
+    const quiet=[];mock.done.forEach(d=>d.ans.forEach((a,j)=>{if(!a.b64||a.rms<.004||a.sec<2)quiet.push(d.part+' Q'+(j+1))}));
+    M.innerHTML=`<div class="aip"><div class="spbar">${mock.parts.map(()=>'<i class="ok"></i>').join('')}</div><div class="aistep"><h2>✅ Imtihon tugadi — hammasi yozib olindi</h2>
+      ${mock.done.map(d=>`<small class="spk" style="margin-top:12px">${esc(SP_P[d.part].n)}</small>${d.ans.map((a,j)=>`<div class="sprow"><em>Q${j+1}</em>${a.url?`<audio controls preload="none" src="${a.url}"></audio>`:''}<span>${Math.round(a.sec)} s</span></div>`).join('')}`).join('')}
+      ${quiet.length?`<div class="aierr">${quiet.join(', ')} — ovozingiz deyarli eshitilmadi. Shu qismlar past baholanishi mumkin.</div>`:''}
+      <button class="aib" type="button" id="mgr">${AI_ICON} AI bilan baholash (4 qism)</button><button class="spback" type="button" id="mre">↻ Yangi savollar bilan qaytadan</button><div id="sout"></div></div></div>`;
+    $('#mre').onclick=()=>{if(confirm('Yozilganlar o‘chadi. Yangi mock boshlansinmi?'))mockIntro()};$('#mgr').onclick=mockGrade};
+  const mockGrade=async()=>{const b=$('#mgr'),host=$('#sout');b.disabled=true;$('#mre').hidden=true;
+    for(let i=0;i<mock.done.length;i++){const d=mock.done[i];if(mock.res[d.part])continue;
+      const stop=aiLoading(host);host.querySelector('b').textContent=`${SP_P[d.part].n} tekshirilmoqda (${i+1}/4)…`;
+      const j=await aiSpeak(d.part,d.steps.map((s,k)=>({q:s.q,a:d.ans[k].b64,sec:Math.round(d.ans[k].sec)})));stop();
+      if(!j||!j.ok){b.disabled=false;b.innerHTML=AI_ICON+' Qolgan qismlarni tekshirish';host.innerHTML=`<div class="aierr">${esc(SP_P[d.part].n)}: ${esc(AI_ERR[j&&j.error]||AI_ERR.fail)} Tekshirilgan qismlar saqlanib qoldi.</div>`;return}
+      mock.res[d.part]=j.r}
+    mockResult()};
+  const mockResult=()=>{const R=mock.done.map(d=>mock.res[d.part]),n=R.length,sum=f=>R.reduce((s,r)=>s+(+f(r)||0),0);
+    const avg=Math.round(sum(r=>r.score75)/n),lv=avg>=65?'C1':avg>=51?'B2':avg>=38?'B1':'B1 dan past',sc={};SP_C.forEach(([k])=>sc[k]=Math.round(sum(r=>(r.scores||{})[k])/n*10)/10);
+    M.innerHTML=`<div class="aip"><div class="air sp"><div class="hd2" style="--lc:${lvColor(lv)}"><div class="hdl"><small>TO‘LIQ MOCK · TAXMINIY UMUMIY BAHO</small>
+        <div class="big"><b>${avg}</b><span>/75</span></div><span class="lvp">Daraja: ${esc(lv)}</span><div class="pbar"><i style="width:${Math.round(avg/75*100)}%"></i></div>
+        <p>4 qism o‘rtachasi · ${sum(r=>r.words)} so‘z aytildi</p></div>${aiRadar({scores:sc},SP_C)}</div>
+      <div class="sec"><h4>Qismlar bo‘yicha</h4><div class="mkparts">${mock.done.map((d,i)=>`<button type="button" class="mkp" data-i="${i}"><span class="hl" style="background:${lvColor(R[i].level)}">${esc(lvShort(R[i].level))}</span><span><b>${esc(SP_P[d.part].n)}</b><small>${R[i].score75}/75 · ${R[i].pct}%</small></span><em>Batafsil →</em></button>`).join('')}</div></div>
+      <div class="sec acts"><button type="button" class="aredo" id="mnew">Yangi mock</button><button type="button" class="anext" id="mback">Bosh menyu</button></div>
+      <p class="note">Bu AI bahosi — taxminiy (4 qism ballarining o‘rtachasi). Ovozingiz saqlanmaydi; transkript ustozingizga ko‘rinadi.</p></div></div>`;
+    $('#mnew').onclick=mockIntro;$('#mback').onclick=pick;
+    document.querySelectorAll('.mkp').forEach(b=>b.onclick=()=>{const d=mock.done[+b.dataset.i];
+      M.innerHTML='<div class="aip"><button class="spback" type="button" id="mres" style="margin:0 0 10px">← Umumiy natija</button><div id="sfin"></div></div>';$('#mres').onclick=mockResult;
+      spResult($('#sfin'),mock.res[d.part],{urls:d.ans.map(a=>a.url)});scrollTo({top:0})});
+    scrollTo({top:0})};
   pick();
 }
 /* progress from the student's last checks: average level, weakest criterion, trend, most repeated error types */
@@ -682,7 +732,7 @@ async function player(){
 function menu(){
   $('#ttl').textContent=DOC.short;$('#sub').textContent=DOC.title;
   $('#main').innerHTML=`<div class="menu">${DOC.sections.map(s=>{let r=null;try{r=JSON.parse(ls(ST+'mashq:'+UID+':'+H.d+':'+s.id)||'null')}catch(e){}const d=r&&r.r;
-    return `<a href="#d=${esc(H.d)}&x=${s.id}"><span class="num">${esc(s.label.replace(/\D/g,'')||'•')}</span><span>${esc(s.label)} · ${esc(s.title)}<small>${Object.keys(s.ans).length?Object.keys(s.ans).length+' ta savol':s.kind==='study'?s.items.length+' ta ibora':s.kind==='write'?s.tasks.length+' ta topshiriq':''}</small></span>${d?`<em>${d.ok}/${d.of}</em>`:''}</a>`}).join('')}</div>`;
+    return `<a href="#d=${esc(H.d)}&x=${s.id}"><span class="num">${esc(s.label.replace(/\D/g,'')||'•')}</span><span>${esc(s.label)} · ${esc(s.title)}<small>${Object.keys(s.ans||{}).length?Object.keys(s.ans).length+' ta savol':s.kind==='study'?s.items.length+' ta '+esc(s.unit||'ibora'):s.kind==='write'?s.tasks.length+' ta topshiriq':s.kind==='note'?'o‘quv material':''}</small></span>${d?`<em>${d.ok}/${d.of}</em>`:''}</a>`}).join('')}</div>`;
 }
 
 let fs=+(ls(ST+'fs')||17);

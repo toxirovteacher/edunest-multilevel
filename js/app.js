@@ -52,7 +52,7 @@ async function cpost(body){const r=await fetch(CLOUD_URL,{method:'POST',body:JSO
 function setTheme(d){document.body.classList.toggle('dark',d);document.querySelectorAll('#themeToggle,#themeToggle2,#themeToggle3').forEach(b=>b.textContent=d?'☀️':'🌙');store(ST+'dark',d?'1':'0')}
 setTheme(store(ST+'dark')==='1'||(store(ST+'dark')==null&&matchMedia('(prefers-color-scheme: dark)').matches));
 document.querySelectorAll('#themeToggle,#themeToggle2,#themeToggle3').forEach(b=>b.onclick=()=>setTheme(!document.body.classList.contains('dark')));
-document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelectorAll('img.tph').forEach(i=>i.src=PHOTO);
+document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelectorAll('img.tph').forEach(i=>{i.addEventListener('error',()=>{if(i.src!==PHOTO)i.src=PHOTO});i.src='teacher.jpg'});
 /* hero uses the full-resolution teacher.jpg; if that file is missing, fall back to the small built-in copy */
 {const t=document.getElementById('tPhoto');if(t){const fb=()=>{if(t.src!==PHOTO)t.src=PHOTO};t.addEventListener('error',fb);if(t.complete&&!t.naturalWidth)fb()}}
 $('#c1share').onclick=async()=>{const url=location.href.split('#')[0]+'#/c1';const d={title:'Listening 5.0 dan 7.5–8.0 ga: A\'zamjon Toxirovning usuli',text:'1.5 oyda Listening’ni 7.5–8.0 ga chiqargan 10 qadam',url};try{if(navigator.share){await navigator.share(d);return}await navigator.clipboard.writeText(url);toast('Havola nusxalandi')}catch(e){}};

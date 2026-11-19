@@ -644,7 +644,7 @@ function renderWrite(){
 }
 
 /* ---------- AI writing checker (Google Gemini through the EDUNEST script) ---------- */
-const CLOUD_URL="https://script.google.com/macros/s/AKfycbyGlQel0xAg62m-yMubZRfQgFrz-p8B7AMnxp4JsN9fv8eUJzek_zg6GM17BIo9ZkHNrw/exec";
+const CLOUD_URL="https://tuffyskazbkbezsghgtk.supabase.co/functions/v1/api";
 const AI_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
 function aiEnabled(){let p=null;try{p=JSON.parse(ls(ST+'p:'+UID)||'null')}catch(e){}return !!(p&&p.ai)}
 const AI_T={'1.1':{n:'Task 1.1 · norasmiy xat',lo:40,hi:60,max:15,lv:'B1'},'1.2':{n:'Task 1.2 · rasmiy xat',lo:120,hi:150,max:20,lv:'B2'},'2':{n:'Part 2 · esse',lo:180,hi:200,max:40,lv:'C1'}};

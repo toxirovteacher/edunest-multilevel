@@ -1,3 +1,0 @@
-# hand-written source files (not minified/generated): count them in GitHub's language bar
-*.js linguist-generated=false linguist-detectable=true
-*.css linguist-generated=false linguist-detectable=true

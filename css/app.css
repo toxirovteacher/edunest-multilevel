@@ -1371,11 +1371,10 @@ body.dark .rs-new{background:#11301E;color:#8be0b2}
 @media (max-width:860px){.stk-c{grid-template-columns:1fr;min-height:0;gap:22px;top:calc(76px + var(--i)*10px)}.stk-ui{min-height:0}}
 @media (max-width:520px){.stk{gap:20px}.stk-c{padding:22px 18px;border-radius:22px}.stk-ul li{font-size:15px}.stk-ui{padding:14px;gap:10px}
   .pv-split{flex-direction:column}.pv-text{gap:7px;padding:10px}.pv-score b{font-size:38px}.stk-go{width:100%;justify-content:center}}
-/* phones with short screens (or tall cards): plain list, no pile, so nothing gets hidden */
-@media (max-height:700px),(max-width:860px) and (max-height:760px){.stk-c{position:relative;top:auto;transform:none}}
+/* short screens / tall cards: the pile stays; JS (stkFx) lowers each card's sticky top so a card taller
+   than the screen scrolls to its bottom edge first and only then is covered by the next one */
 @media (prefers-reduced-motion:reduce){.stk-c{transform:none}}
 .stk-c.sk-l{--c:#7B3FE4}.stk-c.sk-r{--c:#178A8E}.stk-c.sk-w{--c:#1E9A56}.stk-c.sk-s{--c:#D8336A}.stk-c.sk-x{--c:#B7791F}
-@media (max-width:860px) and (max-height:880px){.stk-c{position:relative;top:auto;transform:none}}
 /* v26: real screenshots inside the card windows; the drawn preview shows only if an image is missing */
 .stk-img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 0;background:#EEF1F6}
 .stk-win .stk-ui{display:none}.stk-win.nf .stk-ui{display:flex}.stk-win.nf .stk-img{display:none}

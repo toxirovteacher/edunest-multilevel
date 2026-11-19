@@ -288,8 +288,13 @@ function lpFx(){const L=$('#landing');if(!L||L.dataset.fx||!('IntersectionObserv
   els.forEach(e=>io.observe(e));stkFx()}
 /* stacking cards: the card underneath shrinks a little as the next one slides over it (the pile itself is CSS sticky) */
 function stkFx(){const S=$('#lpStack');if(!S||G3||S.dataset.fx)return;S.dataset.fx=1;const C=[...S.children];let q=0;
-  const f=()=>{q=0;for(let i=0;i<C.length-1;i++){const a=C[i].getBoundingClientRect(),b=C[i+1].getBoundingClientRect();
+  /* sticky top per card: normally 92px + 14px per card (phones 76 + 10); if a card is taller than the screen,
+     top goes up (even negative) so its bottom edge is reached before the next card covers it */
+  const T=()=>{const m=innerWidth<=860,H=innerHeight;C.forEach((c,i)=>{const h=c.offsetHeight;if(!h)return;
+    const v=Math.min((m?76:92)+i*(m?10:14),H-h-12)+'px';if(c.style.top!==v)c.style.top=v})};
+  const f=()=>{q=0;T();for(let i=0;i<C.length-1;i++){if(!C[i].offsetHeight)continue;const a=C[i].getBoundingClientRect(),b=C[i+1].getBoundingClientRect();
     C[i].style.setProperty('--k',Math.max(0,Math.min(1,1-(b.top-a.top)/(C[i].offsetHeight||1))).toFixed(3))}};
+  addEventListener('resize',T,{passive:true});if(window.ResizeObserver)new ResizeObserver(T).observe(S);T();
   addEventListener('scroll',()=>{if(!q&&!$('#landing').classList.contains('hide')){q=1;requestAnimationFrame(f)}},{passive:true});f()}
 /* ================= ROUTER ================= */
 function go(h,replace){if(location.hash===h){route();return}if(replace){history.replaceState(null,'',h);route()}else location.hash=h}

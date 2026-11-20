@@ -743,6 +743,7 @@ async function boot(){
   if('speak' in H){if(!SESSION||!SESSION.t||SESSION.role==='teacher'){fail('Avval kiring','AI Speaking yordamchidan foydalanish uchun platformaga o‘quvchi sifatida kiring.');return}watermark();speakPage();return}
   if('ai' in H){if(!SESSION||!SESSION.t||SESSION.role==='teacher'){fail('Avval kiring','AI Writing yordamchidan foydalanish uchun platformaga o‘quvchi sifatida kiring.');return}watermark();aiPage();return}
   if(!H.d||!/^[a-z0-9-]+$/.test(H.d)){fail('Mashq topilmadi','Havola noto‘g‘ri. Xaritadan qayta oching.','./#/me');return}
+  if(/^gr\d/.test(H.d)){location.replace('grammar.html'+location.hash);return}  /* grammar topics have their own page since 20.11.2026 (old map links keep working) */
   if(H.a)$('#back').href='./#/me/a/'+encodeURIComponent(H.a);
   if(!ls(ST+'k')){fail('Avval kiring','Bu mashq faqat EDUNEST o‘quvchilari uchun. Platformaga kiring va xaritadan oching.');return}
   try{DOC=await loadDoc(H.d)}

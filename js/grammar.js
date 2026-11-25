@@ -28,6 +28,20 @@ function go(x){const h=link(x);if(location.hash===h)route();else location.hash=h
 function goDone(){location.href='./#/me/a/'+encodeURIComponent(STEP.a)+'/done/'+STEP.s}
 const OPENED=Date.now();
 
+/* every finished exercise goes to the teacher (25.11.2026): queued in this browser, re-sent until the server has it (stored once per cid) */
+const CLOUD_URL="https://tuffyskazbkbezsghgtk.supabase.co/functions/v1/api";
+const RQ=ST+'rq:'+UID;let rqBusy=false;
+const isStu=()=>!!(SESSION&&SESSION.t&&SESSION.id&&SESSION.role!=='teacher');
+async function rqFlush(){if(!isStu()||rqBusy)return;let q=[];try{q=JSON.parse(ls(RQ)||'[]')}catch(e){}if(!q.length)return;rqBusy=true;const sent=[];
+  for(const b of q){try{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),20000);
+    const r=await fetch(CLOUD_URL,{method:'POST',body:JSON.stringify(Object.assign({},b,{action:'res',id:SESSION.id,t:SESSION.t,v:'ml'})),signal:ctl.signal});clearTimeout(t);
+    const j=await r.json();if(j&&(j.ok||j.error==='bad'))sent.push(b.cid)}catch(e){}}
+  let now=[];try{now=JSON.parse(ls(RQ)||'[]')}catch(e){}const left=now.filter(b=>!sent.includes(b.cid));
+  if(left.length)lset(RQ,JSON.stringify(left));else try{localStorage.removeItem(RQ)}catch(e){}rqBusy=false}
+function sendRes(b){if(!isStu())return;let q=[];try{q=JSON.parse(ls(RQ)||'[]')}catch(e){}
+  b.cid=Date.now().toString(36)+Math.random().toString(36).slice(2,8);q.push(b);lset(RQ,JSON.stringify(q.slice(-40)));rqFlush()}
+addEventListener('online',rqFlush);setTimeout(rqFlush,1500);
+
 /* ---------- content: the same encrypted <doc>.bin as mashq.html ---------- */
 async function sha8(s){const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));return [...h.slice(0,4)].map(b=>b.toString(16).padStart(2,'0')).join('')}
 async function decrypt(buf){
@@ -201,7 +215,7 @@ function fromOld(sec,items,st){if(!st.r||st.k||!st.r.res)return;
   st.k=k;st.r={ok,of:items.length,res};st.best={ok,of:items.length};st.at=st.at||Date.now();sput(sec.id,st)}
 function exView(sec){
   const items=itemsOf(sec),st=sget(sec.id);st.a=st.a||{};fromOld(sec,items,st);st.k=st.k||{};
-  XS={sec,items,st,run:null};
+  XS={sec,items,st,run:null,t0:Date.now()};
   if(st.r){exResult();return}
   const list=items.map((_,j)=>j);const first=list.findIndex(j=>!st.k[j]);
   XS.run={list,A:st.a,K:st.k,pos:first<0?0:first,prac:false};
@@ -249,7 +263,13 @@ function finishRun(){const {sec,items,st,run}=XS;
   const res={};items.forEach((_,j)=>res[j]=!!(st.k[j]&&st.k[j].ok));const ok=Object.values(res).filter(Boolean).length;
   st.r={ok,of:items.length,res};st.at=Date.now();
   if(!st.best||ok/items.length>st.best.ok/st.best.of)st.best={ok,of:items.length};
-  sput(sec.id,st);exResult()}
+  sput(sec.id,st);
+  if(items.length)sendRes({kind:'gr',doc:DID,sec:String(sec.id),aid:STEP?STEP.a:'',step:STEP?STEP.s:null,
+    title:(DOC.short||'Grammatika')+' · '+(sec.label||'')+(sec.title?' · '+sec.title:''),ok,of:items.length,secs:Math.round((Date.now()-(XS.t0||OPENED))/1000),
+    det:items.map((it,j)=>{const g=!!res[j];
+      if(it.t==='mcq'){const o=x=>{const f=it.o.find(y=>y[0]===x);return f?f[0].toUpperCase()+') '+f[1]:(x||'')};return [String(j+1),o(st.a[it.n]),g?1:0,o(sec.ans[it.n][0])]}
+      return [String(j+1),it.ns.map(n=>st.a[n]||'').join(' / '),g?1:0,it.ns.map(n=>(sec.ans[n]||[''])[0]).join(' / ')]})});
+  exResult()}
 function mistHTML(sec,it,j){const st=XS.st,A=st.a,k=st.k[j]||{per:{}};
   if(it.t==='gap'){const q=esc(it.x).replace(/\{\{(\d+)\}\}/g,(_,n)=>k.per[n]?`<b class="r">${esc(A[n]||'')}</b>`:`<span class="w">${esc(A[n]||'—')}</span> <b class="r">${esc((sec.ans[n]||[''])[0])}</b>`);
     return `<div class="mi"><p class="q">${j+1}. ${q}</p>${it.note?`<p class="n">${rich(it.note)}</p>`:''}</div>`}

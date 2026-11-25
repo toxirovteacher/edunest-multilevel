@@ -44,7 +44,7 @@ const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 /* markers: \x01..\x02 bold, \x03..\x04 italic, \x05..\x06 highlight, \x0e..\x0f red text, \x10..\x11 strikethrough */
 const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>').replace(/\x05/g,'<mark class="hl">').replace(/\x06/g,'</mark>').replace(/\x0e/g,'<span class="rd">').replace(/\x0f/g,'</span>').replace(/\x10/g,'<s>').replace(/\x11/g,'</s>');
 let DOC=null,SEC=null,ANS={},DONE=null,armed=false,audioUrl=null,EX=null,WR={};
-const OPENED=Date.now();
+const OPENED=Date.now();let T0=OPENED;  /* T0: start of this attempt (time spent goes to the teacher) */
 function toast(m){let d=document.getElementById('mtoast');if(!d){d=document.createElement('div');d.id='mtoast';d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:96px;transform:translateX(-50%);max-width:min(92vw,460px);background:#141B2D;color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;z-index:9999;box-shadow:0 12px 30px rgba(0,0,0,.3);text-align:center;transition:opacity .2s';document.body.appendChild(d)}d.textContent=m;d.style.opacity=1;clearTimeout(d._t);d._t=setTimeout(()=>d.style.opacity=0,3200)}
 const key=()=>ST+'mashq:'+UID+':'+H.d+':'+(EX?'exam':SEC.id);
 function save(){if(EX){lset(key(),JSON.stringify({a:ANS,t0:EX.t0,part:EX.part,r:EX.r}));return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR}))}
@@ -126,7 +126,7 @@ function foot(){
   }else{
     const canDone=H.a&&H.s!=null;
     f.innerHTML=`<button class="alt" id="again">Qayta ishlash</button>${canDone?`<button id="dn">Bajardim</button>`:`<button id="dn">Xaritaga qaytish</button>`}`;
-    $('#again').onclick=()=>{DONE=null;ANS={};armed=false;save();render();scrollTo(0,0)};
+    $('#again').onclick=()=>{DONE=null;ANS={};armed=false;T0=Date.now();save();render();scrollTo(0,0)};
     $('#dn').onclick=()=>{location.href=canDone?'./#/me/a/'+encodeURIComponent(H.a)+'/done/'+(+H.s):'./#/me'};
   }
 }
@@ -134,6 +134,8 @@ function foot(){
 function check(){
   const res={};nums().forEach(n=>res[n]=isOk(ANS[n],SEC.ans[n]));
   DONE={ok:Object.values(res).filter(Boolean).length,of:nums().length,res};save();showResult(true);foot();
+  if(DONE.of)sendRes(Object.assign(resBase(),{kind:'ex',sec:String(SEC.id),title:(DOC.short||DOC.title||'')+' · '+(SEC.label||'')+(SEC.title?' · '+SEC.title:''),
+    ok:DONE.ok,of:DONE.of,secs:Math.round((Date.now()-T0)/1000),det:nums().map(n=>[String(n),ANS[n]||'',res[n]?1:0,SEC.ans[n][0]])}));
 }
 function showResult(scroll){
   const {ok,of,res}=DONE;const pc=Math.round(ok/of*100);
@@ -227,6 +229,19 @@ function renderWrite(){
 
 /* ---------- AI writing checker (Google Gemini through the EDUNEST script) ---------- */
 const CLOUD_URL="https://tuffyskazbkbezsghgtk.supabase.co/functions/v1/api";
+/* every checked exercise / mock goes to the teacher (25.11.2026): queued in this browser, re-sent until the server has it (the server stores each cid once) */
+const RQ=ST+'rq:'+UID;let rqBusy=false;
+const isStu=()=>!!(SESSION&&SESSION.t&&SESSION.id&&SESSION.role!=='teacher');
+async function rqFlush(){if(!isStu()||rqBusy)return;let q=[];try{q=JSON.parse(ls(RQ)||'[]')}catch(e){}if(!q.length)return;rqBusy=true;const sent=[];
+  for(const b of q){try{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),20000);
+    const r=await fetch(CLOUD_URL,{method:'POST',body:JSON.stringify(Object.assign({},b,{action:'res',id:SESSION.id,t:SESSION.t,v:'ml'})),signal:ctl.signal});clearTimeout(t);
+    const j=await r.json();if(j&&(j.ok||j.error==='bad'))sent.push(b.cid)}catch(e){}}
+  let now=[];try{now=JSON.parse(ls(RQ)||'[]')}catch(e){}const left=now.filter(b=>!sent.includes(b.cid));
+  if(left.length)lset(RQ,JSON.stringify(left));else try{localStorage.removeItem(RQ)}catch(e){}rqBusy=false}
+function sendRes(b){if(!isStu())return;let q=[];try{q=JSON.parse(ls(RQ)||'[]')}catch(e){}
+  b.cid=Date.now().toString(36)+Math.random().toString(36).slice(2,8);q.push(b);lset(RQ,JSON.stringify(q.slice(-40)));rqFlush()}
+const resBase=()=>({doc:H.d,aid:H.a||'',step:H.s!=null&&H.s!==''&&isFinite(+H.s)?+H.s:null});
+addEventListener('online',rqFlush);setTimeout(rqFlush,1500);
 const AI_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
 function aiEnabled(){let p=null;try{p=JSON.parse(ls(ST+'p:'+UID)||'null')}catch(e){}return !!(p&&p.ai)}
 const AI_T={'1.1':{n:'Task 1.1 · norasmiy xat',lo:40,hi:60,max:15,lv:'B1'},'1.2':{n:'Task 1.2 · rasmiy xat',lo:120,hi:150,max:20,lv:'B2'},'2':{n:'Part 2 · esse',lo:180,hi:200,max:40,lv:'C1'}};
@@ -684,6 +699,8 @@ function examFinish(auto){
   const res={};let ok=0;const per=DOC.sections.map(s=>{let k=0;Object.keys(s.ans).forEach(n=>{res[n]=isOk(ANS[n],s.ans[n]);if(res[n])k++});ok+=k;return{l:s.label,t:s.title,ok:k,of:Object.keys(s.ans).length}});
   const of=allNums().length,ball=EX.cfg.conv[ok],lv=(EX.cfg.levels.find(x=>ball>=x[0])||[0,''])[1];
   EX.r={ok,of,per,ball,lv,res,auto:!!auto,secs:Math.min(EX.cfg.mins*60,Math.round((Date.now()-EX.t0)/1000)),at:Date.now()};save();examResult();scrollTo(0,0);
+  const det=[];DOC.sections.forEach(s=>Object.keys(s.ans).map(Number).sort((a,b)=>a-b).forEach(n=>det.push([String(n),ANS[n]||'',res[n]?1:0,s.ans[n][0]])));
+  sendRes(Object.assign(resBase(),{kind:'exam',sec:'exam',title:(DOC.title||DOC.short||'Mock test')+(auto?' · vaqt tugadi':''),ok,of,ball,lv,secs:EX.r.secs,per,det}));
 }
 function examResult(){
   EX.view='result';const r=EX.r;$('#ttl').textContent=DOC.short;$('#sub').textContent='Natija';$('#foot').hidden=true;$('#jump').hidden=true;examBar();

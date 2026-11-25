@@ -164,7 +164,7 @@ function busy(on,msg){const b=$('#btnGo');if(b)b.disabled=on;$('#loginMsg').inne
 const pinIn=(id,label)=>`<div class="field"><label for="${id}">${label}</label><input id="${id}" class="bigin pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="${id==='inPin'?'current-password':'new-password'}" placeholder="••••"></div>`;
 async function studentLogin(){
   const q=$('#inId').value.trim();if(!q){$('#inId').focus();return}
-  const body={action:'login',q};
+  const body=Object.assign({action:'login',q},G3?{}:{v:'ml'});
   if(ui.lstep==='pin'){const p=$('#inPin').value.trim();if(!/^\d{4,8}$/.test(p)){toast('Parol 4–8 ta raqam');$('#inPin').focus();return}body.pin=p}
   if(ui.lstep==='setup'){const a=$('#inPin1').value.trim(),b=$('#inPin2').value.trim();
     if(!/^\d{4,8}$/.test(a)){toast('Parol 4–8 ta raqamdan iborat bo‘lsin');$('#inPin1').focus();return}
@@ -227,7 +227,7 @@ function keepKey(k){if(!k)return;store(ST+'k',k);store('edunest_booster_p1:code'
 function dropKey(){store(ST+'k',null);store('edunest_booster_p1:code',null);store('edunest_booster_p1:session',null);store('edunest_booster_p1:back',null)}
 function enter(j,isGuest){
   P=j;U={role:'student',id:j.uid,t:j.t,guest:j.student.type==='guest'};keepKey(j.k);
-  store(ST+'session',JSON.stringify(U));store(ST+'p:'+j.uid,JSON.stringify(j));lastFetch=Date.now();
+  store(ST+'session',JSON.stringify(U));store(ST+'p:'+j.uid,JSON.stringify(j));lastFetch=G3?Date.now():0;   /* ML: load again at once, so today counts (Telegram login) */
   enterApp();go('#/me',true);
   if(isGuest){const days=Math.max(1,Math.round((+String(j.t).split('.')[0]-Date.now())/864e5));
     modal(`<div style="text-align:center"><div style="font-size:48px">👋</div><h3>Xush kelibsiz, ${esc(j.student.name.split(' ')[0])}!</h3>
@@ -416,33 +416,36 @@ function tracks(p){
 }
 
 /* ================= STUDENT ================= */
-const STABS=[['home','Topshiriqlar',IC.map],['liga','Reyting',IC.cup]];
+const STABS=[['home','Topshiriqlar',IC.map],['liga','Reyting',IC.cup],...(G3?[]:[['profil','Profil','<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>']])];
+const meQ=()=>Object.assign({action:'me',id:U.id,t:U.t},G3?{}:{v:'ml'});   /* v=ml: the server counts today as a day on the platform */
 let lastFetch=0;
 async function me(h){
   if(h[1]==='b'&&h[2]){if(!P){try{P=JSON.parse(store(ST+'p:'+U.id)||'null')}catch(e){}}if(P&&!P.xp)P=null;
     if(!P){view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
-      try{const j=await cget({action:'me',id:U.id,t:U.t});if(j&&j.ok){lastFetch=Date.now();P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P))}}catch(e){}}
+      try{const j=await cget(meQ());if(j&&j.ok){lastFetch=Date.now();P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P))}}catch(e){}}
     if(!P){go('#/me',true);return}bxOpen(+h[2]);return}
   if(h[1]==='a'&&h[3]==='done'&&h[4]!=null){ui.pendingDone={aid:decodeURIComponent(h[2]),i:+h[4]};history.replaceState(null,'','#/me/a/'+h[2]);h=h.slice(0,3)}
-  const tab=h[1]==='liga'?'liga':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2]&&decodeURIComponent(h[2]);
+  const tab=h[1]==='liga'?'liga':h[1]==='profil'&&!G3?'profil':h[1]==='a'&&h[2]?'map':'home';ui.stab=tab;ui.aid=h[2]&&decodeURIComponent(h[2]);
   document.body.classList.add('st-mode');setBack(tab==='map'?'#/me':null,'Topshiriqlar');
   if(!P){try{P=JSON.parse(store(ST+'p:'+U.id)||'null')}catch(e){}}
   if(P&&!P.xp)P=null;
   if(P)drawMe();else view().innerHTML='<div class="wrap"><div class="loading" style="margin-top:60px"><div class="spin"></div>Yuklanmoqda…</div></div>';
   if(Date.now()-lastFetch<15000&&P)return;
-  try{const j=await cget({action:'me',id:U.id,t:U.t});lastFetch=Date.now();
-    if(j&&j.ok){P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P));if(location.hash.startsWith('#/me'))drawMe();qFlush();bxFlush()}
+  try{const j=await cget(meQ());lastFetch=Date.now();
+    if(j&&j.ok){P=qApply(j);keepKey(j.k);store(ST+'p:'+U.id,JSON.stringify(P));if(location.hash.startsWith('#/me'))drawMe();qFlush();bxFlush();rqFlush()}
     else if(j&&!j.ok){toast(U.guest?'Mehmon muddati tugadi. Qaytadan kiring.':'Qaytadan kiring');logout(true)}}
   catch(e){if(!P)view().innerHTML=`<div class="wrap"><div class="card sec"><h3>Internet aloqasi yo‘q</h3><p class="muted">Aloqani tekshirib, qayta urinib ko‘ring.</p><button class="btn red big" onclick="lastFetch=0;route()">Qayta urinish</button></div></div>`}
 }
-function stNav(tab){return `<nav class="stnav two" aria-label="Bo‘limlar">${STABS.map(([k,l,ic])=>`<a href="#/me${k==='home'?'':'/'+k}" class="${k===tab||(tab==='map'&&k==='home')?'on':''}">${ic}<span>${l}</span></a>`).join('')}</nav>`}
+function stNav(tab){return `<nav class="stnav ${STABS.length===2?'two':'three'}" aria-label="Bo‘limlar">${STABS.map(([k,l,ic])=>`<a href="#/me${k==='home'?'':'/'+k}" class="${k===tab||(tab==='map'&&k==='home')?'on':''}">${ic}<span>${l}</span></a>`).join('')}</nav>`}
 function drawMe(){
   const tab=ui.stab;
   if(tab==='map'){const t=tracks(P).find(x=>x.aid===ui.aid);if(!t){go('#/me',true);return}view().innerHTML=mapHTML(P,t)+stNav(tab);bindMap(P,t);
     const pd=ui.pendingDone;if(pd&&pd.aid===t.aid){ui.pendingDone=null;const st=t.steps[pd.i];
       if(st&&!st.done&&!t.booster&&pd.i===t.cur){const pf=stepProof(st.l);if(!pf.ok)toast(pf.msg);else stepMark(P,t,pd.i,'done',pf.info)}
       else if(st&&st.done&&isExam(st.l)){const inf=resText(examRes(st.l));if(inf&&inf!==st.info){P.info=P.info||{};P.info[t.aid+':'+pd.i]=inf;store(ST+'p:'+U.id,JSON.stringify(P));cpost({action:'mark',id:U.id,t:U.t,aid:t.aid+':'+pd.i,status:'done',info:inf}).catch(()=>{})}}}return}
-  view().innerHTML=`<div class="wrap st anim">${tab==='liga'?ligaHTML(P):homeHTML(P)}</div>`+stNav(tab);
+  view().innerHTML=`<div class="wrap st anim${tab==='profil'?' stprof':''}">${tab==='liga'?ligaHTML(P):tab==='profil'?profHTML(P):homeHTML(P)}</div>`+stNav(tab);
+  if(tab==='profil')bindProf();
+  giftCheck();
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
   document.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')});
   const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
@@ -473,8 +476,8 @@ function homeHTML(p){
   const h=new Date().getHours(),hi=h<11?'Xayrli tong':h<17?'Salom':'Xayrli kech';
   return `
   <section class="sth">
-    <div class="sth-top"><div class="pav">${esc(initials(s.name))}</div><div><small>${hi},</small><h1>${esc(s.name.split(' ')[0])}</h1>
-      <div class="st-meta">${s.type==='guest'?'<span>Mehmon</span><span>vaqtinchalik kirish</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}</div></div>
+    <div class="sth-top">${G3?`<div class="pav">${esc(initials(s.name))}</div>`:`<a class="sthav" href="#/me/profil" aria-label="Profil">${avHTML(p.av,s.name,lvIdx(p.xp.T),'md')}</a>`}<div><small>${hi},</small><h1>${esc(s.name.split(' ')[0])}</h1>
+      <div class="st-meta">${s.type==='guest'?'<span>Mehmon</span><span>vaqtinchalik kirish</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}${G3?'':(()=>{const a=actOf(p);return `<a class="stkc ${a.cur?'on':''}" href="#/me/profil">🔥 ${a.cur} kun</a>`})()}</div></div>
       <div class="sth-ring" title="Umumiy progress">${bxRing(dn,all||1,'#fff')}<div><b>${pc}%</b><small>bajarildi</small></div></div></div>
     <div class="sth-stats">
       <a href="#/me/liga"><b>${rk?rk.me.r:'–'}<i>-o‘rin</i></b><span>${s.type==='guest'?'Mehmonlar':esc(s.group)}${rk?' · '+rk.n+' kishi':''}</span></a>
@@ -504,16 +507,146 @@ function homeHTML(p){
 function podium(rows){
   const top=rows.filter(r=>r.r<=3&&r.t>0).slice(0,3);if(!top.length)return '';
   const order=[top[1],top[0],top[2]].filter(Boolean);
-  return `<div class="pod">${order.map(r=>`<div class="pd p${Math.min(r.r,3)} ${r.me?'me':''}"><div class="pav">${esc(initials(r.n))}</div><b>${esc(r.n)}</b><span>${r.t} XP</span><i>${r.r}</i></div>`).join('')}</div>`;
+  return `<div class="pod">${order.map(r=>`<div class="pd p${Math.min(r.r,3)} ${r.me?'me':''}">${G3?`<div class="pav">${esc(initials(r.n))}</div>`:avHTML(r.a,r.n,lvIdx(r.t),'pdm')}<b>${esc(r.n)}</b><span>${r.t} XP</span><i>${r.r}</i></div>`).join('')}</div>`;
 }
 function ligaHTML(p){
   const rows=p.board||[];
   return `<h1 class="pgh">Reyting</h1>
   <p class="muted lgsub">${esc(p.student.type==='guest'?'Mehmonlar':p.student.group)} guruhi. XP ${G3?'topshiriqlar':'Booster testlari va topshiriqlar'} uchun beriladi.</p>
   ${podium(rows)}
-  <div class="card lglist">${rows.map(r=>`<div class="lgr ${r.me?'me':''}"><span class="lgn">${r.r}</span><div class="sav sm">${esc(initials(r.n))}</div><b>${esc(r.n)}${r.me?' <small>(siz)</small>':''}</b><span></span><span class="lgt">${r.t}<small> XP</small></span></div>`).join('')||'<div class="empty">Hali hech kim XP olmagan.</div>'}</div>
-  <div class="card xprule"><b>XP qanday olinadi</b><p class="${G3?'hide':''}">Booster testini A–E bilan tugatsangiz: ${(p.rules&&p.rules.base)||10} XP va har bir to‘g‘ri javob uchun yana ${(p.rules&&p.rules.perOk)||2} XP.</p><p>Ustoz topshirig‘ining har bir bosqichini “Bajardim” desangiz: o‘sha topshiriq uchun belgilangan XP.</p></div>`;
+  <div class="card lglist">${rows.map(r=>`<div class="lgr ${r.me?'me':''}"><span class="lgn">${r.r}</span>${G3?`<div class="sav sm">${esc(initials(r.n))}</div>`:avHTML(r.a,r.n,lvIdx(r.t),'xs')}<b>${esc(r.n)}${r.me?' <small>(siz)</small>':''}</b><span></span><span class="lgt">${r.t}<small> XP</small></span></div>`).join('')||'<div class="empty">Hali hech kim XP olmagan.</div>'}</div>
+  <div class="card xprule"><b>XP qanday olinadi</b><p class="${G3?'hide':''}">Booster testini A–E bilan tugatsangiz: ${(p.rules&&p.rules.base)||10} XP va har bir to‘g‘ri javob uchun yana ${(p.rules&&p.rules.perOk)||2} XP.</p><p>Ustoz topshirig‘ining har bir bosqichini “Bajardim” desangiz: o‘sha topshiriq uchun belgilangan XP.</p>${G3?'':`<p>Platformaga ketma-ket kirgan kunlar uchun sovg‘a: ${GIFTS.map(g=>g[0]+' kun +'+g[1]).join(', ')} XP — har biri faqat bir marta.</p>`}</div>`;
 }
+
+/* ================= PROFILE (Multi-Level, 25.11.2026): avatar + frame, days in a row, gifts, graphs ================= */
+const AVS={fox:['🦊','#FFE3D1','Tulki'],lion:['🦁','#FFF0C2','Sher'],tiger:['🐯','#FFE6CC','Yo‘lbars'],panda:['🐼','#E6E9EF','Panda'],koala:['🐨','#E3E8F0','Koala'],owl:['🦉','#EFE2D3','Boyqush'],
+  dolphin:['🐬','#DCEBFF','Delfin'],eagle:['🦅','#EDE3D8','Burgut'],wolf:['🐺','#E2E5EA','Bo‘ri'],bear:['🐻','#F1E1D3','Ayiq'],cat:['🐱','#FBE3EE','Mushuk'],penguin:['🐧','#DDF2FB','Pingvin'],
+  butterfly:['🦋','#EADFFF','Kapalak',3],dragon:['🐉','#DDF5E4','Ajdar',7],unicorn:['🦄','#FBE0F1','Yagona shox',14],rocket:['🚀','#DCE6FF','Raketa',30],star:['🌟','#FFF1C9','Yulduz',60]};
+/* [days in a row, XP given once, gift avatar, badge name] — the server counts the same (GIFTS in core.ts) */
+const GIFTS=[[3,5,'butterfly','Uchqun'],[7,10,'dragon','Bir hafta'],[14,15,'unicorn','Ikki hafta'],[30,20,'rocket','Bir oy'],[60,30,'star','Ikki oy']];
+const FRAMES=['Oddiy ramka','Moviy ramka','Yashil chaqmoq','Olovli ramka','Olmos ramka','Oltin toj'];
+const lvIdx=x=>{let i=0;while(i<LVS.length-1&&(x||0)>=LVS[i+1][0])i++;return i};
+function avHTML(av,name,tier,cls){const a=AVS[av];
+  return `<span class="avf fr${tier==null?'x':tier} ${cls?'z'+cls:''}" aria-hidden="true"><span class="avi${a?' em':''}" ${a?`style="background:${a[1]}"`:''}>${a?a[0]:esc(initials(name))}</span></span>`}
+const dnum=d=>Math.round(Date.parse(d+'T00:00:00Z')/864e5);
+const dstr=n=>new Date(n*864e5).toISOString().slice(0,10);
+const WD=['Ya','Du','Se','Ch','Pa','Ju','Sh'];
+const dmY=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')};
+const agoUz=t=>{if(!t)return 'hech qachon';const d=(Date.now()-t)/60000;if(d<2)return 'hozirgina';if(d<60)return Math.round(d)+' daqiqa oldin';if(d<1440)return Math.round(d/60)+' soat oldin';const n=Math.round(d/1440);return n===1?'kecha':n+' kun oldin'};
+const hm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const durUz=s=>s==null?'':s<60?s+' soniya':Math.floor(s/60)+' daq'+(s%60&&s<600?' '+(s%60)+' s':'');
+function actOf(p){const a=(p&&p.act)||{};return{cur:a.cur||0,best:a.best||0,total:a.total||0,today:!!a.today,days:a.days||[],gifts:a.gifts||[],now:a.now||new Date().toISOString().slice(0,10)}}
+const pctOf=r=>r&&r.of?Math.round(r.ok/r.of*100):0;
+const pcCls=p=>p>=80?'g':p>=50?'y':'r';
+/* which skill a result belongs to: the map's banner, else the kind of material */
+function skillOf(r,asg){if(r.k==='bx')return 'Booster';if(r.k==='exam')return 'Mock test';if(r.k==='gr')return 'Grammatika';
+  const a=r.a&&(asg||[]).find(x=>x.aid===r.a),c=a&&a.cover;
+  if(c){if(/^(reading|rp3|rp2)$/.test(c))return 'Reading';if(/^(listening|lmock)$/.test(c))return 'Listening';if(c==='vocab')return 'Lug‘at';if(c==='grammar')return 'Grammatika';if(/^(wr1|wr2|writing)$/.test(c))return 'Writing'}
+  const d=r.d||'';return /^gr/.test(d)?'Grammatika':/^voc|^v\d/.test(d)?'Lug‘at':/^l/.test(d)?'Listening':/^r/.test(d)?'Reading':'Mashqlar'}
+/* a small line chart (SVG, no library): pts = [{l:label, v:value}] */
+function lineChart(pts,o){o=o||{};const W=640,H=200,pl=34,pr=14,pt=16,pb=28,n=pts.length;if(!n)return '';
+  const min=o.min!=null?o.min:Math.min(...pts.map(p=>p.v)),max=o.max!=null?o.max:Math.max(1,...pts.map(p=>p.v));const sp=max-min||1;
+  const X=i=>n===1?(pl+W-pr)/2:pl+i*(W-pl-pr)/(n-1),Y=v=>pt+(H-pt-pb)*(1-(v-min)/sp);
+  const line=pts.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
+  const area=`${line} L${X(n-1).toFixed(1)},${H-pb} L${X(0).toFixed(1)},${H-pb} Z`;const id='lg'+Math.random().toString(36).slice(2,7);
+  const grid=(o.grid||[min,min+sp/2,max]).map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" class="cgl"/><text x="${pl-6}" y="${Y(v)+4}" text-anchor="end" class="ctx">${Math.round(v)}${o.unit||''}</text>`).join('');
+  const bands=(o.bands||[]).map(([v,l])=>`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" class="cbd"/><text x="${W-pr}" y="${Y(v)-4}" text-anchor="end" class="cbl">${l}</text>`).join('');
+  const step=Math.max(1,Math.ceil(n/8));
+  const lbl=pts.map((p,i)=>i===n-1||(i%step===0&&n-1-i>=step)?`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="ctx">${esc(p.l)}</text>`:'').join('');
+  const dots=pts.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="${n>24?2.5:4}" class="cdot"><title>${esc(p.l)}: ${esc(p.t||Math.round(p.v)+(o.unit||''))}</title></circle>`).join('');
+  const last=pts[n-1];
+  return `<svg class="lchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label||'Grafik')}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cc)" stop-opacity=".32"/><stop offset="1" stop-color="var(--cc)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${bands}<path d="${area}" fill="url(#${id})"/><path d="${line}" class="cln"/>${dots}${lbl}
+    <text x="${Math.min(X(n-1),W-pr-4)}" y="${Math.max(12,Y(last.v)-10)}" text-anchor="end" class="cval">${esc(last.t||Math.round(last.v)+(o.unit||''))}</text></svg>`}
+/* the XP line: every finished step and Booster test at its time, then today's total */
+function xpLine(p){const ev=[];const A={};(p.assignments||[]).forEach(a=>A[a.aid]=a);
+  Object.entries(p.pat||{}).forEach(([k,t])=>{const a=A[k.split(':')[0]];if(a&&t)ev.push([t,a.xp])});
+  Object.values(((p.booster||{}).tests)||{}).forEach(x=>{if(x&&x.kwt&&x.res&&x.res.at)ev.push([x.res.at,bxp(p,x.res.score)])});
+  ev.sort((a,b)=>a[0]-b[0]);const by=new Map();let s=0;ev.forEach(([t,x])=>{s+=x;by.set(new Date(t).toDateString(),[t,s])});
+  const pts=[...by.values()].slice(-20).map(([t,v])=>({l:dmY(t),v}));
+  const T=(p.xp&&p.xp.T)||0;if(!pts.length||pts[pts.length-1].v!==T)pts.push({l:'bugun',v:T});return pts}
+function heatHTML(days,now,weeks){const set=new Set(days),end=dnum(now),wd=new Date(now+'T12:00:00Z').getUTCDay(),last=end+(6-((wd+6)%7));
+  const first=last-weeks*7+1;let cols='';
+  for(let w=0;w<weeks;w++){let c='';for(let d=0;d<7;d++){const n=first+w*7+d,s=dstr(n);c+=`<i class="${n>end?'fu':set.has(s)?'on':''}" title="${s}"></i>`}cols+=`<span>${c}</span>`}
+  return `<div class="heatw"><div class="heatl" aria-hidden="true"><span>Du</span><span></span><span>Ch</span><span></span><span>Ju</span><span></span><span>Ya</span></div><div class="heat" role="img" aria-label="Faol kunlar: ${set.size} kun">${cols}</div></div>
+    <div class="heatk" aria-hidden="true"><i></i> kirmagan <i class="on"></i> platformaga kirgan</div>`}
+function weekStrip(a){const end=dnum(a.now),set=new Set(a.days);let h='';
+  for(let n=end-6;n<=end;n++){const s=dstr(n),wd=new Date(s+'T12:00:00Z').getUTCDay();h+=`<span class="wk ${set.has(s)?'on':''} ${n===end?'td':''}"><i>${set.has(s)?'🔥':n===end?'·':''}</i><small>${WD[wd]}</small></span>`}
+  return `<div class="wks">${h}</div>`}
+function profHTML(p){
+  const s=p.student,a=actOf(p),x=p.xp||{T:0},li=lvIdx(x.T),lv=stLevel(x.T),rk=myRank(p),T=tracks(p);
+  const R=(p.res||[]).slice().sort((q,w)=>q.at-w.at),nx=GIFTS.find(g=>a.best<g[0]);
+  const all=T.reduce((q,t)=>q+t.total,0),dn=T.reduce((q,t)=>q+t.done,0);
+  const avg=R.length?Math.round(R.reduce((q,r)=>q+pctOf(r),0)/R.length):null;
+  const acc=R.slice(-20).map(r=>({l:dmY(r.at),v:pctOf(r),t:r.ok+'/'+r.of+' · '+pctOf(r)+'%'}));
+  const ex=R.filter(r=>r.k==='exam'&&r.b!=null).map(r=>({l:dmY(r.at),v:r.b,t:r.b+' ball · '+(r.lv||'')}));
+  const sk={};R.forEach(r=>{const k=skillOf(r,p.assignments);(sk[k]=sk[k]||[]).push(pctOf(r))});
+  const skills=Object.entries(sk).map(([k,v])=>[k,Math.round(v.reduce((q,w)=>q+w,0)/v.length),v.length]).sort((q,w)=>w[2]-q[2]);
+  const xl=xpLine(p);
+  return `<section class="pfh">
+    <button class="pfav" id="pfAv" aria-label="Rasmni almashtirish">${avHTML(p.av,s.name,li,'xl')}<span class="pfed">✎</span></button>
+    <div class="pfn"><h1>${esc(s.name)}</h1><div class="st-meta">${s.type==='guest'?'<span>Mehmon</span>':`<span>ID ${esc(s.id)}</span><span>${esc(s.group)}</span>`}</div>
+      <div class="pfb"><span class="pflv">${lv.ic} ${esc(lv.n)}</span><span class="pffr">${esc(FRAMES[li])}</span></div></div>
+    <div class="pfx"><b>${x.T}</b><small>XP</small></div>
+  </section>
+  <section class="card pfs">
+    <div class="pfsh"><div class="flame ${a.cur?'on':''}">🔥<b>${a.cur}</b></div>
+      <div><h2>${a.cur?a.cur+' kun ketma-ket':'Seriya hali yo‘q'}</h2><p class="muted">${a.today?'Bugun kirdingiz ✓ Ertaga ham kiring — seriya uzilmasin!':a.cur?'Bugun ham kiring — seriya uzilmasin!':'Har kuni platformaga kiring: 3 kunda birinchi sovg‘a!'}</p>
+        <div class="pfst2"><span>🏅 Eng uzun: <b>${a.best} kun</b></span><span>📅 Jami: <b>${a.total} kun</b></span></div></div></div>
+    ${weekStrip(a)}
+    ${nx?`<div class="pfnx"><div><b>🎁 Keyingi sovg‘a: ${nx[0]} kun ketma-ket</b><small>${AVS[nx[2]][0]} ${esc(AVS[nx[2]][2])} avatari + ${nx[1]} XP · yana ${Math.max(1,nx[0]-a.cur)} kun</small></div><div class="lvbar"><b style="width:${Math.min(100,Math.round(a.cur/nx[0]*100))}%"></b></div></div>`:'<div class="pfnx"><b>🏆 Barcha sovg‘alarni oldingiz! Siz haqiqiy chempionsiz.</b></div>'}
+  </section>
+  <h2 class="sech">Sovg‘alar</h2>
+  <div class="gifts">${GIFTS.map(g=>{const got=a.best>=g[0],av=AVS[g[2]];return `<div class="gift ${got?'got':''}"><div class="gbx">${got?av[0]:'🎁'}</div><b>${g[0]} kun</b><small>${got?esc(av[2])+' · +'+g[1]+' XP':'+'+g[1]+' XP · avatar'}</small><span class="gtag">${got?'✓ Olindi':a.cur?Math.min(a.cur,g[0])+'/'+g[0]:'🔒'}</span></div>`}).join('')}</div>
+  <p class="muted gnote">Sovg‘a XP har bir sovg‘a uchun faqat bir marta beriladi — hammaga adolatli.</p>
+  <h2 class="sech">Natijalarim</h2>
+  <div class="pft">
+    <div class="card"><b>${rk?rk.me.r+'<small>-o‘rin</small>':'–'}</b><span>${s.type==='guest'?'mehmonlar':esc(s.group)} guruhida</span></div>
+    <div class="card"><b>${dn}<small>/${all}</small></b><span>bosqich bajarildi</span></div>
+    <div class="card"><b>${R.length}</b><span>tekshirilgan mashq</span></div>
+    <div class="card"><b>${avg==null?'–':avg+'<small>%</small>'}</b><span>o‘rtacha natija</span></div>
+  </div>
+  <div class="card pfc"><h3>Mashqlardagi natijalar <small>oxirgi ${acc.length} ta, foizda</small></h3>
+    ${acc.length?`<div class="cwrap" style="--cc:#E3101F">${lineChart(acc,{min:0,max:100,unit:'%',grid:[0,50,100],label:'Mashqlardagi natijalar'})}</div>`:'<p class="muted empty">Mashq bajarib, “Javoblarni tekshirish”ni bossangiz, natijangiz shu yerda chiziq bo‘lib chiqadi.</p>'}</div>
+  <div class="card pfc"><h3>XP o‘sishi</h3>${xl.length>1?`<div class="cwrap" style="--cc:#2457D6">${lineChart(xl,{min:0,label:'XP o‘sishi'})}</div>`:'<p class="muted empty">XP to‘plaganingiz sari bu chiziq yuqoriga ko‘tariladi.</p>'}</div>
+  ${ex.length?`<div class="card pfc"><h3>Mock testlar <small>ball, 75 dan</small></h3><div class="cwrap" style="--cc:#159947">${lineChart(ex,{min:0,max:75,grid:[0,38,75],bands:[[38,'B1'],[51,'B2'],[65,'C1']],label:'Mock testlar'})}</div></div>`:''}
+  ${skills.length?`<div class="card pfc"><h3>Ko‘nikmalar <small>o‘rtacha foiz</small></h3><div class="skl">${skills.map(([k,v,n])=>`<div class="skr"><span>${esc(k)}<small>${n} ta</small></span><div class="skb"><b class="${pcCls(v)}" style="width:${Math.max(3,v)}%"></b></div><em>${v}%</em></div>`).join('')}</div></div>`:''}
+  <div class="card pfc"><h3>Faollik kalendari <small>oxirgi 12 hafta</small></h3>${heatHTML(a.days,a.now,12)}</div>
+  <h2 class="sech">Ramkalar — qanday almashadi?</h2>
+  <div class="card frl"><p class="muted">Ramkangiz XP darajangizga qarab <b>o‘zi almashadi</b>. XP — Booster testlari, topshiriq bosqichlari va kunlik seriya sovg‘alari uchun beriladi.</p>
+    <div class="frs">${LVS.map((l,i)=>`<div class="fr ${i===li?'on':i<li?'pass':''}">${avHTML(p.av,s.name,i,'md')}<b>${l[1]} ${esc(l[2])}</b><small>${l[0]} XP${i===li?' · siz shu yerdasiz':i<li?' · ✓':' · yana '+(l[0]-x.T)+' XP'}</small><span>${esc(FRAMES[i])}</span></div>`).join('')}</div></div>
+  ${R.length?`<h2 class="sech">So‘nggi natijalar</h2><div class="card rlist">${R.slice(-10).reverse().map(r=>`<div class="rrow"><span class="rsc ${pcCls(pctOf(r))}">${r.k==='exam'&&r.b!=null?r.b:r.ok+'/'+r.of}</span><span class="rtx"><b>${esc(r.ti||'Mashq')}</b><small>${dmY(r.at)} ${hm(r.at)}${r.sec?' · '+durUz(r.sec):''}${r.k==='exam'&&r.lv?' · '+esc(r.lv):''}</small></span><em>${pctOf(r)}%</em></div>`).join('')}</div>`:''}`;
+}
+function bindProf(){const b=$('#pfAv');if(b)b.onclick=avPick}
+function avPick(){const a=actOf(P),cur=P.av||'';
+  const cell=(k,v)=>{const lock=v[3]&&a.best<v[3];return `<button class="avc ${k===cur?'on':''} ${lock?'lock':''}" data-av="${k}" ${lock?'aria-disabled="true"':''} aria-label="${esc(v[2])}"><span class="avi em" style="background:${v[1]}">${v[0]}</span><small>${lock?'🔒 '+v[3]+' kun':esc(v[2])}</small></button>`};
+  modal(`<h3>Rasmingizni tanlang</h3><p class="muted" style="margin:4px 0 10px">Maxsus rasmlar ketma-ket kirgan kunlar uchun sovg‘a bo‘lib ochiladi.</p>
+    <div class="avg">${Object.entries(AVS).filter(([,v])=>!v[3]).map(([k,v])=>cell(k,v)).join('')}</div>
+    <h4 class="avh">🎁 Sovg‘a rasmlar</h4><div class="avg">${Object.entries(AVS).filter(([,v])=>v[3]).map(([k,v])=>cell(k,v)).join('')}</div>
+    <button class="btn ghost block" data-av="" style="margin-top:10px">Bosh harflar (${esc(initials(P.student.name))})</button>`,[{t:'Yopish'}]);
+  document.querySelectorAll('.modal-bg [data-av]').forEach(b=>b.onclick=async()=>{const k=b.dataset.av,v=AVS[k];
+    if(v&&v[3]&&a.best<v[3]){sfx('lock');toast(`Bu rasm ${v[3]} kun ketma-ket kirsangiz ochiladi`);return}
+    sfx('tap');const old=P.av;P.av=k;store(ST+'p:'+U.id,JSON.stringify(P));closeModals();drawMe();
+    try{const j=await cpost({action:'setAv',id:U.id,t:U.t,av:k});if(!j||!j.ok)throw 0;toast('Rasm saqlandi')}catch(e){P.av=old;store(ST+'p:'+U.id,JSON.stringify(P));drawMe();toast('Saqlanmadi. Internetni tekshiring.')}})}
+/* a new streak gift: the box shakes, opens, shows the avatar, the badge and the XP */
+function giftCheck(){if(G3||!P||!P.act||!U)return;const k=ST+'gifts:'+U.id;let seen=[];try{seen=JSON.parse(store(k)||'[]')||[]}catch(e){}
+  const got=P.act.gifts||[],nw=got.filter(g=>!seen.includes(g));if(!nw.length||$('.giftbg'))return;
+  store(k,JSON.stringify(got));const g=GIFTS.find(x=>x[0]===Math.max(...nw));if(!g)return;const av=AVS[g[2]];
+  const gx=GIFTS.filter(x=>nw.includes(x[0])).reduce((q,x)=>q+x[1],0);   /* two milestones reached at once (e.g. 3 and 7 days): both XP shown */
+  const d=document.createElement('div');d.className='giftbg';d.setAttribute('role','dialog');d.setAttribute('aria-label','Sovg‘a');
+  d.innerHTML=`<div class="giftc"><small>🔥 ${g[0]} kun ketma-ket!</small><h3>Sizga sovg‘a bor!</h3><button class="gbox" id="gOpen" aria-label="Sovg‘ani ochish">🎁</button><p class="muted">Qutini bosing</p></div>`;
+  document.body.appendChild(d);sfx('open');
+  $('#gOpen').onclick=()=>{sfx('grand');confetti();d.querySelector('.giftc').innerHTML=`<small>🏅 “${esc(g[3])}” nishoni</small><h3>${esc(av[2])} avatari ochildi!</h3>
+    <div class="gwin"><span class="avi em" style="background:${av[1]}">${av[0]}</span></div><p class="gxp">+${gx} XP</p><p class="muted">Bu sovg‘a faqat bir marta beriladi. Keyingisi: ${(GIFTS.find(x=>x[0]>g[0])||[0])[0]?((GIFTS.find(x=>x[0]>g[0]))[0]+' kun ketma-ket'):'barchasi olindi!'}</p>
+    <div class="gbtn"><button class="btn red big" id="gSet">Avatarni qo‘yish</button><button class="btn ghost big" id="gOk">Ajoyib!</button></div>`;
+    $('#gOk').onclick=()=>d.remove();
+    $('#gSet').onclick=async()=>{d.remove();P.av=g[2];store(ST+'p:'+U.id,JSON.stringify(P));drawMe();try{const j=await cpost({action:'setAv',id:U.id,t:U.t,av:g[2]});if(!j||!j.ok)throw 0;toast('Yangi avatar qo‘yildi')}catch(e){toast('Saqlanmadi')}}}}
+/* results the exercise pages could not send wait on this device (ST+'rq:'+id); they go out with the next page load */
+async function rqFlush(){if(G3||!U||U.role!=='student')return;const k=ST+'rq:'+U.id;let q=[];try{q=JSON.parse(store(k)||'[]')}catch(e){}if(!q.length||ui.rqBusy)return;ui.rqBusy=true;const sent=[];
+  for(const b of q){try{const j=await cpost(Object.assign({},b,{action:'res',id:U.id,t:U.t,v:'ml'}));if(j&&(j.ok||j.error==='bad'))sent.push(b.cid)}catch(e){}}
+  let now=[];try{now=JSON.parse(store(k)||'[]')}catch(e){}const left=now.filter(b=>!sent.includes(b.cid));store(k,left.length?JSON.stringify(left):null);ui.rqBusy=false;if(sent.length)lastFetch=0}
+function sendRes(b){if(G3||!U||U.role!=='student')return;const k=ST+'rq:'+U.id;let q=[];try{q=JSON.parse(store(k)||'[]')}catch(e){}
+  b.cid=Date.now().toString(36)+Math.random().toString(36).slice(2,8);q.push(b);store(k,JSON.stringify(q.slice(-40)));rqFlush()}
 
 /* ---------- the journey map ---------- */
 function mapHTML(p,t){
@@ -657,7 +790,9 @@ async function loadT(force){
   j.roster=j.roster.filter(r=>r.type==='guest'?!G3:mineG(r.group));j.assignments=j.assignments.filter(mineA);
   keepKey(j.k);TD=j;return TD;
 }
-const xpOf=id=>((TD.xp||{})[id])||{B:0,bn:0,A:0,an:0,T:0};
+const xpOf=id=>((TD.xp||{})[id])||{B:0,bn:0,A:0,an:0,G:0,T:0};
+const actT=id=>((TD.act||{})[id])||{cur:0,best:0,total:0,d7:0,last:0,today:false};
+const rsT=id=>((TD.rs||{})[id])||{n:0,acc:null,last:0};
 const forGroup=(a,g)=>a.groups.toUpperCase()==='ALL'||a.groups.toUpperCase().split(/[,\s]+/).includes(String(g).toUpperCase());
 function groupRank(group){
   const rows=TD.roster.filter(s=>s.group===group).map(s=>({s,o:xpOf(s.id)}));
@@ -670,9 +805,10 @@ function tRows(){
   return TD.roster.map(s=>{const b=TD.booster[s.id]||{};const pr=TD.progress[s.id]||{};
     const mine=as.filter(a=>forGroup(a,s.group));const stot=mine.reduce((n,a)=>n+a.steps.length,0);
     const sdone=mine.reduce((n,a)=>n+a.steps.filter((_,i)=>pr[a.aid+':'+i]==='done').length,0);
-    return{s,done:+b.done||0,last:b.last||0,sdone,stot,xp:xpOf(s.id).T,rank:rk[s.id]}});
+    const ac=actT(s.id),rs=rsT(s.id);
+    return{s,done:+b.done||0,last:Math.max(b.last||0,ac.last||0,rs.last||0),sdone,stot,xp:xpOf(s.id).T,rank:rk[s.id],ac,rs}});
 }
-const TTABS=[['students','O‘quvchilar'],['assign','Topshiriqlar'],['league','Reyting'],...(G3?[]:[['ai','AI Writing'],['guests','Mehmonlar']]),['settings','Sozlamalar']];
+const TTABS=[['students','O‘quvchilar'],...(G3?[]:[['act','Faollik']]),['assign','Topshiriqlar'],['league','Reyting'],...(G3?[]:[['ai','AI Writing'],['guests','Mehmonlar']]),['settings','Sozlamalar']];
 async function teacherHome(tab){
   document.body.classList.remove('st-mode');
   tab=TTABS.some(t=>t[0]===tab)?tab:'students';ui.ttab=tab;setBack(null);
@@ -685,7 +821,8 @@ async function teacherHome(tab){
     <div class="kpis">
       <div class="card kpi"><div class="l">O‘quvchilar</div><div class="v">${st.length}</div><div class="muted ks">${tGroups().map(g=>g+' '+st.filter(r=>r.s.group===g).length).join(', ')}</div></div>
       <div class="card kpi ${G3?'hide':''}"><div class="l">Mehmonlar</div><div class="v">${gu.length}</div><div class="muted ks">${gu.filter(r=>r.s.joined&&new Date(r.s.joined).getTime()>week).length} ta shu hafta</div></div>
-      <div class="card kpi"><div class="l">Shu hafta faol</div><div class="v">${rows.filter(r=>r.last>week).length}</div><div class="muted ks">${G3?'topshiriq ochganlar':'Booster ochganlar'}</div></div>
+      ${G3?`<div class="card kpi"><div class="l">Shu hafta faol</div><div class="v">${rows.filter(r=>r.last>week).length}</div><div class="muted ks">topshiriq ochganlar</div></div>`
+        :`<div class="card kpi"><div class="l">Bugun kirganlar</div><div class="v">${st.filter(r=>r.ac.today).length}</div><div class="muted ks">shu hafta ${st.filter(r=>r.ac.d7>0).length} o‘quvchi</div></div>`}
       <div class="card kpi"><div class="l">Jami XP</div><div class="v">${rows.reduce((s,r)=>s+r.xp,0)}</div><div class="muted ks">hamma o‘quvchilar</div></div>
     </div>
     <div class="ttabs">${TTABS.map(([k,l])=>`<button class="${tab===k?'on':''}" data-t="${k}">${l}${k==='guests'?` <b>${gu.length}</b>`:k==='assign'?` <b>${TD.assignments.filter(a=>!a.hidden).length+1}</b>`:''}</button>`).join('')}
@@ -693,7 +830,7 @@ async function teacherHome(tab){
     <div id="tBody"></div></div>`;
   document.querySelectorAll('.ttabs [data-t]').forEach(b=>b.onclick=()=>go('#/teacher/'+b.dataset.t));
   $('#tRef').onclick=()=>{TD=null;teacherHome(tab)};
-  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else if(tab==='settings')tSettings();else if(tab==='ai')tAI();else tList(tab==='guests'?gu:st,tab==='guests');
+  if(tab==='assign')tAssign();else if(tab==='league')tLeague();else if(tab==='settings')tSettings();else if(tab==='ai')tAI();else if(tab==='act')tAct();else tList(tab==='guests'?gu:st,tab==='guests');
 }
 /* ---------- AI Writing (Gemini): settings + every check students made ---------- */
 const AI_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
@@ -765,15 +902,16 @@ function tList(rows,guests){
         toast(`${n} ta o‘quvchi o‘chirildi`);sel.clear();TD=null;teacherHome(guests?'guests':'students')}}])}};
   const draw=()=>{
     let r=rows.filter(x=>pass(x)&&(!f.q||(x.s.name+' '+x.s.id+' '+x.s.phone).toLowerCase().includes(f.q.toLowerCase())));
-    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):f.sort==='new'?(a,b)=>new Date(b.s.joined||0)-new Date(a.s.joined||0):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
+    r.sort(f.sort==='done'?(a,b)=>b.done-a.done:f.sort==='last'?(a,b)=>b.last-a.last:f.sort==='act'?(a,b)=>b.ac.d7-a.ac.d7||b.ac.cur-a.ac.cur||b.last-a.last:f.sort==='acc'?(a,b)=>(b.rs.acc==null?-1:b.rs.acc)-(a.rs.acc==null?-1:a.rs.acc):f.sort==='lazy'?(a,b)=>(a.last||0)-(b.last||0):f.sort==='name'?(a,b)=>a.s.name.localeCompare(b.s.name):f.sort==='new'?(a,b)=>new Date(b.s.joined||0)-new Date(a.s.joined||0):(a,b)=>b.xp-a.xp||a.s.name.localeCompare(b.s.name));
     if($('#rsChips'))$('#rsChips').innerHTML=chips();
-    $('#tTbl').innerHTML=r.length?`<label class="muted" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;margin:0 0 6px 16px"><input type="checkbox" class="rs-ck" id="rsAll" ${r.every(x=>sel.has(x.s.id))?'checked':''}> Hammasini tanlash (${r.length})</label>`+r.map(x=>`<div class="card srow rsrow">
+    $('#tTbl').innerHTML=r.length?`<label class="muted" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;margin:0 0 6px 16px"><input type="checkbox" class="rs-ck" id="rsAll" ${r.every(x=>sel.has(x.s.id))?'checked':''}> Hammasini tanlash (${r.length})</label>`+r.map(x=>`<div class="card srow rsrow${G3||guests?'':' wact'}">
       <input type="checkbox" class="rs-ck" data-ck="${esc(x.s.id)}" ${sel.has(x.s.id)?'checked':''} aria-label="${esc(x.s.name)} ni tanlash">
-      <div class="sav">${esc(initials(x.s.name))}</div>
+      ${G3?`<div class="sav">${esc(initials(x.s.name))}</div>`:`<div class="sav avw">${avHTML((TD.av||{})[x.s.id],x.s.name,lvIdx(x.xp),'sm')}</div>`}
       <div class="sn"><b>${esc(x.s.name)}${isNewS(x.s)?'<span class="rs-new">YANGI</span>':''}</b><small>${guests?(x.s.joined?'kelgan: '+new Date(x.s.joined).toLocaleDateString('en-GB'):'mehmon'):`ID ${esc(x.s.id)}, ${esc(x.s.group)}, ${x.s.hasPin?'parol bor':x.s.tg?'Telegram':'<span class="nopin">hali kirmagan</span>'}${x.s.tgu?', '+esc(x.s.tgu):x.s.tg?', Telegram ✓':''}`}</small></div>
       <div class="sp2"><b>${x.xp} XP</b><small>${x.rank?x.rank+'-o‘rin':''}</small></div>
       <div class="sp2 ${G3?'hide':''}"><b>${x.done}/${BOOSTER_TESTS}</b><div class="minibar"><b style="width:${x.done/BOOSTER_TESTS*100}%"></b></div><small>Booster</small></div>
       <div class="sp2"><b>${x.sdone}/${x.stot}</b><small>bosqichlar</small></div>
+      ${G3||guests?'':`<div class="sp2 sact"><b><span class="${x.ac.today?'tdy':''}" title="ketma-ket kunlar">🔥 ${x.ac.cur}</span> · ${x.ac.d7}/7 kun</b><small>${x.ac.last?esc(agoUz(x.ac.last)):'hali kirmagan'}${x.rs.n?` · <span class="pc ${pcCls(x.rs.acc)}">${x.rs.acc}%</span> (${x.rs.n})`:''}</small></div>`}
       <div class="sbtns">${x.s.phone&&x.s.phone.length===9?`<a class="btn ghost call" href="${tel(x.s.phone)}" aria-label="Qo‘ng‘iroq ${phoneNice(x.s.phone)}">📞<span>${phoneNice(x.s.phone)}</span></a>`:''}<button class="btn ghost" data-ed="${esc(x.s.id)}" aria-label="${esc(x.s.name)}: tahrirlash">✎</button><button class="btn navy" data-s="${esc(x.s.id)}">Profil</button></div>
     </div>`).join(''):'<p class="muted empty">Bu yerda hali hech kim yo‘q.</p>';
     document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
@@ -785,7 +923,7 @@ function tList(rows,guests){
   };
   $('#tBody').innerHTML=`${guests?'':'<div class="rs-chips" id="rsChips"></div>'}<div class="tfil">
     <input id="tQ" placeholder="Ism, ID yoki telefon" value="${esc(f.q)}" aria-label="Qidirish">
-    <select id="tS" aria-label="Tartib"><option value="xp">XP bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="new" ${f.sort==='new'?'selected':''}>Yangi qo‘shilganlar</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option></select>
+    <select id="tS" aria-label="Tartib"><option value="xp">XP bo‘yicha</option><option value="name" ${f.sort==='name'?'selected':''}>Ism bo‘yicha</option><option value="new" ${f.sort==='new'?'selected':''}>Yangi qo‘shilganlar</option><option value="done" ${f.sort==='done'?'selected':''}>Booster bo‘yicha</option><option value="last" ${f.sort==='last'?'selected':''}>Oxirgi faollik</option>${G3?'':`<option value="act" ${f.sort==='act'?'selected':''}>Eng faollar (7 kun)</option><option value="acc" ${f.sort==='acc'?'selected':''}>O‘rtacha natija</option><option value="lazy" ${f.sort==='lazy'?'selected':''}>Uzoq kirmaganlar</option>`}</select>
     ${guests?'':'<button class="btn red" id="tImp">+ O‘quvchi qo‘shish</button>'}
   </div><div id="tTbl" class="slist"></div><div class="rs-bulk" id="rsBulk" hidden></div>`;
   $('#tQ').oninput=e=>{f.q=e.target.value;draw()};$('#tS').onchange=e=>{f.sort=e.target.value;draw()};
@@ -877,8 +1015,8 @@ function tLeague(){
   ui.lg=ui.lg||{g:GROUPS.find(g=>TD.roster.some(s=>s.group===g))||'SHARKS'};const L=ui.lg;
   const groups=GROUPS.filter(g=>TD.roster.some(s=>s.group===g));const rows=groupRank(L.g);
   $('#tBody').innerHTML=`<div class="mkbar"><div class="seg">${groups.map(g=>`<button class="${g===L.g?'on':''}" data-lg="${g}">${g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
-    <div class="card lgtab"><table><thead><tr><th>O‘rin</th><th>O‘quvchi</th>${G3?'':'<th>Booster</th>'}<th>Topshiriqlar</th><th>Jami XP</th></tr></thead>
-    <tbody>${rows.map(r=>`<tr><td><b>${r.r}</b></td><td><button class="lnk" data-s="${esc(r.s.id)}">${esc(r.s.name)}</button></td>${G3?'':`<td>${r.o.B}<small> / ${r.o.bn} test</small></td>`}<td>${r.o.A}<small> / ${r.o.an} bosqich</small></td><td><b>${r.o.T}</b></td></tr>`).join('')}</tbody></table></div>`;
+    <div class="card lgtab"><table><thead><tr><th>O‘rin</th><th>O‘quvchi</th>${G3?'':'<th>Booster</th>'}<th>Topshiriqlar</th>${G3?'':'<th>Seriya sovg‘asi</th>'}<th>Jami XP</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td><b>${r.r}</b></td><td><button class="lnk" data-s="${esc(r.s.id)}">${esc(r.s.name)}</button></td>${G3?'':`<td>${r.o.B}<small> / ${r.o.bn} test</small></td>`}<td>${r.o.A}<small> / ${r.o.an} bosqich</small></td>${G3?'':`<td>${r.o.G||0}<small> · eng uzun ${actT(r.s.id).best} kun</small></td>`}<td><b>${r.o.T}</b></td></tr>`).join('')}</tbody></table></div>`;
   document.querySelectorAll('[data-lg]').forEach(b=>b.onclick=()=>{L.g=b.dataset.lg;tLeague()});
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
 }
@@ -961,6 +1099,82 @@ function tAssign(){
   document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>modal('<h3>Topshiriqni o‘chirasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchilar uni boshqa ko‘rmaydi va bu topshiriq uchun olingan XP hisobdan chiqadi.</p>',
     [{t:'Bekor qilish'},{t:'O‘chirish',cls:'red',f:async()=>{try{await cpost({action:'editAssign',key:U.pass,aid:b.dataset.del,remove:true});TD=null;await loadT();teacherHome('assign')}catch(e){toast('Xatolik')}}}]));
 }
+/* ---------- monitoring (Multi-Level, 25.11.2026): what each student does, every checked result with every answer ---------- */
+function resRow(r,who){const pc=pctOf(r);
+  return `<button class="rrow lnkrow" data-rp="${r.p}"><span class="rsc ${pcCls(pc)}">${r.k==='exam'&&r.b!=null?r.b:r.ok+'/'+r.of}</span>
+    <span class="rtx"><b>${who?esc(who)+' · ':''}${esc(r.ti||'Mashq')}</b><small>${dmY(r.at)} ${hm(r.at)}${r.sec?' · '+durUz(r.sec):''}${r.k==='exam'?' · '+(r.lv?esc(r.lv):'')+' · '+r.ok+'/'+r.of:''}</small></span><em>${pc}%</em><span class="aiar">›</span></button>`}
+function bindRes(){document.querySelectorAll('[data-rp]').forEach(b=>b.onclick=()=>resDetail(+b.dataset.rp))}
+async function resDetail(p){
+  modal('<div class="loading"><div class="spin"></div>Yuklanmoqda…</div>',[{t:'Yopish'}]);
+  let j=null;try{j=await cget({action:'tdet',key:U.pass,p},20000)}catch(e){}
+  const box=document.querySelector('.modal-bg .modal')||document.querySelector('.modal-bg>div');if(!box)return;const tgt=box.querySelector('.loading');
+  if(!j||!j.ok){if(tgt)tgt.outerHTML='<p class="muted">Yuklanmadi. Qayta urinib ko‘ring.</p>';return}
+  const r=j.r,pc=pctOf(r),s=(TD.roster.find(x=>x.id===r.id)||{name:r.id});
+  const html=`<div class="rdet"><small class="muted">${esc(s.name)} · ${dmY(r.at)} ${hm(r.at)}${r.sec?' · '+durUz(r.sec):''}</small><h3>${esc(r.ti||'Mashq')}</h3>
+    <div class="rdsum"><span class="rsc ${pcCls(pc)}">${r.ok}/${r.of}</span><b>${pc}%</b>${r.k==='exam'&&r.b!=null?`<span class="tag ok">${r.b} ball · ${esc(r.lv||'')}</span>`:''}</div>
+    ${r.per&&r.per.length?`<table class="rdper"><tbody>${r.per.map(x=>`<tr><td>${esc(x.l)}</td><td>${esc(x.t||'')}</td><td><b>${x.ok}/${x.of}</b></td></tr>`).join('')}</tbody></table>`:''}
+    <h4>Har bir javob</h4><div class="dets">${(r.det||[]).map(([n,g,ok,rt])=>`<div class="det ${ok?'ok':'bad'}"><b>${esc(n)}</b><span>${g?esc(g):'<i>bo‘sh</i>'}</span>${ok?'<em class="okm">✓</em>':`<em>to‘g‘ri: ${esc(rt)}</em>`}</div>`).join('')||'<p class="muted">Javoblar saqlanmagan.</p>'}</div></div>`;
+  if(tgt)tgt.outerHTML=html}
+function tStuAct(j){const a=actOf(j),R=j.res||[],avg=R.length?Math.round(R.reduce((q,r)=>q+pctOf(r),0)/R.length):null;
+  const byT=R.slice().sort((q,w)=>q.at-w.at);
+  const acc=byT.slice(-30).map(r=>({l:dmY(r.at),v:pctOf(r),t:r.ok+'/'+r.of+' · '+pctOf(r)+'%'}));
+  const ex=byT.filter(r=>r.k==='exam'&&r.b!=null).map(r=>({l:dmY(r.at),v:r.b,t:r.b+' ball · '+(r.lv||'')}));
+  const sk={};R.forEach(r=>{const k=skillOf(r,TD.assignments);(sk[k]=sk[k]||[]).push(pctOf(r))});
+  const skills=Object.entries(sk).map(([k,v])=>[k,Math.round(v.reduce((q,w)=>q+w,0)/v.length),v.length]).sort((q,w)=>w[2]-q[2]);
+  return `<div class="pft tpft">
+    <div class="card"><b>🔥 ${a.cur}</b><span>kun ketma-ket${a.today?' · bugun kirdi':''}</span></div>
+    <div class="card"><b>${a.best}</b><span>eng uzun seriya</span></div>
+    <div class="card"><b>${a.total}</b><span>jami faol kun</span></div>
+    <div class="card"><b>${R.length}</b><span>tekshirilgan mashq</span></div>
+    <div class="card"><b>${avg==null?'–':avg+'<small>%</small>'}</b><span>o‘rtacha natija</span></div>
+    <div class="card"><b>${(j.xp&&j.xp.G)||0}</b><span>seriya sovg‘a XP</span></div></div>
+  ${acc.length?`<div class="card pfc"><h3>Natijalar chizig‘i <small>oxirgi ${acc.length} ta, foizda</small></h3><div class="cwrap" style="--cc:#E3101F">${lineChart(acc,{min:0,max:100,unit:'%',grid:[0,50,100],label:'Natijalar'})}</div></div>`:''}
+  ${ex.length?`<div class="card pfc"><h3>Mock testlar <small>ball, 75 dan</small></h3><div class="cwrap" style="--cc:#159947">${lineChart(ex,{min:0,max:75,grid:[0,38,75],bands:[[38,'B1'],[51,'B2'],[65,'C1']],label:'Mock testlar'})}</div></div>`:''}
+  ${skills.length?`<div class="card pfc"><h3>Ko‘nikmalar <small>o‘rtacha foiz</small></h3><div class="skl">${skills.map(([k,v,n])=>`<div class="skr"><span>${esc(k)}<small>${n} ta</small></span><div class="skb"><b class="${pcCls(v)}" style="width:${Math.max(3,v)}%"></b></div><em>${v}%</em></div>`).join('')}</div></div>`:''}
+  <div class="card pfc"><h3>Faollik kalendari <small>oxirgi 12 hafta</small></h3>${heatHTML(a.days,a.now,12)}</div>
+  <h2 class="sech">Barcha natijalar <small class="muted">${R.length} ta · bosing — har bir javob</small></h2>
+  <div class="card rlist">${R.length?R.map(r=>resRow(r)).join(''):'<p class="muted empty">Hali tekshirilgan mashq yo‘q. O‘quvchi mashqda “Javoblarni tekshirish”ni bosganda shu yerda chiqadi.</p>'}</div>
+  <h2 class="sech">Kirish tarixi</h2><div class="card" id="tVis"><div class="loading"><div class="spin"></div>Yuklanmoqda…</div></div>`}
+async function tVisits(id){let j=null;try{j=await cget({action:'tvis',key:U.pass,id},20000)}catch(e){}const b=$('#tVis');if(!b)return;
+  if(!j||!j.ok){b.innerHTML='<p class="muted">Yuklanmadi.</p>';return}
+  const V=j.vis.slice().reverse();b.innerHTML=V.length?`<table class="vtab"><thead><tr><th>Kun</th><th>Birinchi kirish</th><th>Oxirgi faollik</th><th>Necha marta</th></tr></thead><tbody>${V.slice(0,60).map(v=>`<tr><td><b>${v.d.split('-').reverse().join('.')}</b> <small>${WD[new Date(v.d+'T12:00:00Z').getUTCDay()]}</small></td><td>${hm(v.f)}</td><td>${hm(v.l)}</td><td>${v.n}</td></tr>`).join('')}</tbody></table>${V.length>60?`<p class="muted">… yana ${V.length-60} kun</p>`:''}`:'<p class="muted empty">Hali kirmagan (hisob 25.11.2026 dan boshlangan).</p>'}
+async function tAct(){
+  const B=$('#tBody');B.innerHTML='<div class="loading" style="margin-top:30px"><div class="spin"></div>Yuklanmoqda…</div>';
+  let j=null;try{j=await cget({action:'tact',key:U.pass,days:14},30000)}catch(e){}
+  if(!j||!j.ok){B.innerHTML='<div class="card sec"><h3>Yuklanmadi</h3><p class="muted">Internetni tekshiring, so‘ng “Yangilash”ni bosing.</p></div>';return}
+  const F=ui.af=ui.af||{g:'ALL',q:'',k:'',n:120};
+  const S={};TD.roster.forEach(s=>S[s.id]=s);const A={};TD.assignments.forEach(a=>A[a.aid]=a);
+  const ok=id=>!!S[id]&&(F.g==='ALL'||S[id].group===F.g)&&(!F.q||(S[id].name+' '+id).toLowerCase().includes(F.q.toLowerCase()));
+  const ev=[];j.res.forEach(r=>ev.push({t:r.at,id:r.id,ty:'res',r}));
+  j.prog.forEach(p=>{const k=String(p.a).split(':'),a=A[k[0]];if(a)ev.push({t:p.at,id:p.id,ty:p.st,a,i:+k[1],info:p.i})});
+  ev.sort((x,y)=>y.t-x.t);
+  const tday=j.vis.filter(v=>v.d===j.today),seen7=new Set(j.vis.filter(v=>dnum(v.d)>dnum(j.today)-7).map(v=>v.id));
+  const studs=TD.roster.filter(s=>s.type!=='guest'),away=studs.filter(s=>!seen7.has(s.id));
+  const days=[];for(let n=dnum(j.today)-13;n<=dnum(j.today);n++){const d=dstr(n);days.push([d,new Set(j.vis.filter(v=>v.d===d&&S[v.id]&&S[v.id].type!=='guest').map(v=>v.id)).size])}
+  const mx=Math.max(1,...days.map(d=>d[1]));
+  const who=id=>{const s=S[id];return `<button class="who" data-s="${esc(id)}">${avHTML((TD.av||{})[id],s.name,lvIdx(xpOf(id).T),'xs')}<b>${esc(s.name)}</b><small>${esc(s.group)}</small></button>`};
+  const dayH=d=>d===j.today?'Bugun':dnum(d)===dnum(j.today)-1?'Kecha':d.split('-').reverse().join('.')+' · '+WD[new Date(d+'T12:00:00Z').getUTCDay()];
+  const draw=()=>{const L=ev.filter(e=>ok(e.id)&&(!F.k||(F.k==='res'?e.ty==='res':e.ty!=='res')));let last='',html='';
+    L.slice(0,F.n).forEach(e=>{const d=new Date(e.t),ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if(ds!==last){html+=`<h4 class="evd">${dayH(ds)}</h4>`;last=ds}
+      const st=e.a?(e.a.steps[e.i]||{}).t||('Bosqich '+(e.i+1)):'';
+      html+=`<div class="ev">${who(e.id)}<span class="evt">${hm(e.t)}</span>${e.ty==='res'?resRow(e.r).replace('class="rrow lnkrow"','class="rrow lnkrow evr"')
+        :`<span class="evx ${e.ty==='done'?'dn':''}">${e.ty==='done'?'✔ bajardi':'📂 ochdi'}: <b>${esc(e.a.title)}</b> · ${esc(st)}${e.info?` <span class="tag ok">${esc(e.info)}</span>`:''}</span>`}</div>`});
+    $('#evList').innerHTML=html||'<p class="muted empty">Hozircha hech narsa yo‘q. O‘quvchilar mashq bajarganda shu yerda ko‘rinadi.</p>';
+    $('#evMore').hidden=L.length<=F.n;
+    document.querySelectorAll('#evList [data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));bindRes()};
+  B.innerHTML=`<div class="card pfc"><h3>Kunlik faollik <small>platformaga kirgan o‘quvchilar, 14 kun</small></h3>
+      <div class="dbars">${days.map(([d,n])=>`<div class="dbar ${d===j.today?'td':''}" title="${d}: ${n} o‘quvchi"><em>${n||''}</em><b style="height:${Math.round(n/mx*100)}%"></b><small>${d.slice(8)}</small></div>`).join('')}</div></div>
+    <div class="actg"><div class="card sec"><h3>Bugun platformada <b class="cnt">${tday.filter(v=>S[v.id]).length}</b></h3><div class="whos">${tday.filter(v=>S[v.id]).map(v=>`<div class="whor">${who(v.id)}<small>${hm(v.f)}–${hm(v.l)} · ${v.n} marta</small></div>`).join('')||'<p class="muted">Bugun hali hech kim kirmadi.</p>'}</div></div>
+      <div class="card sec"><h3>7 kundan beri kirmagan <b class="cnt warn">${away.length}</b></h3><p class="muted" style="font-size:13px;margin:2px 0 8px">Hisob 25.11.2026 dan boshlangan.</p><div class="whos">${away.slice(0,60).map(s=>`<div class="whor">${who(s.id)}${s.phone&&s.phone.length===9?`<a class="btn ghost call" href="${tel(s.phone)}">📞</a>`:''}</div>`).join('')||'<p class="muted">Hamma faol 👏</p>'}</div></div></div>
+    <h2 class="sech">Nima qilishyapti</h2>
+    <div class="tfil"><input id="evQ" placeholder="Ism yoki ID" value="${esc(F.q)}" aria-label="Qidirish"><select id="evG" aria-label="Guruh"><option value="ALL">Barcha guruhlar</option>${tGroups().map(g=>`<option ${F.g===g?'selected':''}>${esc(g)}</option>`).join('')}</select>
+      <select id="evK" aria-label="Turi"><option value="">Hammasi</option><option value="res" ${F.k==='res'?'selected':''}>Faqat natijalar</option><option value="st" ${F.k==='st'?'selected':''}>Faqat bosqichlar</option></select></div>
+    <div id="evList" class="evl"></div><button class="btn ghost block" id="evMore" hidden>Yana ko‘rsatish</button>`;
+  $('#evQ').oninput=e=>{F.q=e.target.value;draw()};$('#evG').onchange=e=>{F.g=e.target.value;draw()};$('#evK').onchange=e=>{F.k=e.target.value;draw()};
+  $('#evMore').onclick=()=>{F.n+=120;draw()};
+  document.querySelectorAll('.actg [data-s]').forEach(b=>b.onclick=()=>go('#/teacher/s/'+encodeURIComponent(b.dataset.s)));
+  draw()}
 async function teacherStudent(id){
   document.body.classList.remove('st-mode');
   setBack('#/teacher/'+(ui.ttab||'students'),'Orqaga');
@@ -969,7 +1183,7 @@ async function teacherStudent(id){
   if(!j||!j.ok){view().innerHTML='<div class="wrap"><div class="card sec"><h3>O‘quvchi topilmadi</h3></div></div>';return}
   const r=TD.roster.find(x=>x.id===id)||{};const rk=myRank(j);const T=tracks(j);const st=bstats(j.booster);
   view().innerHTML=`<div class="wrap st anim">
-    <div class="st-hello"><div class="pav">${esc(initials(j.student.name))}</div><div><h1>${esc(j.student.name)}</h1>
+    <div class="st-hello">${G3?`<div class="pav">${esc(initials(j.student.name))}</div>`:avHTML(j.av,j.student.name,lvIdx(j.xp.T),'md')}<div><h1>${esc(j.student.name)}</h1>
       <div class="st-meta"><span>ID ${esc(j.student.id)}</span><span>${esc(j.student.group)}</span><span>${j.xp.T} XP</span>${rk?`<span>${rk.me.r}-o‘rin</span>`:''}</div></div>
       ${r.phone&&r.phone.length===9?`<a class="btn ghost call" href="${tel(r.phone)}">📞<span>${phoneNice(r.phone)}</span></a>`:''}
       ${r.tgu?`<a class="btn ghost tgb" href="https://t.me/${esc(r.tgu.slice(1))}" target="_blank" rel="noopener">${TGI}<span>${esc(r.tgu)}</span></a>`:''}
@@ -977,6 +1191,7 @@ async function teacherStudent(id){
       <button class="btn ghost" id="stEdit">✎ Tahrirlash</button>
       ${r.type!=='guest'?`<button class="btn ghost" id="pinReset">${r.hasPin?'Parolni yangilash':'Parol hali yo‘q'}</button>`:''}
       ${G3?'':`<button class="btn ghost" id="aiOf">${AI_SVG.replace('<svg','<svg width="18" height="18"')}<span>AI tekshiruvlari</span></button>`}</div>
+    ${G3?'':tStuAct(j)}
     <h2 class="sech">Topshiriqlar</h2>
     <div class="alist">${T.map(t=>`<div class="card asg ${t.booster?'main':''}"><div class="aic">${t.finished?'🏆':t.booster?'📖':'🗺️'}</div>
       <div class="atx"><div class="at">${esc(t.title)}</div><div class="as">${t.done}/${t.total} bosqich, ${t.steps.reduce((a,b)=>a+(b.done?b.xp||0:0),0)} XP${t.steps.filter(x=>x.info).map(x=>' · Natija: '+esc(x.info)).join('')}</div>
@@ -986,6 +1201,7 @@ async function teacherStudent(id){
   const tu=$('#tgUn');if(tu)tu.onclick=()=>modal(`<h3>${esc(j.student.name)} Telegramini uzasizmi?</h3><p class="muted" style="margin-top:6px">O‘quvchi keyin profilidan qaytadan ulashi mumkin.${r.tgp?' Telegram raqami: '+phoneNice(r.tgp)+'.':''}</p>`,
     [{t:'Bekor qilish'},{t:'Uzish',cls:'red',f:async()=>{try{const x=await cpost({action:'tgUnlink',key:U.pass,id});if(!x.ok)throw 0;toast('Uzildi');TD=null;teacherStudent(id)}catch(e){toast('Xatolik')}}}]);
   $('#stEdit').onclick=()=>editStudentBox(r.id?r:null);
+  if(!G3){bindRes();tVisits(id)}
   const ao=$('#aiOf');if(ao)ao.onclick=()=>{ui.aiq=j.student.id;go('#/teacher/ai')};
   const pr=$('#pinReset');if(pr)pr.onclick=()=>{if(!r.hasPin){toast('O‘quvchi hali parol o‘rnatmagan');return}
     modal(`<h3>${esc(j.student.name)} uchun parolni yangilaysizmi?</h3><p class="muted" style="margin-top:6px">Eski parol ishlamay qoladi. Keyingi kirishda o‘quvchi yangi parol o‘ylab topadi.</p>`,
@@ -1072,7 +1288,9 @@ function bxTest(t){
     modal(`<h3>Testni tugatasizmi?</h3>${blank?`<p style="margin-top:8px">⚠️ <b>${blank} ta bo‘sh joy</b> qoldi. Bo‘sh qoldirmang — taxmin ham to‘g‘ri chiqishi mumkin.</p>`:''}${multi?'<p style="margin-top:8px">⚠️ Ba’zi javoblarda bir nechta so‘z bor. Faqat BITTA so‘z yozing.</p>':''}${!blank&&!multi?'<p class="muted" style="margin-top:8px">Shundan keyin javoblarni o‘zgartirib bo‘lmaydi.</p>':''}`,
       [{t:'Qaytish'},{t:'Tugatish',cls:'red',f:()=>{sv();const ans=pr.ans.map(a=>a.trim()),cat=ans.map((a,i)=>bxCls(t,i,a));
         const S=bxS();S.tests[t.id]=Object.assign(S.tests[t.id]||{},{res:{ans,cat,score:cat.filter(c=>c==='ok').length,time:Math.max(1000,pr.acc),blurs:pr.blurs,uz:pr.uz,at:Date.now()}});
-        store(k,null);bxSave();bxResult(t,false)}}])};
+        store(k,null);bxSave();
+        sendRes({kind:'bx',doc:'booster',sec:String(t.id),aid:BOOSTER_AID,step:t.id-1,title:'Booster · Test '+t.id+' · '+t.title,ok:cat.filter(c=>c==='ok').length,of:6,secs:Math.round(Math.max(1000,pr.acc)/1000),det:ans.map((a,i)=>[String(i+1),a,cat[i]==='ok'?1:0,t.ans[i]])});
+        bxResult(t,false)}}])};
 }
 document.addEventListener('visibilitychange',()=>{if(ui.bxVis)ui.bxVis()});
 /* ---------- result of A ---------- */

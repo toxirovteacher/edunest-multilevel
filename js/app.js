@@ -384,8 +384,8 @@ const COVERS={
   ai:{k:'Writing',w:'AI CHECK',c1:'#1F1147',c2:'#6C4DF6',art:'dots',l:'AI'},
   grammar:{k:'Grammar',w:'GRAMMATIKA',c1:'#13254A',c2:'#3B6FE0',art:'book',l:'Grammar'}};
 /* ---------- ready-made materials (files in this site) ---------- */
-const LIB=[{"key":"rm1","title":"Reading · Full Mock Test 1","note":"35 savol · 60 daqiqa · bitta o‘tirishda, oxirida natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 1","l":"mashq.html#d=rm1&x=all"}]},{"key":"rm5","title":"Reading · Full Mock Test 5","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 5","l":"mashq.html#d=rm5&x=all"}]},{"key":"rm12","title":"Reading · Full Mock Test 12","note":"35 savol · 60 daqiqa · har bir savolga o‘zbekcha tahlil va to‘liq tarjima","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 12","l":"mashq.html#d=rm12&x=all"}]},{"key":"rn1","title":"Reading · Notion Mock Test 1","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 1","l":"mashq.html#d=rn1&x=all"}]},{"key":"rn2","title":"Reading · Notion Mock Test 2","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 2","l":"mashq.html#d=rn2&x=all"}]},{"key":"rn3","title":"Reading · Notion Mock Test 3","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 3","l":"mashq.html#d=rn3&x=all"}]},{"key":"rn4","title":"Reading · Notion Mock Test 4","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 4","l":"mashq.html#d=rn4&x=all"}]},{"key":"lm01","title":"Listening · Mock Test 1","note":"35 savol · 6 qism · audio 45 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 1","l":"mashq.html#d=lm01&x=all"}]},{"key":"lm02","title":"Listening · Mock Test 2","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 2","l":"mashq.html#d=lm02&x=all"}]},{"key":"lm03","title":"Listening · Mock Test 3","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 3","l":"mashq.html#d=lm03&x=all"}]},{"key":"lm04","title":"Listening · Mock Test 4","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 4","l":"mashq.html#d=lm04&x=all"}]},{"key":"lm05","title":"Listening · Mock Test 5","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 5","l":"mashq.html#d=lm05&x=all"}]},{"key":"lm06","title":"Listening · Mock Test 6","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 6","l":"mashq.html#d=lm06&x=all"}]},{"key":"lm07","title":"Listening · Mock Test 7","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 7","l":"mashq.html#d=lm07&x=all"}]},{"key":"lm08","title":"Listening · Mock Test 8","note":"35 savol · 6 qism · audio 45 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 8","l":"mashq.html#d=lm08&x=all"}]},{"key":"lm09","title":"Listening · Mock Test 9","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 9","l":"mashq.html#d=lm09&x=all"}]},{"key":"lm10","title":"Listening · Mock Test 10","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 10","l":"mashq.html#d=lm10&x=all"}]},{"key":"nm1","title":"Listening · Notion Mock 1","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 1","l":"mashq.html#d=nm1&x=all"}]},{"key":"nm2","title":"Listening · Notion Mock 2","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 2","l":"mashq.html#d=nm2&x=all"}]},{"key":"nm3","title":"Listening · Notion Mock 3","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 3","l":"mashq.html#d=nm3&x=all"}]},{"key":"nm4","title":"Listening · Notion Mock 4","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 4","l":"mashq.html#d=nm4&x=all"}]},{"key":"ml1","title":"Listening · Mood Mock Test 1","note":"35 savol · 6 qism · audio 36 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mood Mock Test 1","l":"mashq.html#d=ml1&x=all"}]},{"key":"ml2","title":"Listening · Mood Mock Test 2","note":"35 savol · 6 qism · audio 33 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mood Mock Test 2","l":"mashq.html#d=ml2&x=all"}]},{"key":"rp3","title":"Reading Part 3 · Sarlavhalar","note":"12 ta matn: sarlavha tanlash, tahlil va tarjima bilan","cover":"rp3","xp":15,"sec":"reading","steps":[{"t":"1. The End of Cash? (B1–B2)","l":"mashq.html#d=rp3&x=e1"},{"t":"2. The Second Life of Things (B1–B2)","l":"mashq.html#d=rp3&x=e2"},{"t":"3. The Future of Small Local Shops (B1–B2)","l":"mashq.html#d=rp3&x=e3"},{"t":"4. The Truth About Loyalty Cards (B1–B2)","l":"mashq.html#d=rp3&x=e4"},{"t":"5. Starting a Business from Your Bedroom (B1–B2)","l":"mashq.html#d=rp3&x=e5"},{"t":"6. The Changing World of Shopping (B1–B2)","l":"mashq.html#d=rp3&x=e6"},{"t":"7. The Hidden Science of Prices (B2–C1)","l":"mashq.html#d=rp3&x=e7"},{"t":"8. Living on Subscription (B2–C1)","l":"mashq.html#d=rp3&x=e8"},{"t":"9. The Changing World of Shopping (B2–C1)","l":"mashq.html#d=rp3&x=e9"},{"t":"10. Green Spaces (B2–C1)","l":"mashq.html#d=rp3&x=e10"},{"t":"11. Slow Travel: When Less Can Mean More","l":"mashq.html#d=rp3&x=e11"},{"t":"12. Beyond the Classroom: What School Really Teaches Us","l":"mashq.html#d=rp3&x=e12"}]},{"key":"rp2b1","title":"Reading Part 2 · B1 Pack 1","note":"7 ta mashq: 5 kishi va 8 ta matn, izohlar bilan","cover":"rp2","xp":10,"sec":"reading","steps":[{"t":"1. Department Stores","l":"mashq.html#d=rp2b1&x=e1"},{"t":"2. Art Courses","l":"mashq.html#d=rp2b1&x=e2"},{"t":"3. Film Studios","l":"mashq.html#d=rp2b1&x=e3"},{"t":"4. Reviews of Animated Films","l":"mashq.html#d=rp2b1&x=e4"},{"t":"5. Geography Websites","l":"mashq.html#d=rp2b1&x=e5"},{"t":"6. Beaches","l":"mashq.html#d=rp2b1&x=e6"},{"t":"7. Museums","l":"mashq.html#d=rp2b1&x=e7"}]},{"key":"voc1","title":"Lug‘at · Speaking iboralari","note":"60 ta ibora: tarjima, misollar, Speaking javoblari va 2 ta mashq","cover":"vocab","xp":10,"sec":"vocab","steps":[{"t":"Free Time: Collocations","l":"mashq.html#d=voc1&x=ft1"},{"t":"Free Time: Phrasal verbs","l":"mashq.html#d=voc1&x=ft2"},{"t":"Free Time: Mashq","l":"mashq.html#d=voc1&x=ftx"},{"t":"Character: Adjectives va Idioms","l":"mashq.html#d=voc1&x=cp1"},{"t":"Character: Collocations","l":"mashq.html#d=voc1&x=cp2"},{"t":"Work and Study: Collocations","l":"mashq.html#d=voc1&x=ws1"},{"t":"Work and Study: Phrasal verbs","l":"mashq.html#d=voc1&x=ws2"},{"t":"Work and Study: Mashq","l":"mashq.html#d=voc1&x=wsx"}]},{"key":"adj1","title":"Lug‘at · 100 Advanced Adjectives B2 - C1","note":"100 ta sifat: o‘zbekcha tarjima va sinonimlar (B2 va C1)","cover":"vocab","xp":10,"sec":"vocab","steps":[{"t":"B2 Adjectives · 1–25","l":"mashq.html#d=adj1&x=b1"},{"t":"B2 Adjectives · 26–50","l":"mashq.html#d=adj1&x=b2"},{"t":"C1 Adjectives · 51–75","l":"mashq.html#d=adj1&x=c1"},{"t":"C1 Adjectives · 76–100","l":"mashq.html#d=adj1&x=c2"}]},{"key":"wr1","title":"Writing Part 1 · 30 savol","note":"Har bir savolga 1.1 va 1.2 namuna javob (60 ta)","cover":"wr1","xp":5,"sec":"writing","steps":[{"t":"1. School Dormitory Rules","l":"mashq.html#d=wr1&x=q1"},{"t":"2. Earlier Study Room Closing","l":"mashq.html#d=wr1&x=q2"},{"t":"3. Cinema Screening and Ticket Changes","l":"mashq.html#d=wr1&x=q3"},{"t":"4. Museum Exhibition Space","l":"mashq.html#d=wr1&x=q4"},{"t":"5. Library Books and Computer Room","l":"mashq.html#d=wr1&x=q5"},{"t":"6. School Canteen Menu","l":"mashq.html#d=wr1&x=q6"},{"t":"7. Sports Club Booking Policy","l":"mashq.html#d=wr1&x=q7"},{"t":"8. Public Park Facilities","l":"mashq.html#d=wr1&x=q8"},{"t":"9. Language School Class Timetable","l":"mashq.html#d=wr1&x=q9"},{"t":"10. University Shuttle Service","l":"mashq.html#d=wr1&x=q10"},{"t":"11. Community Centre Weekend Activities","l":"mashq.html#d=wr1&x=q11"},{"t":"12. School Playground Redesign","l":"mashq.html#d=wr1&x=q12"},{"t":"13. Swimming Pool Timetable","l":"mashq.html#d=wr1&x=q13"},{"t":"14. Bookshop Reading Events","l":"mashq.html#d=wr1&x=q14"},{"t":"15. College Career Centre","l":"mashq.html#d=wr1&x=q15"},{"t":"16. Museum History Exhibition","l":"mashq.html#d=wr1&x=q16"},{"t":"17. School Mountain Trip","l":"mashq.html#d=wr1&x=q17"},{"t":"18. Cinema Film Festival","l":"mashq.html#d=wr1&x=q18"},{"t":"19. University Career Day","l":"mashq.html#d=wr1&x=q19"},{"t":"20. Community Sports Tournament","l":"mashq.html#d=wr1&x=q20"},{"t":"21. Library Author Workshop","l":"mashq.html#d=wr1&x=q21"},{"t":"22. Outdoor Music Evening","l":"mashq.html#d=wr1&x=q22"},{"t":"23. School Science Fair","l":"mashq.html#d=wr1&x=q23"},{"t":"24. Hotel Guest Experience","l":"mashq.html#d=wr1&x=q24"},{"t":"25. Restaurant Service Review","l":"mashq.html#d=wr1&x=q25"},{"t":"26. School Library Experience","l":"mashq.html#d=wr1&x=q26"},{"t":"27. Fitness Centre Facilities","l":"mashq.html#d=wr1&x=q27"},{"t":"28. Online Learning Platform","l":"mashq.html#d=wr1&x=q28"},{"t":"29. Local Bus Service","l":"mashq.html#d=wr1&x=q29"},{"t":"30. School Sports Day","l":"mashq.html#d=wr1&x=q30"}]},{"key":"wr2","title":"Writing Part 2 · 60 mavzu","note":"15 yo‘nalish, har bir savolga C1 namuna (180–200 so‘z)","cover":"wr2","xp":10,"sec":"writing","steps":[{"t":"1. Education","l":"mashq.html#d=wr2&x=t1"},{"t":"2. Technology","l":"mashq.html#d=wr2&x=t2"},{"t":"3. Environment","l":"mashq.html#d=wr2&x=t3"},{"t":"4. Transport & Cities","l":"mashq.html#d=wr2&x=t4"},{"t":"5. Health & Lifestyle","l":"mashq.html#d=wr2&x=t5"},{"t":"6. Society & Youth","l":"mashq.html#d=wr2&x=t6"},{"t":"7. Culture & Traditions","l":"mashq.html#d=wr2&x=t7"},{"t":"8. Business & Work","l":"mashq.html#d=wr2&x=t8"},{"t":"9. Global Issues","l":"mashq.html#d=wr2&x=t9"},{"t":"10. Art & Media","l":"mashq.html#d=wr2&x=t10"},{"t":"11. Family & Community","l":"mashq.html#d=wr2&x=t11"},{"t":"12. Animals & Nature","l":"mashq.html#d=wr2&x=t12"},{"t":"13. Tourism & Travel","l":"mashq.html#d=wr2&x=t13"},{"t":"14. Food & Consumption","l":"mashq.html#d=wr2&x=t14"},{"t":"15. Work & Future","l":"mashq.html#d=wr2&x=t15"}]},{"key":"wps1","title":"Writing Part 2 · Problem - Solution","note":"Shablon, namunalar va bitta yozish mashqi (180–200 so‘z)","cover":"wr2","xp":10,"sec":"writing","steps":[{"t":"Shablon va namunalar","l":"mashq.html#d=wps1&x=n1"},{"t":"Mashq: Air pollution","l":"mashq.html#d=wps1&x=w1"}]},{"key":"gr1","title":"Grammatika · Past Simple, Would - Used to","note":"Dars: qoida, formula, misollar va mini-testlar + 5 ta mashq (javob va tahlil bilan)","cover":"grammar","xp":10,"sec":"other","steps":[{"t":"Dars: Past Simple, Would - Used to","l":"grammar.html#d=gr1&x=n1"},{"t":"Mashq 1 · Past Simple: darak shakli","l":"grammar.html#d=gr1&x=m1"},{"t":"Mashq 2 · Past Simple: inkor va so‘roq","l":"grammar.html#d=gr1&x=m2"},{"t":"Mashq 3 · Used to","l":"grammar.html#d=gr1&x=m3"},{"t":"Mashq 4 · Would yoki used to?","l":"grammar.html#d=gr1&x=m4"},{"t":"Mashq 5 · Past Simple, would yoki used to?","l":"grammar.html#d=gr1&x=m5"}]},{"key":"sp3a","title":"Speaking Part 3 · Space exploration","note":"Governments should stop spending money on space exploration: FOR / AGAINST, paraphrasing va javob tuzilmasi","cover":"speaking","xp":5,"sec":"other","steps":[{"t":"Governments should stop spending money on space exploration","l":"mashq.html#d=sp3a&x=n1"}]},{"key":"soon-ai","soon":true,"title":"Writing · AI tekshiruv","note":"1.1, 1.2 va 2-topshiriqlarni yozasiz, AI tekshirib, xatolarni tushuntiradi","cover":"ai","xp":1,"steps":[{"t":"Tez kunda","l":"soon"}]}];
-const isSoon=a=>!!(a&&a.steps&&a.steps.length===1&&a.steps[0].l==='soon');
+const LIB=[{"key":"rm1","title":"Reading · Full Mock Test 1","note":"35 savol · 60 daqiqa · bitta o‘tirishda, oxirida natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 1","l":"mashq.html#d=rm1&x=all"}]},{"key":"rm5","title":"Reading · Full Mock Test 5","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 5","l":"mashq.html#d=rm5&x=all"}]},{"key":"rm12","title":"Reading · Full Mock Test 12","note":"35 savol · 60 daqiqa · har bir savolga o‘zbekcha tahlil va to‘liq tarjima","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Mock Test 12","l":"mashq.html#d=rm12&x=all"}]},{"key":"rn1","title":"Reading · Notion Mock Test 1","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 1","l":"mashq.html#d=rn1&x=all"}]},{"key":"rn2","title":"Reading · Notion Mock Test 2","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 2","l":"mashq.html#d=rn2&x=all"}]},{"key":"rn3","title":"Reading · Notion Mock Test 3","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 3","l":"mashq.html#d=rn3&x=all"}]},{"key":"rn4","title":"Reading · Notion Mock Test 4","note":"35 savol · 5 qism · 60 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"reading","xp":75,"sec":"mock","steps":[{"t":"Reading Notion Mock 4","l":"mashq.html#d=rn4&x=all"}]},{"key":"lm01","title":"Listening · Mock Test 1","note":"35 savol · 6 qism · audio 45 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 1","l":"mashq.html#d=lm01&x=all"}]},{"key":"lm02","title":"Listening · Mock Test 2","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 2","l":"mashq.html#d=lm02&x=all"}]},{"key":"lm03","title":"Listening · Mock Test 3","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 3","l":"mashq.html#d=lm03&x=all"}]},{"key":"lm04","title":"Listening · Mock Test 4","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 4","l":"mashq.html#d=lm04&x=all"}]},{"key":"lm05","title":"Listening · Mock Test 5","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 5","l":"mashq.html#d=lm05&x=all"}]},{"key":"lm06","title":"Listening · Mock Test 6","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 6","l":"mashq.html#d=lm06&x=all"}]},{"key":"lm07","title":"Listening · Mock Test 7","note":"35 savol · 6 qism · audio 43 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 7","l":"mashq.html#d=lm07&x=all"}]},{"key":"lm08","title":"Listening · Mock Test 8","note":"35 savol · 6 qism · audio 45 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 8","l":"mashq.html#d=lm08&x=all"}]},{"key":"lm09","title":"Listening · Mock Test 9","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 9","l":"mashq.html#d=lm09&x=all"}]},{"key":"lm10","title":"Listening · Mock Test 10","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mock Test 10","l":"mashq.html#d=lm10&x=all"}]},{"key":"nm1","title":"Listening · Notion Mock 1","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 1","l":"mashq.html#d=nm1&x=all"}]},{"key":"nm2","title":"Listening · Notion Mock 2","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 2","l":"mashq.html#d=nm2&x=all"}]},{"key":"nm3","title":"Listening · Notion Mock 3","note":"35 savol · 6 qism · audio 46 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 3","l":"mashq.html#d=nm3&x=all"}]},{"key":"nm4","title":"Listening · Notion Mock 4","note":"35 savol · 6 qism · audio 44 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Notion Mock 4","l":"mashq.html#d=nm4&x=all"}]},{"key":"ml1","title":"Listening · Mood Mock Test 1","note":"35 savol · 6 qism · audio 36 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mood Mock Test 1","l":"mashq.html#d=ml1&x=all"}]},{"key":"ml2","title":"Listening · Mood Mock Test 2","note":"35 savol · 6 qism · audio 33 daqiqa · bitta o‘tirishda, natija va sertifikat","cover":"lmock","xp":75,"sec":"mock","steps":[{"t":"Listening Mood Mock Test 2","l":"mashq.html#d=ml2&x=all"}]},{"key":"rp3","title":"Reading Part 3 · Sarlavhalar","note":"12 ta matn: sarlavha tanlash, tahlil va tarjima bilan","cover":"rp3","xp":15,"sec":"reading","steps":[{"t":"1. The End of Cash? (B1–B2)","l":"mashq.html#d=rp3&x=e1"},{"t":"2. The Second Life of Things (B1–B2)","l":"mashq.html#d=rp3&x=e2"},{"t":"3. The Future of Small Local Shops (B1–B2)","l":"mashq.html#d=rp3&x=e3"},{"t":"4. The Truth About Loyalty Cards (B1–B2)","l":"mashq.html#d=rp3&x=e4"},{"t":"5. Starting a Business from Your Bedroom (B1–B2)","l":"mashq.html#d=rp3&x=e5"},{"t":"6. The Changing World of Shopping (B1–B2)","l":"mashq.html#d=rp3&x=e6"},{"t":"7. The Hidden Science of Prices (B2–C1)","l":"mashq.html#d=rp3&x=e7"},{"t":"8. Living on Subscription (B2–C1)","l":"mashq.html#d=rp3&x=e8"},{"t":"9. The Changing World of Shopping (B2–C1)","l":"mashq.html#d=rp3&x=e9"},{"t":"10. Green Spaces (B2–C1)","l":"mashq.html#d=rp3&x=e10"},{"t":"11. Slow Travel: When Less Can Mean More","l":"mashq.html#d=rp3&x=e11"},{"t":"12. Beyond the Classroom: What School Really Teaches Us","l":"mashq.html#d=rp3&x=e12"}]},{"key":"rp2b1","title":"Reading Part 2 · B1 Pack 1","note":"7 ta mashq: 5 kishi va 8 ta matn, izohlar bilan","cover":"rp2","xp":10,"sec":"reading","steps":[{"t":"1. Department Stores","l":"mashq.html#d=rp2b1&x=e1"},{"t":"2. Art Courses","l":"mashq.html#d=rp2b1&x=e2"},{"t":"3. Film Studios","l":"mashq.html#d=rp2b1&x=e3"},{"t":"4. Reviews of Animated Films","l":"mashq.html#d=rp2b1&x=e4"},{"t":"5. Geography Websites","l":"mashq.html#d=rp2b1&x=e5"},{"t":"6. Beaches","l":"mashq.html#d=rp2b1&x=e6"},{"t":"7. Museums","l":"mashq.html#d=rp2b1&x=e7"}]},{"key":"voc1","title":"Lug‘at · Speaking iboralari","note":"60 ta ibora: tarjima, misollar, Speaking javoblari va 2 ta mashq","cover":"vocab","xp":10,"sec":"vocab","steps":[{"t":"Free Time: Collocations","l":"mashq.html#d=voc1&x=ft1"},{"t":"Free Time: Phrasal verbs","l":"mashq.html#d=voc1&x=ft2"},{"t":"Free Time: Mashq","l":"mashq.html#d=voc1&x=ftx"},{"t":"Character: Adjectives va Idioms","l":"mashq.html#d=voc1&x=cp1"},{"t":"Character: Collocations","l":"mashq.html#d=voc1&x=cp2"},{"t":"Work and Study: Collocations","l":"mashq.html#d=voc1&x=ws1"},{"t":"Work and Study: Phrasal verbs","l":"mashq.html#d=voc1&x=ws2"},{"t":"Work and Study: Mashq","l":"mashq.html#d=voc1&x=wsx"}]},{"key":"adj1","title":"Lug‘at · 100 Advanced Adjectives B2 - C1","note":"100 ta sifat: o‘zbekcha tarjima va sinonimlar (B2 va C1)","cover":"vocab","xp":10,"sec":"vocab","steps":[{"t":"B2 Adjectives · 1–25","l":"mashq.html#d=adj1&x=b1"},{"t":"B2 Adjectives · 26–50","l":"mashq.html#d=adj1&x=b2"},{"t":"C1 Adjectives · 51–75","l":"mashq.html#d=adj1&x=c1"},{"t":"C1 Adjectives · 76–100","l":"mashq.html#d=adj1&x=c2"}]},{"key":"wr1","title":"Writing Part 1 · 30 savol","note":"Har bir savolga 1.1 va 1.2 namuna javob (60 ta)","cover":"wr1","xp":5,"sec":"writing","steps":[{"t":"1. School Dormitory Rules","l":"mashq.html#d=wr1&x=q1"},{"t":"2. Earlier Study Room Closing","l":"mashq.html#d=wr1&x=q2"},{"t":"3. Cinema Screening and Ticket Changes","l":"mashq.html#d=wr1&x=q3"},{"t":"4. Museum Exhibition Space","l":"mashq.html#d=wr1&x=q4"},{"t":"5. Library Books and Computer Room","l":"mashq.html#d=wr1&x=q5"},{"t":"6. School Canteen Menu","l":"mashq.html#d=wr1&x=q6"},{"t":"7. Sports Club Booking Policy","l":"mashq.html#d=wr1&x=q7"},{"t":"8. Public Park Facilities","l":"mashq.html#d=wr1&x=q8"},{"t":"9. Language School Class Timetable","l":"mashq.html#d=wr1&x=q9"},{"t":"10. University Shuttle Service","l":"mashq.html#d=wr1&x=q10"},{"t":"11. Community Centre Weekend Activities","l":"mashq.html#d=wr1&x=q11"},{"t":"12. School Playground Redesign","l":"mashq.html#d=wr1&x=q12"},{"t":"13. Swimming Pool Timetable","l":"mashq.html#d=wr1&x=q13"},{"t":"14. Bookshop Reading Events","l":"mashq.html#d=wr1&x=q14"},{"t":"15. College Career Centre","l":"mashq.html#d=wr1&x=q15"},{"t":"16. Museum History Exhibition","l":"mashq.html#d=wr1&x=q16"},{"t":"17. School Mountain Trip","l":"mashq.html#d=wr1&x=q17"},{"t":"18. Cinema Film Festival","l":"mashq.html#d=wr1&x=q18"},{"t":"19. University Career Day","l":"mashq.html#d=wr1&x=q19"},{"t":"20. Community Sports Tournament","l":"mashq.html#d=wr1&x=q20"},{"t":"21. Library Author Workshop","l":"mashq.html#d=wr1&x=q21"},{"t":"22. Outdoor Music Evening","l":"mashq.html#d=wr1&x=q22"},{"t":"23. School Science Fair","l":"mashq.html#d=wr1&x=q23"},{"t":"24. Hotel Guest Experience","l":"mashq.html#d=wr1&x=q24"},{"t":"25. Restaurant Service Review","l":"mashq.html#d=wr1&x=q25"},{"t":"26. School Library Experience","l":"mashq.html#d=wr1&x=q26"},{"t":"27. Fitness Centre Facilities","l":"mashq.html#d=wr1&x=q27"},{"t":"28. Online Learning Platform","l":"mashq.html#d=wr1&x=q28"},{"t":"29. Local Bus Service","l":"mashq.html#d=wr1&x=q29"},{"t":"30. School Sports Day","l":"mashq.html#d=wr1&x=q30"}]},{"key":"wr2","title":"Writing Part 2 · 60 mavzu","note":"15 yo‘nalish, har bir savolga C1 namuna (180–200 so‘z)","cover":"wr2","xp":10,"sec":"writing","steps":[{"t":"1. Education","l":"mashq.html#d=wr2&x=t1"},{"t":"2. Technology","l":"mashq.html#d=wr2&x=t2"},{"t":"3. Environment","l":"mashq.html#d=wr2&x=t3"},{"t":"4. Transport & Cities","l":"mashq.html#d=wr2&x=t4"},{"t":"5. Health & Lifestyle","l":"mashq.html#d=wr2&x=t5"},{"t":"6. Society & Youth","l":"mashq.html#d=wr2&x=t6"},{"t":"7. Culture & Traditions","l":"mashq.html#d=wr2&x=t7"},{"t":"8. Business & Work","l":"mashq.html#d=wr2&x=t8"},{"t":"9. Global Issues","l":"mashq.html#d=wr2&x=t9"},{"t":"10. Art & Media","l":"mashq.html#d=wr2&x=t10"},{"t":"11. Family & Community","l":"mashq.html#d=wr2&x=t11"},{"t":"12. Animals & Nature","l":"mashq.html#d=wr2&x=t12"},{"t":"13. Tourism & Travel","l":"mashq.html#d=wr2&x=t13"},{"t":"14. Food & Consumption","l":"mashq.html#d=wr2&x=t14"},{"t":"15. Work & Future","l":"mashq.html#d=wr2&x=t15"}]},{"key":"wps1","title":"Writing Part 2 · Problem - Solution","note":"Shablon, namunalar va bitta yozish mashqi (180–200 so‘z)","cover":"wr2","xp":10,"sec":"writing","steps":[{"t":"Shablon va namunalar","l":"mashq.html#d=wps1&x=n1"},{"t":"Mashq: Air pollution","l":"mashq.html#d=wps1&x=w1"}]},{"key":"gr1","title":"Grammatika · Past Simple, Would - Used to","note":"Dars: qoida, formula, misollar va mini-testlar + 5 ta mashq (javob va tahlil bilan)","cover":"grammar","xp":10,"sec":"other","steps":[{"t":"Dars: Past Simple, Would - Used to","l":"grammar.html#d=gr1&x=n1"},{"t":"Mashq 1 · Past Simple: darak shakli","l":"grammar.html#d=gr1&x=m1"},{"t":"Mashq 2 · Past Simple: inkor va so‘roq","l":"grammar.html#d=gr1&x=m2"},{"t":"Mashq 3 · Used to","l":"grammar.html#d=gr1&x=m3"},{"t":"Mashq 4 · Would yoki used to?","l":"grammar.html#d=gr1&x=m4"},{"t":"Mashq 5 · Past Simple, would yoki used to?","l":"grammar.html#d=gr1&x=m5"}]},{"key":"sp3a","title":"Speaking Part 3 · Space exploration","note":"Governments should stop spending money on space exploration: FOR / AGAINST, paraphrasing va javob tuzilmasi","cover":"speaking","xp":5,"sec":"other","steps":[{"t":"Governments should stop spending money on space exploration","l":"mashq.html#d=sp3a&x=n1"}]}];
+const isSoon=a=>!!(a&&a.steps&&a.steps.length===1&&a.steps[0].l==='soon');   /* an old placeholder row (its only step is 'soon'): never shown to anyone */
 const isExam=l=>/^mashq\.html#(?:.*&)?x=all(?:&|$)/.test(l||'');
 const examDoc=l=>{const m=/^mashq\.html#(?:.*&)?d=([a-z0-9-]+)/.exec(l||'');return m?m[1]:''};
 /* the start page of a material: mashq.html#d=<doc> (menu) or grammar.html#d=<doc> (topic page) */
@@ -447,7 +447,6 @@ function drawMe(){
   if(tab==='profil')bindProf();
   giftCheck();
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
-  document.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')});
   const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
   document.querySelectorAll('[data-hv]').forEach(b=>b.onclick=()=>{if(b.classList.contains('on'))return;sfx('tap');store(ST+'hv:'+U.id,b.dataset.hv);drawMe()});
   if(tab==='home'&&!G3)globeInit();
@@ -502,29 +501,21 @@ function tcardHTML(t,i){return `<button class="tcard ${t.finished?'fin':''}" dat
         <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
         <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
     </button>`}
-function soonCardHTML(a,i){return `<button class="tcard soon" data-soon="1">
-      ${coverHTML(a.cover,i+7,`<span class="tnum">${IC.lock}</span><span class="tbadge">Tez kunda</span>`)}
-      <div class="tbody"><b>${esc(a.title)}</b>${a.note?`<small>${esc(a.note)}</small>`:''}<span class="tgo">Tez kunda ochiladi</span></div>
-    </button>`}
-const soonOf=p=>(p.assignments||[]).filter(mineA).filter(isSoon).filter(a=>!(p.ai&&a.cover==='ai'));
 /* the classic view: every section one under another (General English 3 always; Multi-Level when the student picks "Ro‘yxat") */
 function listHTML(p,T){
   return `${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
-  <div class="tgrid">${ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div>`).join('')}
-  ${(()=>{const sn=soonOf(p);return sn.length?`<h2 class="sech">Tez kunda</h2>
-  <div class="tgrid">${sn.map((a,i)=>soonCardHTML(a,i)).join('')}</div>`:''})()}`;
+  <div class="tgrid">${ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div>`).join('')}`;
 }
 
 /* ================= KNOWLEDGE GLOBE (Multi-Level, 25.11.2026) =================
    Feedback: the long list of sections made students forget what was at the top. Now every kind of task is a place on
    a small planet: tap its pin (or its chip under the planet) and the planet turns, zooms in and that kind's tasks open
-   below. Plain canvas, no library. "Ro‘yxat" brings the old list back (remembered per student, on this device only). */
-const GREG={mock:['🏁','#FF4D5A'],reading:['📖','#19B5BA'],listening:['🎧','#9B6BFF'],writing:['✍️','#2BC46A'],vocab:['🔤','#F2B000'],grammar:['🧩','#4C8DFF'],other:['⭐','#F0558A'],soon:['🔒','#9AA4B8']};
+   below. A WebGL fractal (2D dotted planet on weak devices), no library. "Ro‘yxat" brings the old list back (remembered per student, on this device only). */
+const GREG={mock:['🏁','#FF4D5A'],reading:['📖','#19B5BA'],listening:['🎧','#9B6BFF'],writing:['✍️','#2BC46A'],vocab:['🔤','#F2B000'],grammar:['🧩','#4C8DFF'],other:['⭐','#F0558A']};
 const homeView=()=>store(ST+'hv:'+U.id)==='list'?'list':'globe';
 const viewTog=cur=>`<div class="vtog" role="group" aria-label="Ko‘rinish">${[['globe','🌍','Sayyora'],['list','☰','Ro‘yxat']].map(([k,e,l])=>`<button data-hv="${k}" class="${cur===k?'on':''}" aria-pressed="${cur===k}"><i aria-hidden="true">${e}</i><span>${l}</span></button>`).join('')}</div>`;
 function globeRegions(p,T){
   const R=SECS.map(([k,l])=>({k,l,ts:T.filter(t=>secOf(t)===k)})).filter(r=>r.ts.length);
-  const sn=soonOf(p);if(sn.length)R.push({k:'soon',l:'Tez kunda',ts:[],soon:sn});
   R.forEach(r=>{r.e=GREG[r.k][0];r.c=GREG[r.k][1];r.d=r.ts.reduce((a,t)=>a+t.done,0);r.n=r.ts.reduce((a,t)=>a+t.total,0);r.open=r.ts.some(t=>!t.finished)});
   return R}
 function globeHTML(p,T){
@@ -532,97 +523,261 @@ function globeHTML(p,T){
   return `<section class="glb" aria-label="Bilim sayyorasi">
     <div class="glbh"><div><h2>🌍 Bilim sayyorasi</h2><small>Bo‘limni bosing: sayyora yaqinlashadi va topshiriqlar ochiladi</small></div>${viewTog('globe')}</div>
     <div class="glbc"><canvas id="glbCv" role="img" aria-label="Bo‘limlar sayyorasi: ${R.map(r=>esc(r.l)).join(', ')}"></canvas>
-      <button class="glbback" id="glbBack" hidden>← Butun sayyora</button><span class="glbhint" aria-hidden="true">👆 Aylantiring yoki belgini bosing</span></div>
-    <div class="glbchips">${R.map((r,i)=>`<button class="glbchip" data-gi="${i}" style="--gc:${r.c}" aria-pressed="false"><i aria-hidden="true">${r.e}</i>${esc(r.l)}${r.k==='soon'?'':`<small>${r.d}/${r.n}</small>`}</button>`).join('')}</div>
+      <button class="glbback" id="glbBack" hidden>← Butun sayyora</button>
+      <div class="glbz"><button data-gz="1" aria-label="Yaqinlashtirish">+</button><button data-gz="-1" aria-label="Uzoqlashtirish">−</button></div>
+      <span class="glbhint" aria-hidden="true">👆 Har tomonga aylantiring, belgini bosing</span></div>
+    <div class="glbchips">${R.map((r,i)=>`<button class="glbchip" data-gi="${i}" style="--gc:${r.c}" aria-pressed="false"><i aria-hidden="true">${r.e}</i>${esc(r.l)}<small>${r.d}/${r.n}</small></button>`).join('')}</div>
   </section><div id="glbPanel"></div>`}
 function gpanelHTML(r,T){
   return `<div class="glbp" style="--gc:${r.c}"><div class="glbp-h"><span class="glbp-e" aria-hidden="true">${r.e}</span><div><h2>${esc(r.l)}</h2>
-    <small>${r.k==='soon'?r.soon.length+' ta bo‘lim tez kunda ochiladi':`${r.ts.length} ta topshiriq · ${r.d}/${r.n} bosqich bajarildi`}</small></div><button class="glbp-x" data-gx aria-label="Yopish">×</button></div>
-    <div class="tgrid">${r.k==='soon'?r.soon.map((a,i)=>soonCardHTML(a,i)).join(''):r.ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div></div>`}
+    <small>${r.ts.length} ta topshiriq · ${r.d}/${r.n} bosqich bajarildi</small></div><button class="glbp-x" data-gx aria-label="Yopish">×</button></div>
+    <div class="tgrid">${r.ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div></div>`}
 function bindCards(root){
-  root.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
-  root.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')})}
+  root.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)})}
+/* ===== Knowledge universe (25.11.2026): a living 3D fractal (Mandelbulb, WebGL shader) with the sections orbiting it.
+   Spins freely in every direction (trackball + inertia), pinch / ctrl+wheel / +− zoom, adaptive quality,
+   and the light 2D dotted planet for phones that cannot draw the fractal fast enough. ===== */
+const GLB={};   /* one WebGL canvas per page: it survives redraws of the home tab, so the shader is compiled only once */
+const GLQ=[[1.25,130,8],[1,112,8],[.82,94,7],[.66,80,6],[.52,66,6],[.4,54,5]];   /* [pixels per CSS pixel, ray steps, fractal iterations] */
+const GLB_FS=`precision highp float;
+uniform vec2 uRes;uniform mat3 uRot;uniform float uD,uT,uPow,uTan;uniform int uSteps,uIter;
+vec3 pal(float t){return .5+.5*cos(6.28318*(t+vec3(0.,.33,.67)));}
+float de(vec3 p,out vec4 tr){
+  vec3 w=p;float m=dot(w,w),dz=1.;tr=vec4(abs(w),m);
+  for(int i=0;i<8;i++){
+    if(i>=uIter)break;
+    float r=max(sqrt(m),1e-5);
+    dz=uPow*pow(r,uPow-1.)*dz+1.;
+    float b=uPow*acos(clamp(w.y/r,-1.,1.)),a=uPow*atan(w.x,w.z);
+    w=p+pow(r,uPow)*vec3(sin(b)*sin(a),cos(b),sin(b)*cos(a));
+    tr=min(tr,vec4(abs(w),m));
+    m=dot(w,w);if(m>256.)break;
+  }
+  tr.x=m;return .25*log(m)*sqrt(m)/dz;
+}
+void main(){
+  float s=min(uRes.x,uRes.y);
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/(.5*s);
+  vec3 o=vec3(0.,0.,uD)*uRot,d=normalize(vec3(uv*uTan,-1.))*uRot;
+  float bb=dot(o,d),c2=dot(o,o)-bb*bb,cd=sqrt(max(c2,0.));
+  vec3 col=(pal(uT*.02+cd*.32+.55)*.7+vec3(.12,.2,.55))*exp(-max(cd-.9,0.)*4.)*.36;
+  float hit=0.,h=1.5625-c2;
+  if(h>0.){
+    h=sqrt(h);float t=max(-bb-h,.01),t1=-bb+h,pa=uTan/(.5*s),dm=1e3,st=0.;vec4 tr=vec4(0.);
+    for(int i=0;i<130;i++){
+      if(i>=uSteps)break;
+      float e=de(o+d*t,tr);
+      dm=min(dm,e/t);
+      if(e<pa*t*.6){hit=1.;st=float(i)/float(uSteps);break;}
+      t+=e;if(t>t1)break;
+    }
+    if(hit>0.){
+      vec3 p=o+d*t;float ep=pa*t*.5;vec2 k=vec2(1.,-1.);vec4 q;
+      vec3 n=normalize(k.xyy*de(p+k.xyy*ep,q)+k.yyx*de(p+k.yyx*ep,q)+k.yxy*de(p+k.yxy*ep,q)+k.xxx*de(p+k.xxx*ep,q));
+      vec3 L=normalize(vec3(.6,.8,.55))*uRot,base=pal(tr.y*1.15+tr.z*.85+sqrt(tr.w)*.9+uT*.03);
+      float occ=clamp((.12+1.25*tr.w)*(1.-.55*st),0.,1.);
+      float dif=clamp(dot(n,L),0.,1.),fre=pow(clamp(1.+dot(n,d),0.,1.),2.),spe=pow(clamp(dot(reflect(d,n),L),0.,1.),24.);
+      col=base*(.2+.95*dif)*occ+spe*.6*occ+fre*(base*.55+vec3(.25,.35,.65))*.75;
+    }else col+=(pal(uT*.02+.15)*.8+.2)*exp(-dm*60.)*.55;
+  }
+  col=clamp(col,0.,1.);
+  gl_FragColor=vec4(col,max(hit,max(col.r,max(col.g,col.b))));
+}`;
+function glbStart(){   /* compile the fractal shader once; with KHR_parallel_shader_compile it compiles off the main thread */
+  if(GLB.r||GLB.dead||GLB.busy)return;
+  const c=document.createElement('canvas');c.className='glbgl';c.setAttribute('aria-hidden','true');
+  let gl=null;try{gl=c.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,depth:false,stencil:false})}catch(_){}
+  if(!gl){GLB.dead=true;return}
+  try{const hp=gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);if(!hp||hp.precision<20){GLB.dead=true;return}}catch(_){GLB.dead=true;return}
+  const ext=gl.getExtension('KHR_parallel_shader_compile'),vs=gl.createShader(gl.VERTEX_SHADER),fs=gl.createShader(gl.FRAGMENT_SHADER),pr=gl.createProgram();
+  gl.shaderSource(vs,'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}');gl.shaderSource(fs,GLB_FS);
+  gl.compileShader(vs);gl.compileShader(fs);gl.attachShader(pr,vs);gl.attachShader(pr,fs);gl.linkProgram(pr);
+  GLB.busy={c,gl,pr,ext,t0:performance.now()}}
+function glbReady(){   /* true once the fractal can be drawn */
+  const b=GLB.busy;if(!b)return !!GLB.r&&!GLB.dead;
+  const{c,gl,pr,ext}=b;
+  if(ext&&!gl.getProgramParameter(pr,ext.COMPLETION_STATUS_KHR)){if(performance.now()-b.t0>15000){GLB.busy=null;GLB.dead=true}return false}
+  GLB.busy=null;
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){GLB.dead=true;return false}
+  gl.useProgram(pr);gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const a=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);
+  const U={};'uRes uRot uD uT uPow uTan uSteps uIter'.split(' ').forEach(k=>U[k]=gl.getUniformLocation(pr,k));
+  c.addEventListener('webglcontextlost',e=>{e.preventDefault();GLB.dead=true});
+  const coarse=matchMedia('(pointer:coarse)').matches,weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+  GLB.cap=coarse?2:0;GLB.ql=weak?4:coarse?3:1;GLB.r={c,gl,U};return true}
 function globeInit(){
   const cv=$('#glbCv'),R=ui.greg||[],T=ui.gT||[];if(!cv||!R.length)return;
   const ctx=cv.getContext('2d');if(!ctx)return;
   const box=cv.parentNode,panel=$('#glbPanel'),back=$('#glbBack'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const rad=Math.PI/180,TAU=Math.PI*2,LAT=[16,-12,24,-20,6,-26,20,-6];
-  /* each section is a place: spread around the planet, alternately north and south */
-  const C=R.map((r,i)=>{const lo=(i*360/R.length+15)*rad,la=LAT[i%LAT.length]*rad;return{lo,la,v:[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)]}});
-  /* evenly spread dots on the sphere (Fibonacci); a dot near a place takes that place's colour */
-  const P=[],N=900,ga=Math.PI*(3-Math.sqrt(5)),cap=Math.cos(30*rad);
-  for(let i=0;i<N;i++){const y=1-2*(i+.5)/N,r=Math.sqrt(1-y*y),t=ga*i,v=[Math.cos(t)*r,y,Math.sin(t)*r];let b=-1,bd=cap;
+  const TAN=.5,DH=3.6,DSEL=2.45,DMIN=2.05,DMAX=5,ORB=1.42,PR=1.12,AUTO=.00014;
+  /* quaternion helpers: the planet's turn is one quaternion, so it can spin in any direction without locking */
+  const qm=(a,b)=>[a[0]*b[0]-a[1]*b[1]-a[2]*b[2]-a[3]*b[3],a[0]*b[1]+a[1]*b[0]+a[2]*b[3]-a[3]*b[2],a[0]*b[2]-a[1]*b[3]+a[2]*b[0]+a[3]*b[1],a[0]*b[3]+a[1]*b[2]-a[2]*b[1]+a[3]*b[0]];
+  const qa=(x,y,z,g)=>{const s=Math.sin(g/2);return[Math.cos(g/2),x*s,y*s,z*s]};
+  const qn=q=>{const l=Math.hypot(q[0],q[1],q[2],q[3])||1;return[q[0]/l,q[1]/l,q[2]/l,q[3]/l]};
+  const qs=(a,b,t)=>{let d=a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];if(d<0){b=b.map(v=>-v);d=-d}
+    if(d>.9995)return qn(a.map((v,i)=>v+(b[i]-v)*t));const th=Math.acos(d),s=Math.sin(th),wa=Math.sin((1-t)*th)/s,wb=Math.sin(t*th)/s;return a.map((v,i)=>v*wa+b[i]*wb)};
+  const qmat=q=>{const[w,x,y,z]=q;return[1-2*(y*y+z*z),2*(x*y-w*z),2*(x*z+w*y),2*(x*y+w*z),1-2*(x*x+z*z),2*(y*z-w*x),2*(x*z-w*y),2*(y*z+w*x),1-2*(x*x+y*y)]};
+  const qarc=(u,f)=>{const c=[u[1]*f[2]-u[2]*f[1],u[2]*f[0]-u[0]*f[2],u[0]*f[1]-u[1]*f[0]],l=Math.hypot(c[0],c[1],c[2]),d=u[0]*f[0]+u[1]*f[1]+u[2]*f[2];
+    return l<1e-6?(d>0?[1,0,0,0]:qa(0,1,0,Math.PI)):qa(c[0]/l,c[1]/l,c[2]/l,Math.atan2(l,d))};
+  const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+  /* each section is a glowing place on an orbit around the fractal, spread around it, alternately north and south */
+  const C=R.map((r,i)=>{const lo=(i*360/R.length+15)*rad,la=LAT[i%LAT.length]*rad;return{lo,v:[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)]}});
+  let sd=7;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  const STARS=Array.from({length:700},()=>{const z=rnd()*2-1,t=rnd()*TAU,r=Math.sqrt(1-z*z);return[r*Math.cos(t),z,r*Math.sin(t),rnd()*TAU,.6+rnd()*1.1]});
+  /* the light 2D planet (shown while the fractal prepares, and on phones too slow for it): Fibonacci dots, coloured near each place */
+  const P=[],cap=Math.cos(30*rad),ga=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<900;i++){const y=1-2*(i+.5)/900,r=Math.sqrt(1-y*y),t=ga*i,v=[Math.cos(t)*r,y,Math.sin(t)*r];let b=-1,bd=cap;
     C.forEach((c,j)=>{const d=v[0]*c.v[0]+v[1]*c.v[1]+v[2]*c.v[2];if(d>bd){bd=d;b=j}});P.push([v[0],v[1],v[2],b])}
-  const STARS=Array.from({length:60},(_,i)=>[(i*0.618034)%1,(i*0.381966*7)%1,(i%3)*.5+.8,i]);
-  const S={yaw:-C[0].lo+.55,pitch:-.22,zoom:1,sel:-1,tw:null,drag:null,hit:[]};
-  let W=0,H=0,dpr=1;
-  const size=()=>{const b=box.getBoundingClientRect();W=b.width;H=b.height;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.max(1,Math.round(H*dpr))};size();
+  const S={q:qm(qa(1,0,0,.3),qa(0,1,0,-C[0].lo+.55)),w:[0,0,0],D:DH,Dt:DH,sel:-1,tw:null,drag:null,pinch:null,hover:false,vis:true,
+    hit:[],time:0,gl:false,fade:0,dirty:true,pf:[],warm:20,good:0,mode:''};
+  let W=0,H=0,dpr=1,last=performance.now(),M=qmat(S.q);
+  const size=()=>{const b=box.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height),d=Math.min(2,devicePixelRatio||1);
+    if(w===W&&h===H&&d===dpr)return;W=w;H=h;dpr=d;cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.max(1,Math.round(H*dpr));S.dirty=true;
+    if(W&&H)draw(last)};   /* redraw at once: a resized canvas is blank until drawn */
   const ro=window.ResizeObserver?new ResizeObserver(size):null;if(ro)ro.observe(box);
-  const rot=v=>{const cy=Math.cos(S.yaw),sy=Math.sin(S.yaw),cp=Math.cos(S.pitch),sp=Math.sin(S.pitch),x=v[0]*cy+v[2]*sy,z=-v[0]*sy+v[2]*cy;return[x,v[1]*cp-z*sp,v[1]*sp+z*cp]};
+  const io=window.IntersectionObserver?new IntersectionObserver(es=>{S.vis=es[es.length-1].isIntersecting;S.pf=[];S.warm=10}):null;if(io)io.observe(box);
+  const rv=v=>[M[0]*v[0]+M[1]*v[1]+M[2]*v[2],M[3]*v[0]+M[4]*v[1]+M[5]*v[2],M[6]*v[0]+M[7]*v[1]+M[8]*v[2]];
   const pill=(x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()};
   function draw(t){
-    const cx=W/2,cy=H/2,Rr=Math.min(W,H)*.41*S.zoom;
+    if(!W||!H)return;
+    const cx=W/2,cy=H/2,F=Math.min(W,H)/2/TAN,D=S.D,pj=q=>{const k=F/Math.max(.2,D-q[2]);return[cx+q[0]*k,cy-q[1]*k,k]};
+    const Rs=F*PR/Math.sqrt(Math.max(.05,D*D-PR*PR)),k0=F/DH,zp=S.sel>=0?Math.max(0,Math.min(1,(DH-D)/(DH-DSEL))):0;
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='#fff';for(const s of STARS){ctx.globalAlpha=RM?.4:.2+.4*Math.abs(Math.sin(t/1100+s[3]));ctx.fillRect(s[0]*W,s[1]*H,s[2],s[2])}
+    /* stars far away: they turn with the universe, hidden behind the planet */
+    ctx.fillStyle='#fff';
+    for(const s of STARS){const q=rv(s);if(q[2]>-.25)continue;const k=F/-q[2],x=cx+q[0]*k,y=cy-q[1]*k;
+      if(x<0||y<0||x>W||y>H||Math.hypot(x-cx,y-cy)<Rs)continue;ctx.globalAlpha=RM?.5:.25+.45*Math.abs(Math.sin(t/1300+s[3]));ctx.fillRect(x,y,s[4],s[4])}
     ctx.globalAlpha=1;
-    let g=ctx.createRadialGradient(cx,cy,Rr*.86,cx,cy,Rr*1.3);g.addColorStop(0,'rgba(96,150,255,.5)');g.addColorStop(1,'rgba(96,150,255,0)');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rr*1.3,0,TAU);ctx.fill();
-    g=ctx.createRadialGradient(cx-Rr*.38,cy-Rr*.42,Rr*.08,cx,cy,Rr);g.addColorStop(0,'#3F6BD6');g.addColorStop(.55,'#1D3474');g.addColorStop(1,'#0A1330');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rr,0,TAU);ctx.fill();
-    const zs=Math.sqrt(S.zoom);
-    for(const p of P){const q=rot(p);if(q[2]<=0)continue;const own=p[3]>=0,a=.18+.82*q[2];
-      ctx.globalAlpha=own?Math.min(1,a*1.15):a*.42;ctx.fillStyle=own?R[p[3]].c:'#C7D8FF';ctx.beginPath();ctx.arc(cx+q[0]*Rr,cy-q[1]*Rr,(own?2.9:1.5)*(.55+.45*q[2])*zs,0,TAU);ctx.fill()}
-    ctx.globalAlpha=1;S.hit=[];
-    const pins=C.map((c,i)=>({i,q:rot(c.v)})).filter(o=>o.q[2]>.12).sort((a,b)=>a.q[2]-b.q[2]);
-    for(const o of pins){const r=R[o.i],sel=o.i===S.sel;if(S.sel>=0&&!sel&&S.zoom>1.25)continue;
-      const x=cx+o.q[0]*Rr,y=cy-o.q[1]*Rr,k=.62+.38*o.q[2],pr=(sel?23:19)*k;
-      ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(x,y+pr*.95,pr*.8,pr*.26,0,0,TAU);ctx.fill();
-      if((r.open||sel)&&!RM){const ph=(t/1500+o.i*.27)%1;ctx.strokeStyle=r.c;ctx.globalAlpha=(1-ph)*.85;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,pr+ph*15,0,TAU);ctx.stroke();ctx.globalAlpha=1}
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,pr,0,TAU);ctx.fill();ctx.lineWidth=sel?4:3;ctx.strokeStyle=r.c;ctx.stroke();
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=Math.round(pr*1.02)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';ctx.fillText(r.e,x,y+1);
-      if(o.q[2]>.38||sel){const sub=r.k==='soon'?r.soon.length+' ta':r.d+'/'+r.n;ctx.font='700 12.5px Inter,system-ui,sans-serif';
-        const w1=ctx.measureText(r.l).width;ctx.font='600 11.5px Inter,system-ui,sans-serif';const w2=ctx.measureText(sub).width,w=w1+w2+26,ly=y+pr+7;
-        ctx.globalAlpha=.4+.6*Math.min(1,(o.q[2]-.38)/.25+(sel?1:0));ctx.fillStyle='rgba(8,13,32,.85)';pill(x-w/2,ly,w,22,11);ctx.fill();
-        ctx.strokeStyle=r.c;ctx.lineWidth=1.5;ctx.stroke();ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font='700 12.5px Inter,system-ui,sans-serif';ctx.fillText(r.l,x-w/2+10,ly+11.5);
-        ctx.fillStyle=r.c;ctx.font='600 11.5px Inter,system-ui,sans-serif';ctx.fillText(sub,x-w/2+16+w1,ly+11.5);ctx.globalAlpha=1}
-      S.hit.push({i:o.i,x,y:y+8,r:pr+14})}
+    const pa=1-S.fade;   /* the 2D planet fades out once the fractal is ready */
+    if(pa>.01){
+      ctx.globalAlpha=pa;let g=ctx.createRadialGradient(cx,cy,Rs*.86,cx,cy,Rs*1.32);g.addColorStop(0,'rgba(96,150,255,.5)');g.addColorStop(1,'rgba(96,150,255,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rs*1.32,0,TAU);ctx.fill();
+      g=ctx.createRadialGradient(cx-Rs*.38,cy-Rs*.42,Rs*.08,cx,cy,Rs);g.addColorStop(0,'#3F6BD6');g.addColorStop(.55,'#1D3474');g.addColorStop(1,'#0A1330');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rs,0,TAU);ctx.fill();
+      const zv=PR*PR/D;
+      for(const p of P){const q=rv(p);q[0]*=PR;q[1]*=PR;q[2]*=PR;if(q[2]<=zv)continue;const s=pj(q),own=p[3]>=0,a=.18+.82*(q[2]/PR);
+        ctx.globalAlpha=pa*(own?Math.min(1,a*1.15):a*.42);ctx.fillStyle=own?R[p[3]].c:'#C7D8FF';ctx.beginPath();ctx.arc(s[0],s[1],(own?2.9:1.5)*(.55+.45*q[2]/PR)*Math.sqrt(s[2]/k0),0,TAU);ctx.fill()}
+      ctx.globalAlpha=1}
+    /* orbit lanes between the places, with a light travelling along each */
+    const behind=(q,s)=>q[2]<0&&Math.hypot(s[0]-cx,s[1]-cy)<Rs;
+    if(R.length>1){const fa=1-.85*zp;ctx.lineWidth=1.6;ctx.lineCap='round';
+      for(let i=0;i<R.length;i++){const j=(i+1)%R.length;if(R.length===2&&i===1)break;
+        const a=C[i].v,b=C[j].v,om=Math.acos(Math.max(-1,Math.min(1,a[0]*b[0]+a[1]*b[1]+a[2]*b[2]))),so=Math.sin(om)||1;
+        const at=u=>{const wa=Math.sin((1-u)*om)/so,wb=Math.sin(u*om)/so,l=ORB*(1+.07*Math.sin(Math.PI*u));return rv([(a[0]*wa+b[0]*wb)*l,(a[1]*wa+b[1]*wb)*l,(a[2]*wa+b[2]*wb)*l])};
+        let pq=at(0),ps=pj(pq);
+        for(let n=1;n<=22;n++){const q=at(n/22),s=pj(q);
+          if(!behind(q,s)&&!behind(pq,ps)){ctx.globalAlpha=fa*(q[2]>0?.5:.18);ctx.strokeStyle=n<=11?R[i].c:R[j].c;ctx.beginPath();ctx.moveTo(ps[0],ps[1]);ctx.lineTo(s[0],s[1]);ctx.stroke()}
+          pq=q;ps=s}
+        if(!RM){const q=at((S.time/2600+i*.37)%1),s=pj(q);if(!behind(q,s)){ctx.globalAlpha=fa*(q[2]>0?1:.35);
+          const g=ctx.createRadialGradient(s[0],s[1],0,s[0],s[1],7);g.addColorStop(0,'#fff');g.addColorStop(.35,R[j].c);g.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle=g;ctx.beginPath();ctx.arc(s[0],s[1],7,0,TAU);ctx.fill()}}}
+      ctx.globalAlpha=1}
+    /* the places themselves, back to front */
+    S.hit=[];
+    const pins=C.map((c,i)=>{const v=rv(c.v),q=[v[0]*ORB,v[1]*ORB,v[2]*ORB];return{i,q,s:pj(q)}}).sort((a,b)=>a.q[2]-b.q[2]);
+    for(const o of pins){const r=R[o.i],sel=o.i===S.sel,zn=o.q[2]/ORB,x=o.s[0],y=o.s[1];
+      let al=Math.min(1,Math.max(.14,(zn+.45)/.55));if(behind(o.q,o.s))al*=.3;if(S.sel>=0&&!sel)al*=1-.8*zp;if(sel)al=1;
+      if(al<.03)continue;
+      const pr=22*Math.min(1.22,Math.max(.72,o.s[2]/k0))*(sel?1.08:1);
+      ctx.globalAlpha=al;ctx.globalCompositeOperation='lighter';
+      let g=ctx.createRadialGradient(x,y,pr*.6,x,y,pr*2.4);g.addColorStop(0,r.c);g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.globalAlpha=al*.55;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,pr*2.4,0,TAU);ctx.fill();ctx.globalCompositeOperation='source-over';
+      if((r.open||sel)&&!RM){const ph=(t/1500+o.i*.27)%1;ctx.strokeStyle=r.c;ctx.globalAlpha=al*(1-ph)*.85;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,pr+ph*16,0,TAU);ctx.stroke()}
+      ctx.globalAlpha=al;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,pr,0,TAU);ctx.fill();ctx.lineWidth=sel?4:3;ctx.strokeStyle=r.c;ctx.stroke();
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#000';ctx.font=Math.round(pr*1.05)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';ctx.fillText(r.e,x,y+1);
+      const la=sel?1:al*Math.min(1,Math.max(0,(zn+.05)/.3));
+      if(la>.05){const sub=r.d+'/'+r.n;ctx.font='700 13px Inter,system-ui,sans-serif';
+        const w1=ctx.measureText(r.l).width;ctx.font='600 12px Inter,system-ui,sans-serif';const w2=ctx.measureText(sub).width,w=w1+w2+26,ly=Math.min(y+pr+7,H-26);
+        const lx=Math.max(4,Math.min(W-4-w,x-w/2));   /* keep the whole label inside the frame */
+        ctx.globalAlpha=la;ctx.fillStyle='rgba(8,13,32,.86)';pill(lx,ly,w,23,11.5);ctx.fill();
+        ctx.strokeStyle=r.c;ctx.lineWidth=1.5;ctx.stroke();ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font='700 13px Inter,system-ui,sans-serif';ctx.fillText(r.l,lx+10,ly+12);
+        ctx.fillStyle=r.c;ctx.font='600 12px Inter,system-ui,sans-serif';ctx.fillText(sub,lx+16+w1,ly+12)}
+      ctx.globalAlpha=1;
+      if(al>.5)S.hit.push({i:o.i,x,y:y+6,r:pr+14})}
   }
-  let last=performance.now();
-  function frame(t){if(!cv.isConnected){if(ro)ro.disconnect();return}const dt=Math.min(50,t-last);last=t;
-    if(S.tw){const k=Math.min(1,(t-S.tw.t0)/S.tw.d),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
-      S.yaw=S.tw.y0+(S.tw.y1-S.tw.y0)*e;S.pitch=S.tw.p0+(S.tw.p1-S.tw.p0)*e;S.zoom=S.tw.z0+(S.tw.z1-S.tw.z0)*e;if(k>=1)S.tw=null}
-    else if(!S.drag&&!S.hover&&S.sel<0&&!RM)S.yaw+=dt*.00011;   /* stands still under the mouse, so a pin is easy to click */
-    draw(t);requestAnimationFrame(frame)}
-  /* turn the planet so a place faces the student, and zoom in (or back out with i<0) */
-  function aim(i,anim){
-    let y1=S.yaw,p1=-.22,z1=1;
-    if(i>=0){const c=C[i],d=((((-c.lo)-S.yaw)%TAU)+TAU*1.5)%TAU-Math.PI;y1=S.yaw+d;p1=c.la-.16;z1=1.6}
-    if(!anim||RM){S.tw=null;S.yaw=y1;S.pitch=p1;S.zoom=z1;return}
-    S.tw={t0:performance.now(),d:900,y0:S.yaw,y1,p0:S.pitch,p1,z0:S.zoom,z1}}
+  function glDraw(){
+    const g=GLB.r,gl=g.gl,U=g.U,q=GLQ[GLB.ql],m=Math.min(q[0],Math.max(1,devicePixelRatio||1)),w=Math.max(1,Math.round(W*m)),h=Math.max(1,Math.round(H*m));
+    if(g.c.width!==w||g.c.height!==h){g.c.width=w;g.c.height=h}
+    gl.viewport(0,0,w,h);gl.uniform2f(U.uRes,w,h);gl.uniformMatrix3fv(U.uRot,false,[M[0],M[3],M[6],M[1],M[4],M[7],M[2],M[5],M[8]]);
+    gl.uniform1f(U.uD,S.D);gl.uniform1f(U.uT,S.time/1000);gl.uniform1f(U.uPow,8+(RM?0:.7*Math.sin(S.time*.00009)));gl.uniform1f(U.uTan,TAN);
+    gl.uniform1i(U.uSteps,q[1]);gl.uniform1i(U.uIter,q[2]);gl.drawArrays(gl.TRIANGLES,0,3)}
+  function frame(t){
+    if(!cv.isConnected){if(ro)ro.disconnect();if(io)io.disconnect();return}
+    requestAnimationFrame(frame);
+    const raw=t-last,dt=Math.min(50,raw);last=t;if(!S.vis||!W)return;
+    /* motion: a tween to a place, or the free spin (finger speed after a swipe, easing back into the slow turn) */
+    if(S.tw){const k=Math.min(1,(t-S.tw.t0)/S.tw.d);S.q=qs(S.tw.q0,S.tw.q1,ease(k));if(k>=1)S.tw=null}
+    else if(!S.drag){const ta=S.sel<0&&!RM?(S.hover?.3:1)*AUTO:0,kk=1-Math.exp(-dt/(Math.hypot(S.w[0],S.w[1],S.w[2])>AUTO*1.5?1100:500));
+      S.w=[S.w[0]*(1-kk),S.w[1]+(ta-S.w[1])*kk,S.w[2]*(1-kk)];const m=Math.hypot(S.w[0],S.w[1],S.w[2]);
+      if(m>1e-8)S.q=qn(qm(qa(S.w[0]/m,S.w[1]/m,S.w[2]/m,m*dt),S.q))}
+    const dD=S.Dt-S.D;S.D=Math.abs(dD)<1e-4||RM?S.Dt:S.D+dD*(1-Math.exp(-dt/240));
+    M=qmat(S.q);
+    const moving=!!(S.drag||S.tw||S.pinch)||Math.hypot(S.w[0],S.w[1],S.w[2])>1e-7||Math.abs(S.Dt-S.D)>1e-4,live=S.sel<0&&!RM;
+    if(live||moving)S.time+=dt;
+    /* the fractal: switch on when its shader is ready; off (back to the 2D planet) if the device is too slow or loses WebGL */
+    if(!S.gl&&!GLB.dead&&glbReady()){const c=GLB.r.c;c.style.opacity=S.fade?'1':'0';box.insertBefore(c,cv);S.gl=true;S.dirty=true;S.warm=20;S.pf=[]}
+    if(S.gl&&GLB.dead){GLB.r&&GLB.r.c.remove();S.gl=false;S.fade=0}
+    let drew=false;
+    if(S.gl&&(S.dirty||moving||live)){glDraw();drew=true;S.dirty=false;
+      if(S.fade<1){S.fade=RM?1:Math.min(1,S.fade+dt/700);GLB.r.c.style.opacity=S.fade.toFixed(3)}}
+    const md=GLB.dead?'2d':S.gl?'gl'+GLB.ql:'wait';if(md!==S.mode){S.mode=md;box.dataset.q=md}
+    /* adaptive quality: below ~25 fps step down; at the lowest step and still slow, use the 2D planet */
+    if(drew&&S.lastDrew&&raw<400){if(S.warm>0)S.warm--;else S.pf.push(Math.min(raw,100))}   /* a long gap = tab was hidden, not a slow frame */
+    S.lastDrew=drew;
+    if(S.pf.length>=30){const avg=S.pf.reduce((a,b)=>a+b,0)/S.pf.length;S.pf=[];
+      if(avg>40){S.good=0;if(GLB.ql<GLQ.length-1){GLB.cap=Math.max(GLB.cap,GLB.ql+1);GLB.ql++;S.warm=10;S.dirty=true}else if(avg>46)GLB.dead=true}
+      else if(avg<20&&GLB.ql>GLB.cap){if(++S.good>=3){GLB.ql--;S.good=0;S.warm=10}}else S.good=0}
+    draw(t)}
+  const DIRF=(()=>{const l=Math.hypot(0,.2,1);return[0,.2/l,1/l]})();
   function mark(i){document.querySelectorAll('.glbchip').forEach(b=>{const on=+b.dataset.gi===i;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
     back.hidden=i<0;box.classList.toggle('zoomed',i>=0)}
+  /* turn the place to face the student (shortest way) and fly in */
   function pick(i,anim){
     if(i===S.sel&&anim){unpick();return}
-    S.sel=i;ui.gsec=R[i].k;aim(i,anim);mark(i);
-    panel.innerHTML=gpanelHTML(R[i],T);bindCards(panel);panel.querySelector('[data-gx]').onclick=()=>{sfx('tap');unpick()};
+    M=qmat(S.q);const q1=qn(qm(qarc(rv(C[i].v),DIRF),S.q));
+    S.sel=i;ui.gsec=R[i].k;S.w=[0,0,0];S.Dt=DSEL;S.dirty=true;
+    if(!anim||RM){S.q=q1;S.tw=null;S.D=DSEL}else S.tw={t0:performance.now(),d:1100,q0:S.q.slice(),q1};
+    mark(i);panel.innerHTML=gpanelHTML(R[i],T);bindCards(panel);panel.querySelector('[data-gx]').onclick=()=>{sfx('tap');unpick()};
     if(anim){sfx('open');setTimeout(()=>{if(!panel.isConnected)return;const b=panel.getBoundingClientRect();
-      const top=($('.topbar')||{offsetHeight:64}).offsetHeight||64;   /* stop below the fixed top bar */
-      if(b.top>innerHeight*.72)scrollTo({top:scrollY+b.top-top-12,behavior:RM?'auto':'smooth'})},RM?0:650)}}
-  function unpick(){S.sel=-1;ui.gsec=null;aim(-1,true);mark(-1);panel.innerHTML=''}
-  cv.addEventListener('pointerdown',e=>{S.drag={x:e.clientX,y:e.clientY,y0:S.yaw,p0:S.pitch,moved:false,id:e.pointerId}});
-  cv.addEventListener('pointermove',e=>{const d=S.drag;if(!d)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;
-    if(!d.moved&&Math.hypot(dx,dy)>6){d.moved=true;box.classList.add('used');try{cv.setPointerCapture(d.id)}catch(_){}}
-    if(d.moved){S.tw=null;S.yaw=d.y0+dx*.008/S.zoom;if(e.pointerType==='mouse')S.pitch=Math.max(-1.1,Math.min(1.1,d.p0+dy*.008/S.zoom))}});
-  cv.addEventListener('pointerup',e=>{const d=S.drag;S.drag=null;if(!d||d.moved)return;box.classList.add('used');
-    const b=cv.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let best=null,bd=1e9;
+      if(b.top>innerHeight*.8)scrollTo({top:scrollY+b.top-innerHeight*.5,behavior:RM?'auto':'smooth'})},RM?0:750)}}
+  function unpick(){S.sel=-1;ui.gsec=null;S.tw=null;S.Dt=DH;S.dirty=true;mark(-1);panel.innerHTML=''}
+  /* pointers: one finger/mouse turns the universe in any direction (it follows the finger), two fingers pinch-zoom, a tap opens a place */
+  const pts=new Map(),clampD=v=>Math.max(DMIN,Math.min(DMAX,v));
+  const begin=(x,y)=>{S.drag={sx:x,sy:y,x,y,t:performance.now(),moved:false,tap:true};S.w=[0,0,0]};
+  cv.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    if(pts.size===1)begin(e.clientX,e.clientY);
+    else if(pts.size===2){const[a,b]=[...pts.values()];S.pinch={d0:Math.hypot(a[0]-b[0],a[1]-b[1])||1,D0:S.Dt};if(S.drag)S.drag.tap=false;box.classList.add('used')}});
+  cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(S.pinch&&pts.size>=2){const[a,b]=[...pts.values()];S.Dt=clampD(S.pinch.D0*S.pinch.d0/(Math.hypot(a[0]-b[0],a[1]-b[1])||1));return}
+    const d=S.drag;if(!d)return;
+    if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)>7){d.moved=true;d.tap=false;S.tw=null;box.classList.add('used')}
+    if(!d.moved)return;
+    const dx=e.clientX-d.x,dy=e.clientY-d.y,l=Math.hypot(dx,dy),now=performance.now();if(l<.01)return;
+    const F=Math.min(W,H)/2/TAN,g=l*S.D/(F*1.3),ax=dy/l,ay=dx/l;
+    S.q=qn(qm(qa(ax,ay,0,g),S.q));S.dirty=true;
+    const it=g/Math.max(8,now-d.t),wi=[ax*it,ay*it,0];S.w=S.w.map((v,i)=>v*.4+wi[i]*.6);
+    const wm=Math.hypot(S.w[0],S.w[1],S.w[2]);if(wm>.012)S.w=S.w.map(v=>v*.012/wm);
+    d.x=e.clientX;d.y=e.clientY;d.t=now});
+  const end=e=>{const had=pts.delete(e.pointerId);if(!had)return;
+    if(S.pinch){if(pts.size<2)S.pinch=null;if(pts.size===1){const[p]=[...pts.values()];begin(p[0],p[1]);S.drag.tap=false;S.drag.moved=true}else S.drag=null;return}
+    const d=S.drag;S.drag=null;if(!d)return;
+    if(d.moved){if(RM||performance.now()-d.t>90)S.w=[0,0,0];return}
+    if(!d.tap||e.type!=='pointerup')return;
+    box.classList.add('used');const b=cv.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let best=null,bd=1e9;
     S.hit.forEach(h=>{const q=Math.hypot(h.x-x,h.y-y);if(q<h.r&&q<bd){bd=q;best=h}});
-    if(best)pick(best.i,true);else if(S.sel>=0)unpick()});
-  cv.addEventListener('pointercancel',()=>{S.drag=null});
+    if(best)pick(best.i,true);else if(S.sel>=0)unpick()};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
   cv.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')S.hover=true});
   cv.addEventListener('pointerleave',()=>{S.hover=false});
+  cv.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();S.Dt=clampD(S.Dt*Math.exp(e.deltaY*.002));box.classList.add('used')},{passive:false});
+  box.querySelectorAll('[data-gz]').forEach(b=>b.onclick=()=>{sfx('tap');S.Dt=clampD(S.Dt*(b.dataset.gz==='1'?.8:1.25));box.classList.add('used')});
   document.querySelectorAll('.glbchip').forEach(b=>b.onclick=()=>pick(+b.dataset.gi,true));
   back.onclick=()=>{sfx('tap');unpick()};
+  if(GLB.r&&!GLB.dead){S.fade=1}else if(!GLB.dead&&!GLB.busy)setTimeout(glbStart,250);
+  size();
   const k0=R.findIndex(r=>r.k===ui.gsec);if(k0>=0)pick(k0,false);
+  setTimeout(()=>box.classList.add('hinted'),5000);   /* the hint fades by itself so it never covers a label for long */
   requestAnimationFrame(frame)}
 function podium(rows){
   const top=rows.filter(r=>r.r<=3&&r.t>0).slice(0,3);if(!top.length)return '';
@@ -907,7 +1062,7 @@ async function loadT(force){
   const j=await cget({action:'tlist',key:U.pass},25000);
   if(j&&!j.ok&&/key/.test(j.error||'')){logout(true);toast('Parol o‘zgargan. Qaytadan kiring.');throw new Error('auth')}
   if(!j||!j.ok)throw new Error(j&&j.error||'error');
-  j.roster=j.roster.filter(r=>r.type==='guest'?!G3:mineG(r.group));j.assignments=j.assignments.filter(mineA);
+  j.roster=j.roster.filter(r=>r.type==='guest'?!G3:mineG(r.group));j.assignments=j.assignments.filter(mineA).filter(a=>!isSoon(a));
   keepKey(j.k);TD=j;return TD;
 }
 const xpOf=id=>((TD.xp||{})[id])||{B:0,bn:0,A:0,an:0,G:0,T:0};
@@ -920,7 +1075,7 @@ function groupRank(group){
   rows.forEach((r,i)=>{r.r=i&&rows[i-1].o.T===r.o.T?rows[i-1].r:i+1});return rows;
 }
 function tRows(){
-  const as=TD.assignments.filter(a=>!a.hidden&&!isSoon(a));const rk={};
+  const as=TD.assignments.filter(a=>!a.hidden);const rk={};
   [...new Set(TD.roster.map(s=>s.group))].forEach(g=>groupRank(g).forEach(r=>rk[r.s.id]=r.r));
   return TD.roster.map(s=>{const b=TD.booster[s.id]||{};const pr=TD.progress[s.id]||{};
     const mine=as.filter(a=>forGroup(a,s.group));const stot=mine.reduce((n,a)=>n+a.steps.length,0);
@@ -1150,14 +1305,14 @@ function tAssign(){
   ui.steps=ui.steps||[{t:'',l:''}];
   /* a map published before 20.11.2026 may still link mashq.html#d=gr1… : the same material as grammar.html#d=gr1… */
   const sameL=(x,y)=>String(x||'').replace(/^grammar\.html#/,'mashq.html#')===String(y||'').replace(/^grammar\.html#/,'mashq.html#');
-  const pub=c=>TD.assignments.find(a=>a.steps[0]&&sameL(a.steps[0].l,c.steps[0].l)&&(!c.soon||a.title===c.title));
+  const pub=c=>TD.assignments.find(a=>a.steps[0]&&sameL(a.steps[0].l,c.steps[0].l));
   const libHTML=G3?'':`<div class="card sec lib">
     <h3>Tayyor materiallar</h3>
     <p class="muted" style="font-size:14px;margin:4px 0 10px">Saytga yuklangan materiallar. “E’lon qilish”ni bossangiz, o‘quvchilar sahifasida xarita bo‘lib chiqadi. Keyin pastdagi ro‘yxatdan yashirish yoki o‘chirish mumkin.</p>
     <div class="field"><label>Kimlarga e’lon qilinsin</label><div class="gchips">${[...GROUPS.filter(g=>g!=='GUEST'),'ALL'].map(g=>`<button class="lgchip gchip ${g==='ALL'?'':'on'}" data-lg="${g}">${g==='ALL'?'Hammaga (mehmonlar ham)':g}</button>`).join('')}</div></div>
     <div class="liblist">${LIB.map((c,i)=>{const a=pub(c),cv=COVERS[c.cover]||{c1:'#141B2D',c2:'#E3101F'};return `<div class="libitem ${a?'on':''}">
-      <span class="libsw" style="--c1:${cv.c1};--c2:${cv.c2}">${c.soon?'⏳':c.steps.length}</span>
-      <div class="libtx"><b>${esc(c.title)}</b><small>${c.soon?'“Tez kunda” kartasi: o‘quvchilar ko‘radi, lekin ochilmaydi':`${c.steps.length} bosqich · har biri ${c.xp} XP`} · ${esc(c.note)}</small>${c.soon?'':`<a class="liblink" href="${esc(c.steps.length>1?docHome(c.steps[0].l):c.steps[0].l)}" target="_blank" rel="noopener">Ko‘rib chiqish →</a>`}</div>
+      <span class="libsw" style="--c1:${cv.c1};--c2:${cv.c2}">${c.steps.length}</span>
+      <div class="libtx"><b>${esc(c.title)}</b><small>${c.steps.length} bosqich · har biri ${c.xp} XP · ${esc(c.note)}</small><a class="liblink" href="${esc(c.steps.length>1?docHome(c.steps[0].l):c.steps[0].l)}" target="_blank" rel="noopener">Ko‘rib chiqish →</a></div>
       ${a?`<span class="tag ok">${a.hidden?'E’lon qilingan (yashirilgan)':'✓ E’lon qilingan'}</span>`:`<button class="btn red libpub" data-lib="${i}">E’lon qilish</button>`}</div>`}).join('')}</div>
     ${LIB.some(c=>!pub(c))?`<button class="btn ghost" id="libAll" style="margin-top:12px">Hammasini e’lon qilish</button>`:''}
   </div>`;
@@ -1175,17 +1330,16 @@ function tAssign(){
       <div class="field"><label>Kimlarga</label><div class="gchips">${['ALL',...GROUPS].map(g=>`<button class="gchip ${g==='ALL'?'on':''}" data-g="${g}">${g==='ALL'?'Hammaga':g==='GUEST'?'Mehmonlar':g}</button>`).join('')}</div></div>
     </div>
     <div class="field"><label>Banner</label><div class="cvchips">${Object.entries(COVERS).filter(([k])=>k!=='booster'&&(G3?!/^(rp|wr|ai)/.test(k):!/^(u4|rc)/.test(k))).map(([k,c],j)=>`<button class="cvchip ${j?'':'on'}" data-cv="${k}" style="--c1:${c.c1};--c2:${c.c2}">${c.l}</button>`).join('')}</div></div>
-    <label class="soonopt"><input type="checkbox" id="aSoon"><span><b>“Tez kunda” kartasi</b><small>O‘quvchilar ko‘radi, lekin ochilmaydi. Bosqichlar kerak emas.</small></span></label>
     <button class="btn red big" id="aAdd" style="margin-top:14px">E’lon qilish</button>
   </div>
   <h2 class="sech">Barcha topshiriqlar</h2>
   <div class="alist">
     <div class="card asg main ${G3?'hide':''}"><div class="aic">📖</div><div class="atx"><div class="at">Reading Part 1 Booster</div><div class="as">30 bosqich, har doim hammaga ko‘rinadi. XP avtomatik.</div>
       <div><span class="tag ok">${bRows.filter(x=>x.done>=BOOSTER_TESTS).length}/${bRows.length} tugatdi</span> <span class="tag">${bRows.filter(x=>x.done).length} boshladi</span></div></div></div>
-    ${TD.assignments.slice().reverse().map(a=>{const c=cnt(a),sn=isSoon(a);return `<div class="card asg ${a.hidden?'hid':''}">
-    <div class="aic">${a.hidden?'🙈':sn?'⏳':'🗺️'}</div>
-    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${sn?'“Tez kunda” kartasi':`${a.steps.length} bosqich, har biri ${a.xp} XP`}, ${esc(a.groups==='ALL'?'hammaga':a.groups)}${a.note?', '+esc(a.note):''}</div>
-      ${sn?'':`<div><span class="tag ok">${c.fin}/${c.tot} tugatdi</span> <span class="tag">${c.st} boshladi</span></div>`}</div>
+    ${TD.assignments.slice().reverse().map(a=>{const c=cnt(a);return `<div class="card asg ${a.hidden?'hid':''}">
+    <div class="aic">${a.hidden?'🙈':'🗺️'}</div>
+    <div class="atx"><div class="at">${esc(a.title)}</div><div class="as">${a.steps.length} bosqich, har biri ${a.xp} XP, ${esc(a.groups==='ALL'?'hammaga':a.groups)}${a.note?', '+esc(a.note):''}</div>
+      <div><span class="tag ok">${c.fin}/${c.tot} tugatdi</span> <span class="tag">${c.st} boshladi</span></div></div>
     <div class="abtns"><button class="btn ghost" data-hide="${a.aid}" data-h="${a.hidden?0:1}">${a.hidden?'Ko‘rsatish':'Yashirish'}</button><button class="btn ghost" data-del="${a.aid}" aria-label="O‘chirish">🗑</button></div>
   </div>`}).join('')}</div>`;
   const sync=()=>{ui.steps=[...document.querySelectorAll('.steprow')].map(r=>({t:r.querySelector('.stT').value,l:r.querySelector('.stL').value}))};
@@ -1208,8 +1362,7 @@ function tAssign(){
   document.querySelectorAll('.libpub').forEach(b=>b.onclick=()=>libPub([LIB[+b.dataset.lib]]));
   const la=$('#libAll');if(la)la.onclick=()=>{const todo=LIB.filter(c=>!pub(c));modal(`<h3>${todo.length} ta materialni e’lon qilasizmi?</h3><p class="muted" style="margin-top:6px">${todo.map(c=>esc(c.title)).join(', ')}.</p>`,[{t:'Bekor qilish'},{t:'E’lon qilish',cls:'red',f:()=>libPub(todo)}])};
   $('#aAdd').onclick=async()=>{sync();const t=$('#aT').value.trim();if(!t){toast('Nomini yozing');$('#aT').focus();return}
-    const soon=$('#aSoon').checked;
-    const steps=soon?[{t:'Tez kunda',l:'soon'}]:ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l)&&!/^(mashq|viewer|grammar)\.html#/.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
+    const steps=ui.steps.map((s,i)=>{let l=s.l.trim();if(l&&!/^https?:\/\//.test(l)&&!/^(mashq|viewer|grammar)\.html#/.test(l))l='https://'+l;return{t:s.t.trim()||('Bosqich '+(i+1)),l}}).filter((s,i)=>s.t||s.l);
     const g=[...document.querySelectorAll('.gchip[data-g].on')].map(x=>x.dataset.g).join(',')||'ALL';
     $('#aAdd').disabled=true;$('#aAdd').textContent='E’lon qilinmoqda…';
     const cover=(document.querySelector('.cvchip.on')||{}).dataset?.cv||'';

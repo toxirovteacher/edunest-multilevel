@@ -560,7 +560,6 @@ a.btn{text-decoration:none}
 .lp-list p{margin:4px 0 0;color:var(--slate);font-size:16px;max-width:36em}
 .lp-list em{font-style:normal;font-size:13.5px;font-weight:700;color:var(--slate);padding:4px 10px;border-radius:999px;background:var(--paper);white-space:nowrap;margin-top:3px}
 .lp-list em.on{color:#0E7A3B;background:#DDF3E5}
-.lp-list li.soon b,.lp-list li.soon svg{color:var(--slate)}
 
 .lp-steps{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);counter-reset:s}
 .lp-steps li{counter-increment:s;position:relative;padding-top:64px}
@@ -905,13 +904,7 @@ button.lp-btn{border:0;cursor:pointer;font-family:inherit}
 body.dark .tgcard,body.dark .tglink{background:#12283a;border-color:#1f4a66}
 .btn.tgb .tgi{width:18px;height:18px;color:#229ED9}
 
-/* coming soon + ready-made materials */
-.tcard.soon{cursor:default}
-.tcard.soon:hover{transform:none}
-.tcard.soon .tcov{filter:saturate(.75) brightness(.92)}
-.tcard.soon .tnum{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.16)}
-.tcard.soon .tnum svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.tcard.soon .tgo{color:var(--mute)}
+/* ready-made materials */
 .mlbl{width:max-content;max-width:min(280px,70vw);white-space:normal;text-align:center;line-height:1.25}
 .liblist{display:grid;margin-top:6px}
 .libitem{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
@@ -921,9 +914,6 @@ body.dark .tgcard,body.dark .tglink{background:#12283a;border-color:#1f4a66}
 .liblink{display:inline-block;margin-top:4px;font-size:13.5px;font-weight:800;color:var(--red);text-decoration:none}
 .libitem .btn{min-height:46px;white-space:nowrap}
 .libitem .tag{white-space:nowrap}
-.soonopt{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:14px;cursor:pointer}
-.soonopt input{width:22px;height:22px;margin-top:2px;accent-color:#E3101F;flex:none}
-.soonopt b{display:block;color:var(--head)}.soonopt small{color:var(--mute);font-size:13px}
 @media(max-width:640px){.libitem{grid-template-columns:44px 1fr}.libsw{width:44px;height:44px}.libitem .btn,.libitem .tag{grid-column:1/-1;justify-self:stretch;text-align:center}}
 
 /* ---------- AI Writing (Gemini) ---------- */
@@ -1751,12 +1741,17 @@ body.dark .pfed{background:#E8ECF5}
 .glb .vtog{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
 .glb .vtog button{color:#C7D0E4}.glb .vtog button.on{background:#fff;color:#141B2D}
 .vtogrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:10px}.vtogrow .sech{margin-bottom:12px}.vtogrow .vtog{margin-bottom:12px}
-.glbc{position:relative;height:clamp(290px,64vw,430px);margin:6px -6px 4px}
-.glbc canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab;-webkit-tap-highlight-color:transparent}
-.glbc canvas:active{cursor:grabbing}
+.glbc{position:relative;height:clamp(320px,86vw,450px);margin:6px -6px 4px}
+.glbc canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.glbc #glbCv{touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.glbc #glbCv:active{cursor:grabbing}
+.glbc .glbgl{pointer-events:none}
+.glbz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.glbz button{width:36px;height:36px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.66);color:#fff;font:700 20px/1 var(--body);cursor:pointer;backdrop-filter:blur(6px);transition:transform .15s,background .2s}
+.glbz button:hover{background:rgba(40,56,110,.8)}.glbz button:active{transform:scale(.92)}
 .glbback{position:absolute;left:8px;top:8px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.72);color:#fff;font:700 13.5px/1 var(--body);padding:9px 12px;border-radius:11px;cursor:pointer;backdrop-filter:blur(6px)}
 .glbhint{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:12.5px;font-weight:700;color:#C7D0E4;background:rgba(8,13,32,.6);padding:6px 11px;border-radius:999px;white-space:nowrap;pointer-events:none;transition:opacity .4s}
-.glbc.used .glbhint,.glbc.zoomed .glbhint{opacity:0}
+.glbc.used .glbhint,.glbc.zoomed .glbhint,.glbc.hinted .glbhint{opacity:0}
 .glbchips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .glbchips::-webkit-scrollbar{display:none}
 .glbchip{flex:none;display:flex;align-items:center;gap:7px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;font:700 14px/1 var(--body);padding:9px 12px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
@@ -1764,13 +1759,13 @@ body.dark .pfed{background:#E8ECF5}
 .glbchip small{font-size:12px;font-weight:700;color:var(--gc);background:rgba(255,255,255,.08);padding:3px 7px;border-radius:999px}
 .glbchip:hover{border-color:var(--gc)}.glbchip:active{transform:scale(.96)}
 .glbchip.on{background:var(--gc);border-color:var(--gc);color:#0B1022}.glbchip.on small{color:#0B1022;background:rgba(255,255,255,.45)}
-.glbp{margin-top:16px;animation:glbIn .45s ease both}
+.glbp{margin-top:16px;animation:glbIn .55s cubic-bezier(.2,.8,.2,1) both}
 .glbp-h{display:flex;align-items:center;gap:12px;margin:0 0 12px}
 .glbp-h>div{flex:1;min-width:0}
 .glbp-h h2{font-size:22px;margin:0}
 .glbp-h small{display:block;color:var(--mute);font-size:13.5px;margin-top:3px}
 .glbp-e{flex:none;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:24px;background:var(--card);border:2.5px solid var(--gc);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .glbp-x{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
-@keyframes glbIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes glbIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 @media (max-width:560px){.glb{padding:14px 12px 12px;border-radius:22px}.glbh{flex-direction:column;gap:10px}.glbh h2{font-size:20px}.glbc{margin:4px -4px 2px}}
 @media (prefers-reduced-motion:reduce){.glbp{animation:none}}

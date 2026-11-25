@@ -200,7 +200,7 @@ function renderWrite(){
   const ai=aiEnabled();
   const task=(t,i)=>`<div class="paper wt" data-t="${i}"><div class="wh"><span class="tag">${esc(t.tag)}</span><div class="wq">${esc(t.q)}</div></div>
     <textarea data-w="${i}" placeholder="Javobingizni shu yerga yozib ko‘ring…" aria-label="${esc(t.tag)} uchun javobingiz" autocapitalize="sentences" spellcheck="false"></textarea>
-    <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span>${ai?'':'<span class="ai">AI tekshiruvi — tez kunda</span>'}</div>
+    <div class="wbar"><span class="wc" data-c="${i}">0 so‘z</span><span>Maqsad: ${t.lo===t.hi?t.lo:t.lo+'–'+t.hi} so‘z</span></div>
     ${ai?`<button class="aib" type="button" data-ai="${i}">${AI_ICON} AI bilan tekshirish</button><div data-ar="${i}"></div>`:''}
     ${t.m?`<button class="reveal" data-m="${i}">Namuna javobni ko‘rish</button><div data-mb="${i}"></div>`:''}</div>`;
   $('#main').innerHTML=`<div class="wwrap"><div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>${head}${s.tasks.map(task).join('')}<p class="whint">${ai?'Yozganingiz shu qurilmada saqlanadi. «AI bilan tekshirish»ni bossangiz, matn tekshiruvga yuboriladi (ismingiz emas) va natijani ustozingiz ham ko‘radi.':'Yozganingiz faqat shu qurilmada saqlanadi, ustozga yuborilmaydi.'}</p></div>`;

@@ -1738,3 +1738,39 @@ body.dark .pfed{background:#E8ECF5}
 .cf-ver-go:hover{text-decoration-color:currentColor}
 .cf-lb-cap a{color:#fff!important;font-weight:700;text-decoration:underline;text-decoration-color:rgba(255,255,255,.4);text-underline-offset:3px}
 .cf-lb-cap a:hover{text-decoration-color:#fff}.cf-lb-cap a:focus-visible{outline:3px solid #F5B700;outline-offset:2px}
+/* ===== KNOWLEDGE GLOBE (25.11.2026): the Multi-Level home shows the sections as places on a planet ===== */
+.glb{position:relative;overflow:hidden;margin-top:18px;border-radius:26px;padding:16px 16px 14px;color:#fff;
+  background:radial-gradient(120% 85% at 50% 0%,#1E2E62 0%,#0D1430 62%,#080C1D 100%);box-shadow:0 14px 34px rgba(8,12,29,.28)}
+.glbh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.glbh h2{font-size:22px;color:#fff;margin:0}
+.glbh small{display:block;margin-top:4px;font-size:13.5px;color:#B8C3DC;line-height:1.35}
+.vtog{display:inline-flex;flex:none;gap:2px;padding:3px;border-radius:12px;background:var(--track,#EFEBE5);border:1px solid var(--line)}
+.vtog button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--mute);font:700 13px/1 var(--body);padding:8px 10px;border-radius:9px;cursor:pointer}
+.vtog button i{font-style:normal;font-size:14px}
+.vtog button.on{background:var(--card);color:var(--head);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.glb .vtog{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+.glb .vtog button{color:#C7D0E4}.glb .vtog button.on{background:#fff;color:#141B2D}
+.vtogrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:10px}.vtogrow .sech{margin-bottom:12px}.vtogrow .vtog{margin-bottom:12px}
+.glbc{position:relative;height:clamp(290px,64vw,430px);margin:6px -6px 4px}
+.glbc canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab;-webkit-tap-highlight-color:transparent}
+.glbc canvas:active{cursor:grabbing}
+.glbback{position:absolute;left:8px;top:8px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.72);color:#fff;font:700 13.5px/1 var(--body);padding:9px 12px;border-radius:11px;cursor:pointer;backdrop-filter:blur(6px)}
+.glbhint{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:12.5px;font-weight:700;color:#C7D0E4;background:rgba(8,13,32,.6);padding:6px 11px;border-radius:999px;white-space:nowrap;pointer-events:none;transition:opacity .4s}
+.glbc.used .glbhint,.glbc.zoomed .glbhint{opacity:0}
+.glbchips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.glbchips::-webkit-scrollbar{display:none}
+.glbchip{flex:none;display:flex;align-items:center;gap:7px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;font:700 14px/1 var(--body);padding:9px 12px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
+.glbchip i{font-style:normal;font-size:16px}
+.glbchip small{font-size:12px;font-weight:700;color:var(--gc);background:rgba(255,255,255,.08);padding:3px 7px;border-radius:999px}
+.glbchip:hover{border-color:var(--gc)}.glbchip:active{transform:scale(.96)}
+.glbchip.on{background:var(--gc);border-color:var(--gc);color:#0B1022}.glbchip.on small{color:#0B1022;background:rgba(255,255,255,.45)}
+.glbp{margin-top:16px;animation:glbIn .45s ease both}
+.glbp-h{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.glbp-h>div{flex:1;min-width:0}
+.glbp-h h2{font-size:22px;margin:0}
+.glbp-h small{display:block;color:var(--mute);font-size:13.5px;margin-top:3px}
+.glbp-e{flex:none;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:24px;background:var(--card);border:2.5px solid var(--gc);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.glbp-x{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
+@keyframes glbIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (max-width:560px){.glb{padding:14px 12px 12px;border-radius:22px}.glbh{flex-direction:column;gap:10px}.glbh h2{font-size:20px}.glbc{margin:4px -4px 2px}}
+@media (prefers-reduced-motion:reduce){.glbp{animation:none}}

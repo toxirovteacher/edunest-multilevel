@@ -449,6 +449,8 @@ function drawMe(){
   document.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
   document.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')});
   const tl=$('#tgLink');if(tl)tl.onclick=tgLinkModal;
+  document.querySelectorAll('[data-hv]').forEach(b=>b.onclick=()=>{if(b.classList.contains('on'))return;sfx('tap');store(ST+'hv:'+U.id,b.dataset.hv);drawMe()});
+  if(tab==='home'&&!G3)globeInit();
   if(tab==='home'){tgNudge();bxAnim();const c=$('[data-count]'),k=ST+'xpseen:'+U.id,from=+store(k)||0,to=c?+c.dataset.count:0;
     if(c&&to>from&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const t0=performance.now(),f=n=>{const q=Math.min(1,(n-t0)/1100);c.textContent=Math.round(from+(to-from)*(1-Math.pow(1-q,3)));if(q<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
     store(k,String(to))}
@@ -491,19 +493,137 @@ function homeHTML(p){
   ${s.type!=='guest'&&p.tgBot&&!s.tg?`<button class="tglink" id="tgLink">${TGI}<span><b>Telegram’ni ulang</b><small>Keyingi safar parolsiz, bir bosishda kirasiz</small></span><em>Ulash</em></button>`:''}
   ${!G3&&p.ai?`<a class="aicard" href="mashq.html#ai"><span class="aicon">${AI_SVG}</span><span class="aitx"><b>AI Writing yordamchi</b><small>Xat va esselaringizni AI tekshiradi: ball, daraja, har bir xato o‘zbekcha tushuntirish bilan</small></span><em>Ochish</em></a>
   <a class="aicard sp" href="mashq.html#speak"><span class="aicon">🎙️</span><span class="aitx"><b>AI Speaking yordamchi</b><small>Imtihondagidek gapiring: AI tinglaydi, transkript qiladi va 4 mezon bo‘yicha baholaydi</small></span><em>Ochish</em></a>`:''}
-  ${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
-  <div class="tgrid">${ts.map(t=>{const i=T.indexOf(t);return `<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
+  ${G3?listHTML(p,T):homeView()==='list'?`<div class="vtogrow"><h2 class="sech">Barcha topshiriqlar</h2>${viewTog('list')}</div>`+listHTML(p,T):globeHTML(p,T)}`;
+}
+/* one assignment card (the same in the list and in the globe's panel) */
+function tcardHTML(t,i){return `<button class="tcard ${t.finished?'fin':''}" data-go="#/me/a/${esc(t.aid)}">
       ${coverHTML(t.cover,i,`<span class="tnum">${t.done}<small>/${t.total}</small></span>${t.finished?'<span class="tbadge">🏆 Tugatildi</span>':t.done?'<span class="tbadge">Davom etmoqda</span>':'<span class="tbadge">Yangi</span>'}`)}
       <div class="tbody"><b>${esc(t.title)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:''}
         <div class="track"><b style="width:${t.done/t.total*100}%"></b></div>
         <span class="tgo">${t.finished?'Sertifikatni ko‘rish':t.done?'Davom etish':'Boshlash'}</span></div>
-    </button>`}).join('')}</div>`).join('')}
-  ${(()=>{const sn=(p.assignments||[]).filter(mineA).filter(isSoon).filter(a=>!(p.ai&&a.cover==='ai'));return sn.length?`<h2 class="sech">Tez kunda</h2>
-  <div class="tgrid">${sn.map((a,i)=>`<button class="tcard soon" data-soon="1">
+    </button>`}
+function soonCardHTML(a,i){return `<button class="tcard soon" data-soon="1">
       ${coverHTML(a.cover,i+7,`<span class="tnum">${IC.lock}</span><span class="tbadge">Tez kunda</span>`)}
       <div class="tbody"><b>${esc(a.title)}</b>${a.note?`<small>${esc(a.note)}</small>`:''}<span class="tgo">Tez kunda ochiladi</span></div>
-    </button>`).join('')}</div>`:''})()}`;
+    </button>`}
+const soonOf=p=>(p.assignments||[]).filter(mineA).filter(isSoon).filter(a=>!(p.ai&&a.cover==='ai'));
+/* the classic view: every section one under another (General English 3 always; Multi-Level when the student picks "Ro‘yxat") */
+function listHTML(p,T){
+  return `${(G3?[['','Topshiriqlar',T]]:SECS.map(([k,l])=>[k,l,T.filter(t=>secOf(t)===k)]).filter(g=>g[2].length)).map(([k,l,ts])=>`<h2 class="sech">${l}</h2>
+  <div class="tgrid">${ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div>`).join('')}
+  ${(()=>{const sn=soonOf(p);return sn.length?`<h2 class="sech">Tez kunda</h2>
+  <div class="tgrid">${sn.map((a,i)=>soonCardHTML(a,i)).join('')}</div>`:''})()}`;
 }
+
+/* ================= KNOWLEDGE GLOBE (Multi-Level, 25.11.2026) =================
+   Feedback: the long list of sections made students forget what was at the top. Now every kind of task is a place on
+   a small planet: tap its pin (or its chip under the planet) and the planet turns, zooms in and that kind's tasks open
+   below. Plain canvas, no library. "Ro‘yxat" brings the old list back (remembered per student, on this device only). */
+const GREG={mock:['🏁','#FF4D5A'],reading:['📖','#19B5BA'],listening:['🎧','#9B6BFF'],writing:['✍️','#2BC46A'],vocab:['🔤','#F2B000'],grammar:['🧩','#4C8DFF'],other:['⭐','#F0558A'],soon:['🔒','#9AA4B8']};
+const homeView=()=>store(ST+'hv:'+U.id)==='list'?'list':'globe';
+const viewTog=cur=>`<div class="vtog" role="group" aria-label="Ko‘rinish">${[['globe','🌍','Sayyora'],['list','☰','Ro‘yxat']].map(([k,e,l])=>`<button data-hv="${k}" class="${cur===k?'on':''}" aria-pressed="${cur===k}"><i aria-hidden="true">${e}</i><span>${l}</span></button>`).join('')}</div>`;
+function globeRegions(p,T){
+  const R=SECS.map(([k,l])=>({k,l,ts:T.filter(t=>secOf(t)===k)})).filter(r=>r.ts.length);
+  const sn=soonOf(p);if(sn.length)R.push({k:'soon',l:'Tez kunda',ts:[],soon:sn});
+  R.forEach(r=>{r.e=GREG[r.k][0];r.c=GREG[r.k][1];r.d=r.ts.reduce((a,t)=>a+t.done,0);r.n=r.ts.reduce((a,t)=>a+t.total,0);r.open=r.ts.some(t=>!t.finished)});
+  return R}
+function globeHTML(p,T){
+  const R=globeRegions(p,T);ui.greg=R;ui.gT=T;if(!R.length)return '';
+  return `<section class="glb" aria-label="Bilim sayyorasi">
+    <div class="glbh"><div><h2>🌍 Bilim sayyorasi</h2><small>Bo‘limni bosing: sayyora yaqinlashadi va topshiriqlar ochiladi</small></div>${viewTog('globe')}</div>
+    <div class="glbc"><canvas id="glbCv" role="img" aria-label="Bo‘limlar sayyorasi: ${R.map(r=>esc(r.l)).join(', ')}"></canvas>
+      <button class="glbback" id="glbBack" hidden>← Butun sayyora</button><span class="glbhint" aria-hidden="true">👆 Aylantiring yoki belgini bosing</span></div>
+    <div class="glbchips">${R.map((r,i)=>`<button class="glbchip" data-gi="${i}" style="--gc:${r.c}" aria-pressed="false"><i aria-hidden="true">${r.e}</i>${esc(r.l)}${r.k==='soon'?'':`<small>${r.d}/${r.n}</small>`}</button>`).join('')}</div>
+  </section><div id="glbPanel"></div>`}
+function gpanelHTML(r,T){
+  return `<div class="glbp" style="--gc:${r.c}"><div class="glbp-h"><span class="glbp-e" aria-hidden="true">${r.e}</span><div><h2>${esc(r.l)}</h2>
+    <small>${r.k==='soon'?r.soon.length+' ta bo‘lim tez kunda ochiladi':`${r.ts.length} ta topshiriq · ${r.d}/${r.n} bosqich bajarildi`}</small></div><button class="glbp-x" data-gx aria-label="Yopish">×</button></div>
+    <div class="tgrid">${r.k==='soon'?r.soon.map((a,i)=>soonCardHTML(a,i)).join(''):r.ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div></div>`}
+function bindCards(root){
+  root.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)});
+  root.querySelectorAll('[data-soon]').forEach(c=>c.onclick=()=>{sfx('lock');toast('Bu bo‘lim tez kunda ochiladi')})}
+function globeInit(){
+  const cv=$('#glbCv'),R=ui.greg||[],T=ui.gT||[];if(!cv||!R.length)return;
+  const ctx=cv.getContext('2d');if(!ctx)return;
+  const box=cv.parentNode,panel=$('#glbPanel'),back=$('#glbBack'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rad=Math.PI/180,TAU=Math.PI*2,LAT=[16,-12,24,-20,6,-26,20,-6];
+  /* each section is a place: spread around the planet, alternately north and south */
+  const C=R.map((r,i)=>{const lo=(i*360/R.length+15)*rad,la=LAT[i%LAT.length]*rad;return{lo,la,v:[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)]}});
+  /* evenly spread dots on the sphere (Fibonacci); a dot near a place takes that place's colour */
+  const P=[],N=900,ga=Math.PI*(3-Math.sqrt(5)),cap=Math.cos(30*rad);
+  for(let i=0;i<N;i++){const y=1-2*(i+.5)/N,r=Math.sqrt(1-y*y),t=ga*i,v=[Math.cos(t)*r,y,Math.sin(t)*r];let b=-1,bd=cap;
+    C.forEach((c,j)=>{const d=v[0]*c.v[0]+v[1]*c.v[1]+v[2]*c.v[2];if(d>bd){bd=d;b=j}});P.push([v[0],v[1],v[2],b])}
+  const STARS=Array.from({length:60},(_,i)=>[(i*0.618034)%1,(i*0.381966*7)%1,(i%3)*.5+.8,i]);
+  const S={yaw:-C[0].lo+.55,pitch:-.22,zoom:1,sel:-1,tw:null,drag:null,hit:[]};
+  let W=0,H=0,dpr=1;
+  const size=()=>{const b=box.getBoundingClientRect();W=b.width;H=b.height;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.max(1,Math.round(H*dpr))};size();
+  const ro=window.ResizeObserver?new ResizeObserver(size):null;if(ro)ro.observe(box);
+  const rot=v=>{const cy=Math.cos(S.yaw),sy=Math.sin(S.yaw),cp=Math.cos(S.pitch),sp=Math.sin(S.pitch),x=v[0]*cy+v[2]*sy,z=-v[0]*sy+v[2]*cy;return[x,v[1]*cp-z*sp,v[1]*sp+z*cp]};
+  const pill=(x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()};
+  function draw(t){
+    const cx=W/2,cy=H/2,Rr=Math.min(W,H)*.41*S.zoom;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fff';for(const s of STARS){ctx.globalAlpha=RM?.4:.2+.4*Math.abs(Math.sin(t/1100+s[3]));ctx.fillRect(s[0]*W,s[1]*H,s[2],s[2])}
+    ctx.globalAlpha=1;
+    let g=ctx.createRadialGradient(cx,cy,Rr*.86,cx,cy,Rr*1.3);g.addColorStop(0,'rgba(96,150,255,.5)');g.addColorStop(1,'rgba(96,150,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rr*1.3,0,TAU);ctx.fill();
+    g=ctx.createRadialGradient(cx-Rr*.38,cy-Rr*.42,Rr*.08,cx,cy,Rr);g.addColorStop(0,'#3F6BD6');g.addColorStop(.55,'#1D3474');g.addColorStop(1,'#0A1330');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rr,0,TAU);ctx.fill();
+    const zs=Math.sqrt(S.zoom);
+    for(const p of P){const q=rot(p);if(q[2]<=0)continue;const own=p[3]>=0,a=.18+.82*q[2];
+      ctx.globalAlpha=own?Math.min(1,a*1.15):a*.42;ctx.fillStyle=own?R[p[3]].c:'#C7D8FF';ctx.beginPath();ctx.arc(cx+q[0]*Rr,cy-q[1]*Rr,(own?2.9:1.5)*(.55+.45*q[2])*zs,0,TAU);ctx.fill()}
+    ctx.globalAlpha=1;S.hit=[];
+    const pins=C.map((c,i)=>({i,q:rot(c.v)})).filter(o=>o.q[2]>.12).sort((a,b)=>a.q[2]-b.q[2]);
+    for(const o of pins){const r=R[o.i],sel=o.i===S.sel;if(S.sel>=0&&!sel&&S.zoom>1.25)continue;
+      const x=cx+o.q[0]*Rr,y=cy-o.q[1]*Rr,k=.62+.38*o.q[2],pr=(sel?23:19)*k;
+      ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(x,y+pr*.95,pr*.8,pr*.26,0,0,TAU);ctx.fill();
+      if((r.open||sel)&&!RM){const ph=(t/1500+o.i*.27)%1;ctx.strokeStyle=r.c;ctx.globalAlpha=(1-ph)*.85;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,pr+ph*15,0,TAU);ctx.stroke();ctx.globalAlpha=1}
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,pr,0,TAU);ctx.fill();ctx.lineWidth=sel?4:3;ctx.strokeStyle=r.c;ctx.stroke();
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=Math.round(pr*1.02)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';ctx.fillText(r.e,x,y+1);
+      if(o.q[2]>.38||sel){const sub=r.k==='soon'?r.soon.length+' ta':r.d+'/'+r.n;ctx.font='700 12.5px Inter,system-ui,sans-serif';
+        const w1=ctx.measureText(r.l).width;ctx.font='600 11.5px Inter,system-ui,sans-serif';const w2=ctx.measureText(sub).width,w=w1+w2+26,ly=y+pr+7;
+        ctx.globalAlpha=.4+.6*Math.min(1,(o.q[2]-.38)/.25+(sel?1:0));ctx.fillStyle='rgba(8,13,32,.85)';pill(x-w/2,ly,w,22,11);ctx.fill();
+        ctx.strokeStyle=r.c;ctx.lineWidth=1.5;ctx.stroke();ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font='700 12.5px Inter,system-ui,sans-serif';ctx.fillText(r.l,x-w/2+10,ly+11.5);
+        ctx.fillStyle=r.c;ctx.font='600 11.5px Inter,system-ui,sans-serif';ctx.fillText(sub,x-w/2+16+w1,ly+11.5);ctx.globalAlpha=1}
+      S.hit.push({i:o.i,x,y:y+8,r:pr+14})}
+  }
+  let last=performance.now();
+  function frame(t){if(!cv.isConnected){if(ro)ro.disconnect();return}const dt=Math.min(50,t-last);last=t;
+    if(S.tw){const k=Math.min(1,(t-S.tw.t0)/S.tw.d),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+      S.yaw=S.tw.y0+(S.tw.y1-S.tw.y0)*e;S.pitch=S.tw.p0+(S.tw.p1-S.tw.p0)*e;S.zoom=S.tw.z0+(S.tw.z1-S.tw.z0)*e;if(k>=1)S.tw=null}
+    else if(!S.drag&&!S.hover&&S.sel<0&&!RM)S.yaw+=dt*.00011;   /* stands still under the mouse, so a pin is easy to click */
+    draw(t);requestAnimationFrame(frame)}
+  /* turn the planet so a place faces the student, and zoom in (or back out with i<0) */
+  function aim(i,anim){
+    let y1=S.yaw,p1=-.22,z1=1;
+    if(i>=0){const c=C[i],d=((((-c.lo)-S.yaw)%TAU)+TAU*1.5)%TAU-Math.PI;y1=S.yaw+d;p1=c.la-.16;z1=1.6}
+    if(!anim||RM){S.tw=null;S.yaw=y1;S.pitch=p1;S.zoom=z1;return}
+    S.tw={t0:performance.now(),d:900,y0:S.yaw,y1,p0:S.pitch,p1,z0:S.zoom,z1}}
+  function mark(i){document.querySelectorAll('.glbchip').forEach(b=>{const on=+b.dataset.gi===i;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+    back.hidden=i<0;box.classList.toggle('zoomed',i>=0)}
+  function pick(i,anim){
+    if(i===S.sel&&anim){unpick();return}
+    S.sel=i;ui.gsec=R[i].k;aim(i,anim);mark(i);
+    panel.innerHTML=gpanelHTML(R[i],T);bindCards(panel);panel.querySelector('[data-gx]').onclick=()=>{sfx('tap');unpick()};
+    if(anim){sfx('open');setTimeout(()=>{if(!panel.isConnected)return;const b=panel.getBoundingClientRect();
+      const top=($('.topbar')||{offsetHeight:64}).offsetHeight||64;   /* stop below the fixed top bar */
+      if(b.top>innerHeight*.72)scrollTo({top:scrollY+b.top-top-12,behavior:RM?'auto':'smooth'})},RM?0:650)}}
+  function unpick(){S.sel=-1;ui.gsec=null;aim(-1,true);mark(-1);panel.innerHTML=''}
+  cv.addEventListener('pointerdown',e=>{S.drag={x:e.clientX,y:e.clientY,y0:S.yaw,p0:S.pitch,moved:false,id:e.pointerId}});
+  cv.addEventListener('pointermove',e=>{const d=S.drag;if(!d)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;
+    if(!d.moved&&Math.hypot(dx,dy)>6){d.moved=true;box.classList.add('used');try{cv.setPointerCapture(d.id)}catch(_){}}
+    if(d.moved){S.tw=null;S.yaw=d.y0+dx*.008/S.zoom;if(e.pointerType==='mouse')S.pitch=Math.max(-1.1,Math.min(1.1,d.p0+dy*.008/S.zoom))}});
+  cv.addEventListener('pointerup',e=>{const d=S.drag;S.drag=null;if(!d||d.moved)return;box.classList.add('used');
+    const b=cv.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let best=null,bd=1e9;
+    S.hit.forEach(h=>{const q=Math.hypot(h.x-x,h.y-y);if(q<h.r&&q<bd){bd=q;best=h}});
+    if(best)pick(best.i,true);else if(S.sel>=0)unpick()});
+  cv.addEventListener('pointercancel',()=>{S.drag=null});
+  cv.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')S.hover=true});
+  cv.addEventListener('pointerleave',()=>{S.hover=false});
+  document.querySelectorAll('.glbchip').forEach(b=>b.onclick=()=>pick(+b.dataset.gi,true));
+  back.onclick=()=>{sfx('tap');unpick()};
+  const k0=R.findIndex(r=>r.k===ui.gsec);if(k0>=0)pick(k0,false);
+  requestAnimationFrame(frame)}
 function podium(rows){
   const top=rows.filter(r=>r.r<=3&&r.t>0).slice(0,3);if(!top.length)return '';
   const order=[top[1],top[0],top[2]].filter(Boolean);

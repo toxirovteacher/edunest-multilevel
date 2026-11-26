@@ -34,7 +34,6 @@ body.uz-on .uzbtn .dot{background:#3BD16F}
 .wrap{max-width:1080px;margin:0 auto;padding:22px clamp(14px,3vw,28px) 120px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 20px;font-weight:700;font-size:15px;transition:transform .12s,box-shadow .12s,background .15s}
-.btn:active{transform:translateY(1px)}
 .btn.red{background:var(--red);color:#fff;box-shadow:0 6px 16px rgba(227,16,31,.28)}
 .btn.red:hover{background:var(--red-d)}
 .btn.navy{background:var(--solid);color:#fff}
@@ -518,7 +517,7 @@ a.btn{text-decoration:none}
 .lp-brand b{display:block;font-weight:800;font-size:18px;letter-spacing:-.01em;color:var(--red);line-height:1.1}
 .lp-brand small{display:block;font-size:13.5px;color:var(--slate);font-weight:500}
 .lp-btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:12px;background:var(--red);color:#fff!important;font-weight:700;font-size:17px;text-decoration:none;transition:background .15s,transform .15s}
-.lp-btn:hover{background:var(--red-d)}.lp-btn:active{transform:translateY(1px)}
+.lp-btn:hover{background:var(--red-d)}
 .lp-btn:focus-visible,.lp-way:focus-visible,.lp-brand:focus-visible,.lp-plate a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .lp-btn-sm{min-height:44px;padding:0 20px;font-size:15.5px}
 .lp-btn-line{background:transparent;color:var(--ink)!important;box-shadow:inset 0 0 0 2px var(--ink)}
@@ -770,7 +769,6 @@ body.dark .mapsvg .pdone{stroke:#E8ECF5}
 .mregion{position:absolute;left:50%;transform:translateX(-50%);background:var(--paper);border:1px solid var(--line);color:var(--head);font-weight:800;font-size:13px;padding:6px 14px;border-radius:999px;white-space:nowrap;z-index:1}
 .mnode{position:absolute;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;z-index:2;
   background:var(--card);color:var(--mute);box-shadow:0 0 0 6px var(--paper),0 6px 0 #c9cfdb;transition:transform .12s}
-.mnode:active{transform:translate(-50%,-46%)}
 .mnode svg{width:28px;height:28px}
 .mnode .mn{font-size:24px;font-weight:800}
 .mnode.done{background:#141B2D;color:#fff;box-shadow:0 0 0 6px var(--paper),0 6px 0 #05080f}
@@ -1747,7 +1745,7 @@ body.dark .pfed{background:#E8ECF5}
 .glbc #glbCv:active{cursor:grabbing}
 .glbz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
 .glbz button{width:36px;height:36px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.66);color:#fff;font:700 20px/1 var(--body);cursor:pointer;backdrop-filter:blur(6px);transition:transform .15s,background .2s}
-.glbz button:hover{background:rgba(40,56,110,.8)}.glbz button:active{transform:scale(.92)}
+.glbz button:hover{background:rgba(40,56,110,.8)}
 .glbback{position:absolute;left:8px;top:8px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.72);color:#fff;font:700 13.5px/1 var(--body);padding:9px 12px;border-radius:11px;cursor:pointer;backdrop-filter:blur(6px)}
 .glbhint{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:12.5px;font-weight:700;color:#C7D0E4;background:rgba(8,13,32,.6);padding:6px 11px;border-radius:999px;white-space:nowrap;pointer-events:none;transition:opacity .4s}
 .glbc.used .glbhint,.glbc.zoomed .glbhint,.glbc.hinted .glbhint{opacity:0}
@@ -1756,7 +1754,7 @@ body.dark .pfed{background:#E8ECF5}
 .glbchip{flex:none;display:flex;align-items:center;gap:7px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;font:700 14px/1 var(--body);padding:9px 12px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
 .glbchip i{font-style:normal;font-size:16px}
 .glbchip small{font-size:12px;font-weight:700;color:var(--gc);background:rgba(255,255,255,.08);padding:3px 7px;border-radius:999px}
-.glbchip:hover{border-color:var(--gc)}.glbchip:active{transform:scale(.96)}
+.glbchip:hover{border-color:var(--gc)}
 .glbchip.on{background:var(--gc);border-color:var(--gc);color:#0B1022}.glbchip.on small{color:#0B1022;background:rgba(255,255,255,.45)}
 .glbp{margin-top:16px;animation:glbIn .55s cubic-bezier(.2,.8,.2,1) both}
 .glbp-h{display:flex;align-items:center;gap:12px;margin:0 0 12px}
@@ -1767,4 +1765,24 @@ body.dark .pfed{background:#E8ECF5}
 .glbp-x{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
 @keyframes glbIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 @media (max-width:560px){.glb{padding:14px 12px 12px;border-radius:22px}.glbh{flex-direction:column;gap:10px}.glbh h2{font-size:20px}.glbc{margin:4px -4px 2px}}
-@media (prefers-reduced-motion:reduce){.glbp{animation:none}}
+@media (prefers-reduced-motion:reduce){.glbp{animation:none}}/* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
+/* no grey tap flash (the press animation is the feedback), no double-tap zoom delay */
+html.fx{-webkit-tap-highlight-color:transparent}
+html.fx :is(button,a[href],[role="button"],[role="tab"],[role="switch"],[data-go],[data-press],summary,label){touch-action:manipulation}
+/* a long press on a button does not select its text or open the phone's menu */
+html.fx :is(button,[role="button"],[role="tab"],[data-go]){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* "Ovoz va tebranish" (profile): rows with an on/off switch */
+.fxset{padding:4px 18px}
+.fxrow{display:flex;align-items:center;gap:14px;padding:14px 0;cursor:pointer}
+.fxrow+.fxrow{border-top:1px solid var(--line)}
+.fxrow .fxt{flex:1;min-width:0}
+.fxrow .fxt b{display:block;font-weight:700;font-size:15px}
+.fxrow .fxt small{display:block;color:var(--mute);font-size:13px;line-height:1.35;margin-top:2px}
+.fxsw{-webkit-appearance:none;appearance:none;flex:none;position:relative;width:50px;height:30px;margin:0;border:0;border-radius:99px;background:#C7CDD8;cursor:pointer;transition:background .25s ease}
+.fxsw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18),0 3px 8px rgba(0,0,0,.18);transition:transform .34s cubic-bezier(.34,1.56,.64,1)}
+.fxsw:checked{background:var(--green)}
+.fxsw:checked::after{transform:translateX(20px)}
+.fxsw:focus-visible{outline:2px solid #2457D6;outline-offset:3px}
+body.dark .fxsw{background:#3A4458}
+body.dark .fxsw:checked{background:var(--green)}
+

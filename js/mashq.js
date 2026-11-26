@@ -1,4 +1,152 @@
 
+/* ===================== FEEL: sound, vibration and press feedback (26.11.2026) =====================
+   One engine for the Multi-Level pages (index, mashq, grammar). Source: platform/feel.js + platform/feel.css;
+   build.py puts both into each page (placeholder FEEL_JS / FEEL_CSS).
+   - Sounds are synthesized once, in code (no sound files, nothing downloaded), kept as audio buffers and played
+     through one output: instant, the same every time, never piling up (the same sound within 50 ms plays once).
+   - Vibration: Android = navigator.vibrate; iPhone (iOS 18+) = the system tick of a hidden switch (only inside a tap).
+   - Press: a pressed button or card shrinks by a few pixels and springs back. On touch it waits 70 ms, so scrolling
+     a list does not press its cards. Web Animations only: the page's own CSS (transform, transition) stays untouched.
+   - Settings on this device: <ns>snd (sounds) and <ns>hap (vibration); both on unless switched off.
+   - quiet(): the page says when sounds must wait (an audio track is playing, a mock exam is running); vibration still works.
+   - off: no feedback at all on that page (AI Writing / AI Speaking keep exactly their own behaviour).
+   ============================================================================================== */
+const FEEL=(()=>{
+  const TAU=Math.PI*2,nav=navigator,root=document.documentElement;
+  let ns='edunest_mlb:',quiet=()=>false,off=false,amb=false,on=false,ctx=null,out=null,idle=0,sw=null,hLast=0,pt='mouse',pr=null,cand=null,tm=0,sx=0,sy=0,prep=false;
+  const P={snd:true,hap:true},BUF={},LAST={};
+  const rd=k=>{try{return localStorage.getItem(ns+k)}catch(e){return null}};
+  const wr=(k,v)=>{try{localStorage.setItem(ns+k,v)}catch(e){}};
+  const load=()=>{P.snd=rd('snd')!=='0';P.hap=rd('hap')!=='0'};
+  const mm=q=>!!(window.matchMedia&&matchMedia(q).matches);
+  const VIB=typeof nav.vibrate==='function';
+  const IOS=!VIB&&(/iPhone|iPad|iPod/.test(nav.userAgent)||(nav.platform==='MacIntel'&&nav.maxTouchPoints>1));
+  const later=window.requestIdleCallback?f=>requestIdleCallback(f,{timeout:500}):f=>setTimeout(f,60);
+  const quietly=p=>{if(p&&p.catch)p.catch(()=>{})};
+  /* nothing plays or vibrates before the first real tap on this page: the browser blocks it anyway (vibrate logs an error, and a sound
+     would wait and then play late, on that first tap), e.g. a mock exam whose time ran out finishing as the page opens */
+  const tapped=()=>!nav.userActivation||nav.userActivation.hasBeenActive;
+
+  /* ---------- synthesis (fixed noise seeds: every sound is identical each time) ---------- */
+  const rng=s=>()=>((s=(s*1664525+1013904223)>>>0)/2147483648-1);
+  // a struck note. parts: [frequency ratio, level, decay factor]; tau: decay time of the main partial (s);
+  // att: attack (s); gl: [end ratio, glide time s] bends the pitch
+  function note(d,sr,t0,f,vol,tau,parts,att,gl){
+    att=att||.003;const i0=Math.round(t0*sr),A=Math.max(1,att*sr);
+    if(gl){const n=Math.min(d.length,i0+Math.ceil((att+tau*7*Math.max(...parts.map(p=>p[2])))*sr));   // a bending pitch: phase step by step
+      const ph=parts.map(()=>0),lv=parts.map(p=>f*p[0]<sr*.45?p[1]:0),k=parts.map(p=>Math.exp(-1/(tau*p[2]*sr)));
+      for(let i=i0;i<n;i++){const j=i-i0,fm=f*Math.pow(gl[0],Math.min(1,j/(gl[1]*sr)));let s=0;
+        for(let q=0;q<parts.length;q++){ph[q]+=TAU*fm*parts[q][0]/sr;s+=lv[q]*Math.sin(ph[q]);lv[q]*=k[q]}
+        d[i]+=vol*s*(j<A?j/A:1)}return}
+    for(const p of parts){if(f*p[0]>=sr*.45)continue;   // a steady pitch: the sine by recurrence (no Math.sin per sample), each partial only as long as it sounds
+      const w=TAU*f*p[0]/sr,c=2*Math.cos(w),k=Math.exp(-1/(tau*p[2]*sr)),n=Math.min(d.length,i0+Math.ceil((att+tau*p[2]*7)*sr));let y0=0,y1=Math.sin(w),e=vol*p[1];
+      for(let i=i0;i<n;i++){const j=i-i0;d[i]+=e*y1*(j<A?j/A:1);const y2=c*y1-y0;y0=y1;y1=y2;e*=k}}}
+  // filtered noise: low-pass lp Hz (gliding to lp2), high-pass hp Hz; attack att, then decay tau
+  function hiss(d,sr,t0,vol,att,tau,lp,hp,lp2,seed){
+    const i0=Math.round(t0*sr),n=Math.min(d.length,i0+Math.ceil((att+tau*7)*sr)),r=rng(seed),ch=Math.exp(-TAU*hp/sr),A=Math.max(1,att*sr);
+    let l=0,x1=0,y=0;
+    for(let i=i0;i<n;i++){const j=i-i0,fc=lp2?lp*Math.pow(lp2/lp,Math.min(1,j/((att+tau)*sr))):lp;
+      l+=(1-Math.exp(-TAU*fc/sr))*(r()-l);y=ch*(y+l-x1);x1=l;
+      d[i]+=vol*y*(j<A?j/A:Math.exp(-(j-A)/(tau*sr)))}}
+  // a little room: a few quiet echoes (ms, level)
+  function room(d,sr,taps){const o=Float32Array.from(d);taps.forEach(([ms,g])=>{const k=Math.round(ms*sr/1000);for(let i=k;i<d.length;i++)o[i]+=g*d[i-k]});return o}
+  // the same loudness for every sound (peak), and a 15 ms fade at the end
+  function level(d,sr,peak){let m=0;for(let i=0;i<d.length;i++){const a=Math.abs(d[i]);if(a>m)m=a}
+    const g=m?peak/m:0,f=Math.min(d.length,Math.round(.015*sr));for(let i=0;i<d.length;i++)d[i]*=g;for(let i=1;i<=f;i++)d[d.length-i]*=(i-1)/f;return d}
+  const GLASS=[[1,1,1],[2.76,.16,.32],[5.4,.05,.18]],WOOD=[[1,1,1],[3.93,.12,.22],[9.4,.03,.1]],SOFT=[[1,1,1],[2,.45,.5],[3,.18,.3]];
+  const C5=523.25,E5=659.26,G5=783.99,C6=1046.5,E6=1318.51,G6=1567.98,A6=1760;
+  // name: [length s, peak, how it is made, room echoes]
+  const SND={
+    tick:[.05,.2,(d,r)=>{hiss(d,r,0,1,.0003,.0011,7500,1800,0,3);note(d,r,0,1850,.4,.006,[[1,1,1]],.0004)}],                      // a chip, a switch, zoom
+    pop:[.15,.26,(d,r)=>note(d,r,0,520,1,.03,[[1,1,1],[2,.12,.5]],.0015,[1.75,.03])],                                            // something switched on
+    open:[.6,.28,(d,r)=>{hiss(d,r,0,.25,.07,.05,600,300,5000,11);note(d,r,.045,C6,.75,.13,GLASS);note(d,r,.11,G6,.62,.19,GLASS)},[[67,.12]]],  // a section or sheet opens
+    deny:[.42,.3,(d,r)=>{[[0,293.66],[.1,246.94]].forEach(([t,f],i)=>{hiss(d,r,t,.6,.001,.006,1200,90,0,17+i);note(d,r,t,f,1,.075,SOFT,.002,[.96,.06])})}],  // locked / not yet
+    wrong:[.36,.26,(d,r)=>{hiss(d,r,0,.5,.001,.006,1100,90,0,19);note(d,r,0,277.18,1,.09,SOFT,.002,[.94,.08])}],                 // a wrong answer
+    warn:[.4,.24,(d,r)=>{note(d,r,0,440,1,.07,SOFT,.004);note(d,r,.13,440,.85,.08,SOFT,.004)}],                                   // look again (empty answers)
+    correct:[.55,.28,(d,r)=>{note(d,r,0,E6,.8,.11,GLASS,.002);note(d,r,.065,A6,.75,.2,GLASS,.002)},[[61,.1]]],                     // a right answer
+    success:[1.1,.32,(d,r)=>{note(d,r,0,C6,.7,.19,GLASS);note(d,r,.075,E6,.62,.19,GLASS);note(d,r,.15,G6,.6,.4,GLASS);note(d,r,.15,G6*2,.05,.1,[[1,1,1]],.002)},[[61,.14],[113,.07]]],  // done well
+    complete:[.8,.3,(d,r)=>{note(d,r,0,G5,.8,.2,WOOD);note(d,r,.1,C6,.8,.32,WOOD)},[[67,.1]]],                                    // finished (a calm result)
+    celebrate:[2.3,.45,(d,r)=>{[C5,E5,G5,C6,E6,G6].forEach((f,i)=>note(d,r,i*.065,f,.5,.26,GLASS));                              // the whole journey / a gift / 100%
+      [C5,E5,G5,C6].forEach(f=>{note(d,r,.4,f,.16,.75,[[1,1,1],[2,.15,.5]],.09);note(d,r,.4,f*1.003,.12,.75,[[1,1,1]],.09)});
+      const q=rng(29),sp=[2093,2637.02,3135.96,4186.01];for(let k=0;k<7;k++)note(d,r,.46+k*.11+q()*.03,sp[k%4],.07,.06,[[1,1,1]],.001)},[[73,.24],[127,.16],[181,.1],[241,.06]]]
+  };
+  // vibration: Android pattern (ms); iPhone [ticks, gap ms] (everything else = 1 tick)
+  const VIBP={tap:10,tick:8,pop:8,open:12,deny:[16,60,16,60,16],wrong:[20,60,20],warn:[24,110,24],correct:[10,60,16],success:[12,70,22],complete:[14,90,14],celebrate:[14,80,14,80,40]};
+  const IOSP={deny:[3,70],wrong:[2,70],warn:[2,120],correct:[2,80],success:[2,90],complete:[2,120],celebrate:[3,110]};
+  const LIGHT={tap:1,tick:1,pop:1};
+
+  /* ---------- sound ---------- */
+  function ac(){if(ctx)return ctx;const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;
+    try{if(amb&&nav.audioSession)nav.audioSession.type='ambient'}catch(e){}   // iPhone: mixes with the student's music, silent switch = silent
+    try{ctx=new A({latencyHint:'interactive'})}catch(e){try{ctx=new A()}catch(e2){return null}}
+    out=ctx.createGain();out.gain.value=.9;out.connect(ctx.destination);return ctx}
+  function buf(k){if(BUF[k])return BUF[k];const s=SND[k];if(!s||!ctx)return null;const sr=ctx.sampleRate;
+    let d=new Float32Array(Math.ceil(s[0]*sr));s[2](d,sr);if(s[3])d=room(d,sr,s[3]);level(d,sr,s[1]);
+    const b=ctx.createBuffer(1,d.length,sr);b.getChannelData(0).set(d);return BUF[k]=b}
+  function prepAll(){const k=Object.keys(SND).find(x=>!BUF[x]);if(!k||!ctx)return;buf(k);later(prepAll)}
+  // called on every tap: phones only start audio inside a tap
+  function wake(){if(off||!P.snd)return;const c=ac();if(!c)return;
+    if(c.state!=='running'){quietly(c.resume());try{const s=c.createBufferSource();s.buffer=c.createBuffer(1,1,c.sampleRate);s.connect(c.destination);s.start(0)}catch(e){}}
+    if(!prep){prep=true;later(prepAll)}}
+  function sound(k){if(off||!P.snd||document.hidden||!SND[k]||!tapped())return;try{if(quiet())return}catch(e){}
+    const c=ac();if(!c)return;const now=performance.now();if(now-(LAST[k]||0)<50)return;LAST[k]=now;
+    if(c.state!=='running')quietly(c.resume());const b=buf(k);if(!b)return;
+    try{const s=c.createBufferSource();s.buffer=b;s.connect(out);s.start()}catch(e){}
+    clearTimeout(idle);idle=setTimeout(()=>{if(ctx&&ctx.state==='running')quietly(ctx.suspend())},15000)}   // let the phone's audio sleep when nothing plays
+
+  /* ---------- vibration ---------- */
+  function tickIOS(){try{if(!sw){sw=document.createElement('label');sw.setAttribute('aria-hidden','true');sw.style.display='none';
+      sw.innerHTML='<input type="checkbox" switch tabindex="-1">';sw.addEventListener('click',e=>e.stopPropagation());document.head.appendChild(sw)}
+    sw.click()}catch(e){}}
+  function haptic(k){if(off||!P.hap||document.hidden||!tapped())return;const now=performance.now(),near=now-hLast<70;
+    if(VIB){if(near&&LIGHT[k])return;hLast=now;try{nav.vibrate(VIBP[k]||10)}catch(e){}return}
+    if(!IOS)return;const p=IOSP[k]||[1,0];if(near&&p[0]===1)return;
+    hLast=now;for(let j=near?1:0;j<p[0];j++)j?setTimeout(tickIOS,j*p[1]):tickIOS()}   // near: the tap's own tick already counts as the first
+
+  /* ---------- press ---------- */
+  const PRESS='button,a[href],[role="button"],[role="tab"],[role="switch"],[data-go],[data-press],summary';
+  function pressable(t){if(!t||!t.closest||(sw&&sw.contains(t)))return null;let el=t.closest(PRESS);
+    if(!el)for(let e=t,i=0;e&&e!==document.body&&i<5;e=e.parentElement,i++)if(typeof e.onclick==='function'&&getComputedStyle(e).cursor==='pointer'){el=e;break}   // a card or the brand with its own click
+    if(!el||el.disabled||el.getAttribute('aria-disabled')==='true'||el.closest('[data-nopress]'))return null;return el}
+  const MINE=new WeakMap();   // element -> its running press/release animation (so a new press starts from the element's own CSS)
+  const run=(el,a)=>{const o=MINE.get(el);if(o&&o!==a)try{o.cancel()}catch(e){}MINE.set(el,a);return a};
+  function down(el){if(pr)up();const r=el.getBoundingClientRect();if(!r.width||!el.animate)return;run(el,null);
+    const cs=getComputedStyle(el),soft=cs.display==='inline'||mm('(prefers-reduced-motion: reduce)'),t0=cs.transform==='none'?'':cs.transform+' ',s=+(1-Math.min(.05,5/Math.max(r.width,r.height))).toFixed(4);
+    try{pr={el,soft,t0,s,a:run(el,soft?el.animate({opacity:[1,.6]},{duration:90,fill:'forwards'}):el.animate({transform:[t0+'scale(1)',t0+'scale('+s+')']},{duration:110,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'}))}}catch(e){pr=null}}
+  function up(){const p=pr;if(!p)return;pr=null;
+    const back=()=>{if(MINE.get(p.el)!==p.a)return;   // pressed again meanwhile: that press owns the element now
+      try{run(p.el,p.soft?p.el.animate({opacity:[.6,1]},{duration:220,easing:'ease-out'}):p.el.animate({transform:[p.t0+'scale('+p.s+')',p.t0+'scale(1)']},{duration:420,easing:'cubic-bezier(.34,1.56,.64,1)'}))}catch(e){}};
+    if(p.a.playState==='running'&&p.a.finished)p.a.finished.then(back,()=>{});else back()}   // a quick tap still shows the whole press
+  function cancel(){clearTimeout(tm);cand=null;up()}
+
+  function init(o){o=o||{};if(o.ns)ns=o.ns;if(o.quiet)quiet=o.quiet;amb=!!o.ambient;load();if(o.off)setOff(true);
+    if(on)return;on=true;if(!off)root.classList.add('fx');
+    const opt={capture:true,passive:true};
+    addEventListener('pointerdown',e=>{pt=e.pointerType||'mouse';if(off||e.button>0)return;if(pt==='mouse')wake();
+      const el=pressable(e.target);clearTimeout(tm);cand=el;if(!el)return;sx=e.clientX;sy=e.clientY;
+      if(pt==='mouse')down(el);else tm=setTimeout(()=>{if(cand===el)down(el)},70)},opt);
+    addEventListener('pointermove',e=>{if(cand&&pt!=='mouse'&&(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10))cancel()},opt);
+    addEventListener('pointerup',e=>{clearTimeout(tm);if(off)return;if(e.pointerType!=='mouse')wake();const el=cand;cand=null;if(!el)return;
+      if(!pr&&e.pointerType!=='mouse')down(el);up()},opt);
+    addEventListener('pointercancel',cancel,opt);
+    addEventListener('scroll',()=>{if(cand&&pt!=='mouse')cancel()},opt);
+    addEventListener('click',e=>{if(off||!e.isTrusted||e.detail===0||pt==='mouse')return;if(pressable(e.target))haptic('tap')},true);   // touch: a light tick on every tap
+    addEventListener('change',e=>{const t=e.target;if(!off&&e.isTrusted&&t&&t.matches&&t.matches('input[type="checkbox"],input[type="radio"],select'))haptic('tick')},true);
+    addEventListener('keydown',e=>{if(off||e.repeat||(e.key!=='Enter'&&e.key!==' '))return;wake();const el=pressable(e.target);if(el&&el===document.activeElement)down(el)},true);
+    addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')up()},true);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&ctx&&ctx.state==='running')quietly(ctx.suspend())});
+    addEventListener('storage',e=>{if(e.key===ns+'snd'||e.key===ns+'hap')load()})}
+  function setOff(v){off=!!v;root.classList.toggle('fx',on&&!off);if(off){cancel();if(ctx&&ctx.state==='running')quietly(ctx.suspend())}}
+
+  return {init,sound,haptic,
+    play(k){sound(k);haptic(k)},
+    get:k=>P[k],
+    set(k,v){P[k]=!!v;wr(k,v?'1':'0');if(k==='snd'&&v)wake()},
+    canHaptic:()=>(VIB&&nav.maxTouchPoints>0)||IOS,   // phones and tablets only
+    off:setOff,
+    _render:k=>{if(!ac())return null;return buf(k)},names:()=>Object.keys(SND)};
+})();
+
 const ST='edunest_mlb:';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -80,7 +228,7 @@ function answered(){return nums().filter(n=>norm(ANS[n])).length}
 
 function render(){
   if(SEC.kind==='study'){renderStudy();return}
-  if(SEC.kind==='write'){renderWrite();return}
+  if(SEC.kind==='write'){FEEL.off(true);renderWrite();return}   /* writing tasks hold the AI Writing checker: left exactly as before */
   if(SEC.kind==='note'){renderNote();return}
   const s=SEC,split=s.layout==='split';
   $('#ttl').textContent=DOC.short+' · '+s.label;$('#sub').textContent=s.title;document.title='EDUNEST · '+DOC.short+' · '+s.label;
@@ -97,7 +245,7 @@ function render(){
   document.querySelectorAll('.gap').forEach(i=>{i.value=ANS[i.dataset.n]||'';i.addEventListener('input',()=>{ANS[i.dataset.n]=i.value;armed=false;save();foot()});
     i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const all=[...document.querySelectorAll('.gap')];const nx=all[all.indexOf(i)+1];nx?nx.focus():i.blur()}})});
   document.querySelectorAll('select[data-n]').forEach(sl=>{sl.value=ANS[sl.dataset.n]||'';sl.classList.toggle('empty',!sl.value);sl.addEventListener('change',()=>{ANS[sl.dataset.n]=sl.value;sl.classList.toggle('empty',!sl.value);armed=false;save();used();foot()})});
-  document.querySelectorAll('.opt').forEach(b=>{b.setAttribute('aria-pressed',ANS[b.dataset.n]===b.dataset.v);b.addEventListener('click',()=>{if(DONE)return;ANS[b.dataset.n]=b.dataset.v;armed=false;save();
+  document.querySelectorAll('.opt').forEach(b=>{b.setAttribute('aria-pressed',ANS[b.dataset.n]===b.dataset.v);b.addEventListener('click',()=>{if(DONE)return;FEEL.play('tick');ANS[b.dataset.n]=b.dataset.v;armed=false;save();
     document.querySelectorAll(`.opt[data-n="${b.dataset.n}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));foot()})});
   used();
   if(s.kind==='listen')player();
@@ -122,7 +270,7 @@ function foot(){
   const total=nums().length,a=answered();
   if(!DONE){
     f.innerHTML=`<button id="chk" class="${armed?'warn':''}">${armed?`${total-a} ta savol bo‘sh — baribir tekshirish`:'Javoblarni tekshirish'}<span class="cnt">${a} / ${total} javob yozildi</span></button>`;
-    $('#chk').onclick=()=>{if(a<total&&!armed){armed=true;foot();return}check()};
+    $('#chk').onclick=()=>{if(a<total&&!armed){armed=true;FEEL.play('warn');foot();return}check()};
   }else{
     const canDone=H.a&&H.s!=null;
     f.innerHTML=`<button class="alt" id="again">Qayta ishlash</button>${canDone?`<button id="dn">Bajardim</button>`:`<button id="dn">Xaritaga qaytish</button>`}`;
@@ -134,6 +282,7 @@ function foot(){
 function check(){
   const res={};nums().forEach(n=>res[n]=isOk(ANS[n],SEC.ans[n]));
   DONE={ok:Object.values(res).filter(Boolean).length,of:nums().length,res};save();showResult(true);foot();
+  const pc=DONE.of?Math.round(DONE.ok/DONE.of*100):0;FEEL.play(pc===100?'celebrate':pc>=67?'success':'complete');   /* same rule as the message in showResult(): Mukammal / Yaxshi natija / the rest */
   if(DONE.of)sendRes(Object.assign(resBase(),{kind:'ex',sec:String(SEC.id),title:(DOC.short||DOC.title||'')+' · '+(SEC.label||'')+(SEC.title?' · '+SEC.title:''),
     ok:DONE.ok,of:DONE.of,secs:Math.round((Date.now()-T0)/1000),det:nums().map(n=>[String(n),ANS[n]||'',res[n]?1:0,SEC.ans[n][0]])}));
 }
@@ -698,7 +847,7 @@ function examFinish(auto){
   if(EX.tick){clearInterval(EX.tick);EX.tick=null}
   const res={};let ok=0;const per=DOC.sections.map(s=>{let k=0;Object.keys(s.ans).forEach(n=>{res[n]=isOk(ANS[n],s.ans[n]);if(res[n])k++});ok+=k;return{l:s.label,t:s.title,ok:k,of:Object.keys(s.ans).length}});
   const of=allNums().length,ball=EX.cfg.conv[ok],lv=(EX.cfg.levels.find(x=>ball>=x[0])||[0,''])[1];
-  EX.r={ok,of,per,ball,lv,res,auto:!!auto,secs:Math.min(EX.cfg.mins*60,Math.round((Date.now()-EX.t0)/1000)),at:Date.now()};save();examResult();scrollTo(0,0);
+  EX.r={ok,of,per,ball,lv,res,auto:!!auto,secs:Math.min(EX.cfg.mins*60,Math.round((Date.now()-EX.t0)/1000)),at:Date.now()};save();examResult();scrollTo(0,0);FEEL.play(lv?'success':'complete');
   const det=[];DOC.sections.forEach(s=>Object.keys(s.ans).map(Number).sort((a,b)=>a-b).forEach(n=>det.push([String(n),ANS[n]||'',res[n]?1:0,s.ans[n][0]])));
   sendRes(Object.assign(resBase(),{kind:'exam',sec:'exam',title:(DOC.title||DOC.short||'Mock test')+(auto?' · vaqt tugadi':''),ok,of,ball,lv,secs:EX.r.secs,per,det}));
 }
@@ -771,4 +920,8 @@ async function boot(){
   restore();render();
 }
 addEventListener('hashchange',()=>location.reload());
+/* sound, vibration and press feedback (FEEL, top of this script; 26.11.2026). AI Speaking and AI Writing keep exactly their own
+   behaviour: no feedback on those pages (writing tasks switch it off in render()). Sounds wait while the listening audio plays and
+   during a mock exam until its result (vibration still works). */
+FEEL.init({ns:ST,off:('speak' in H)||('ai' in H),quiet:()=>!!(window.AU&&!window.AU.paused)||!!(EX&&EX.view!=='result')});
 boot();

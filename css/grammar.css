@@ -51,7 +51,6 @@ html.pres{--zk:1.45}
 .sech{margin:22px 4px 10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
 .lcard,.xitem{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;padding:14px 16px;color:var(--ink);text-decoration:none;border:1.5px solid transparent;transition:border-color .15s,transform .15s}
 .lcard:hover,.xitem:hover{border-color:var(--blue)}
-.lcard:active,.xitem:active{transform:scale(.99)}
 .lic{flex:none;width:52px;height:52px;border-radius:15px;background:var(--bluebg);color:var(--blue);display:grid;place-items:center}
 .lic svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ltx,.xt{flex:1;min-width:0}
@@ -230,3 +229,24 @@ html.pres .foot .in{max-width:1180px}
 html.pres .card{min-height:calc(100vh - var(--bar) - 190px)}
 @media(max-width:520px){.card{padding:18px 15px 20px}.hstats b{font-size:18px}.hstats div{padding:9px 10px}.cmp{font-size:.8em}.cmp tbody th{min-width:7.5em}.vt .g{grid-template-columns:1fr}.vt .g div:nth-child(odd){border-right:0}.foot button{font-size:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
+/* no grey tap flash (the press animation is the feedback), no double-tap zoom delay */
+html.fx{-webkit-tap-highlight-color:transparent}
+html.fx :is(button,a[href],[role="button"],[role="tab"],[role="switch"],[data-go],[data-press],summary,label){touch-action:manipulation}
+/* a long press on a button does not select its text or open the phone's menu */
+html.fx :is(button,[role="button"],[role="tab"],[data-go]){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* "Ovoz va tebranish" (profile): rows with an on/off switch */
+.fxset{padding:4px 18px}
+.fxrow{display:flex;align-items:center;gap:14px;padding:14px 0;cursor:pointer}
+.fxrow+.fxrow{border-top:1px solid var(--line)}
+.fxrow .fxt{flex:1;min-width:0}
+.fxrow .fxt b{display:block;font-weight:700;font-size:15px}
+.fxrow .fxt small{display:block;color:var(--mute);font-size:13px;line-height:1.35;margin-top:2px}
+.fxsw{-webkit-appearance:none;appearance:none;flex:none;position:relative;width:50px;height:30px;margin:0;border:0;border-radius:99px;background:#C7CDD8;cursor:pointer;transition:background .25s ease}
+.fxsw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18),0 3px 8px rgba(0,0,0,.18);transition:transform .34s cubic-bezier(.34,1.56,.64,1)}
+.fxsw:checked{background:var(--green)}
+.fxsw:checked::after{transform:translateX(20px)}
+.fxsw:focus-visible{outline:2px solid #2457D6;outline-offset:3px}
+body.dark .fxsw{background:#3A4458}
+body.dark .fxsw:checked{background:var(--green)}
+

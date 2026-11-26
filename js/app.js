@@ -1,4 +1,152 @@
 
+/* ===================== FEEL: sound, vibration and press feedback (26.11.2026) =====================
+   One engine for the Multi-Level pages (index, mashq, grammar). Source: platform/feel.js + platform/feel.css;
+   build.py puts both into each page (placeholder FEEL_JS / FEEL_CSS).
+   - Sounds are synthesized once, in code (no sound files, nothing downloaded), kept as audio buffers and played
+     through one output: instant, the same every time, never piling up (the same sound within 50 ms plays once).
+   - Vibration: Android = navigator.vibrate; iPhone (iOS 18+) = the system tick of a hidden switch (only inside a tap).
+   - Press: a pressed button or card shrinks by a few pixels and springs back. On touch it waits 70 ms, so scrolling
+     a list does not press its cards. Web Animations only: the page's own CSS (transform, transition) stays untouched.
+   - Settings on this device: <ns>snd (sounds) and <ns>hap (vibration); both on unless switched off.
+   - quiet(): the page says when sounds must wait (an audio track is playing, a mock exam is running); vibration still works.
+   - off: no feedback at all on that page (AI Writing / AI Speaking keep exactly their own behaviour).
+   ============================================================================================== */
+const FEEL=(()=>{
+  const TAU=Math.PI*2,nav=navigator,root=document.documentElement;
+  let ns='edunest_mlb:',quiet=()=>false,off=false,amb=false,on=false,ctx=null,out=null,idle=0,sw=null,hLast=0,pt='mouse',pr=null,cand=null,tm=0,sx=0,sy=0,prep=false;
+  const P={snd:true,hap:true},BUF={},LAST={};
+  const rd=k=>{try{return localStorage.getItem(ns+k)}catch(e){return null}};
+  const wr=(k,v)=>{try{localStorage.setItem(ns+k,v)}catch(e){}};
+  const load=()=>{P.snd=rd('snd')!=='0';P.hap=rd('hap')!=='0'};
+  const mm=q=>!!(window.matchMedia&&matchMedia(q).matches);
+  const VIB=typeof nav.vibrate==='function';
+  const IOS=!VIB&&(/iPhone|iPad|iPod/.test(nav.userAgent)||(nav.platform==='MacIntel'&&nav.maxTouchPoints>1));
+  const later=window.requestIdleCallback?f=>requestIdleCallback(f,{timeout:500}):f=>setTimeout(f,60);
+  const quietly=p=>{if(p&&p.catch)p.catch(()=>{})};
+  /* nothing plays or vibrates before the first real tap on this page: the browser blocks it anyway (vibrate logs an error, and a sound
+     would wait and then play late, on that first tap), e.g. a mock exam whose time ran out finishing as the page opens */
+  const tapped=()=>!nav.userActivation||nav.userActivation.hasBeenActive;
+
+  /* ---------- synthesis (fixed noise seeds: every sound is identical each time) ---------- */
+  const rng=s=>()=>((s=(s*1664525+1013904223)>>>0)/2147483648-1);
+  // a struck note. parts: [frequency ratio, level, decay factor]; tau: decay time of the main partial (s);
+  // att: attack (s); gl: [end ratio, glide time s] bends the pitch
+  function note(d,sr,t0,f,vol,tau,parts,att,gl){
+    att=att||.003;const i0=Math.round(t0*sr),A=Math.max(1,att*sr);
+    if(gl){const n=Math.min(d.length,i0+Math.ceil((att+tau*7*Math.max(...parts.map(p=>p[2])))*sr));   // a bending pitch: phase step by step
+      const ph=parts.map(()=>0),lv=parts.map(p=>f*p[0]<sr*.45?p[1]:0),k=parts.map(p=>Math.exp(-1/(tau*p[2]*sr)));
+      for(let i=i0;i<n;i++){const j=i-i0,fm=f*Math.pow(gl[0],Math.min(1,j/(gl[1]*sr)));let s=0;
+        for(let q=0;q<parts.length;q++){ph[q]+=TAU*fm*parts[q][0]/sr;s+=lv[q]*Math.sin(ph[q]);lv[q]*=k[q]}
+        d[i]+=vol*s*(j<A?j/A:1)}return}
+    for(const p of parts){if(f*p[0]>=sr*.45)continue;   // a steady pitch: the sine by recurrence (no Math.sin per sample), each partial only as long as it sounds
+      const w=TAU*f*p[0]/sr,c=2*Math.cos(w),k=Math.exp(-1/(tau*p[2]*sr)),n=Math.min(d.length,i0+Math.ceil((att+tau*p[2]*7)*sr));let y0=0,y1=Math.sin(w),e=vol*p[1];
+      for(let i=i0;i<n;i++){const j=i-i0;d[i]+=e*y1*(j<A?j/A:1);const y2=c*y1-y0;y0=y1;y1=y2;e*=k}}}
+  // filtered noise: low-pass lp Hz (gliding to lp2), high-pass hp Hz; attack att, then decay tau
+  function hiss(d,sr,t0,vol,att,tau,lp,hp,lp2,seed){
+    const i0=Math.round(t0*sr),n=Math.min(d.length,i0+Math.ceil((att+tau*7)*sr)),r=rng(seed),ch=Math.exp(-TAU*hp/sr),A=Math.max(1,att*sr);
+    let l=0,x1=0,y=0;
+    for(let i=i0;i<n;i++){const j=i-i0,fc=lp2?lp*Math.pow(lp2/lp,Math.min(1,j/((att+tau)*sr))):lp;
+      l+=(1-Math.exp(-TAU*fc/sr))*(r()-l);y=ch*(y+l-x1);x1=l;
+      d[i]+=vol*y*(j<A?j/A:Math.exp(-(j-A)/(tau*sr)))}}
+  // a little room: a few quiet echoes (ms, level)
+  function room(d,sr,taps){const o=Float32Array.from(d);taps.forEach(([ms,g])=>{const k=Math.round(ms*sr/1000);for(let i=k;i<d.length;i++)o[i]+=g*d[i-k]});return o}
+  // the same loudness for every sound (peak), and a 15 ms fade at the end
+  function level(d,sr,peak){let m=0;for(let i=0;i<d.length;i++){const a=Math.abs(d[i]);if(a>m)m=a}
+    const g=m?peak/m:0,f=Math.min(d.length,Math.round(.015*sr));for(let i=0;i<d.length;i++)d[i]*=g;for(let i=1;i<=f;i++)d[d.length-i]*=(i-1)/f;return d}
+  const GLASS=[[1,1,1],[2.76,.16,.32],[5.4,.05,.18]],WOOD=[[1,1,1],[3.93,.12,.22],[9.4,.03,.1]],SOFT=[[1,1,1],[2,.45,.5],[3,.18,.3]];
+  const C5=523.25,E5=659.26,G5=783.99,C6=1046.5,E6=1318.51,G6=1567.98,A6=1760;
+  // name: [length s, peak, how it is made, room echoes]
+  const SND={
+    tick:[.05,.2,(d,r)=>{hiss(d,r,0,1,.0003,.0011,7500,1800,0,3);note(d,r,0,1850,.4,.006,[[1,1,1]],.0004)}],                      // a chip, a switch, zoom
+    pop:[.15,.26,(d,r)=>note(d,r,0,520,1,.03,[[1,1,1],[2,.12,.5]],.0015,[1.75,.03])],                                            // something switched on
+    open:[.6,.28,(d,r)=>{hiss(d,r,0,.25,.07,.05,600,300,5000,11);note(d,r,.045,C6,.75,.13,GLASS);note(d,r,.11,G6,.62,.19,GLASS)},[[67,.12]]],  // a section or sheet opens
+    deny:[.42,.3,(d,r)=>{[[0,293.66],[.1,246.94]].forEach(([t,f],i)=>{hiss(d,r,t,.6,.001,.006,1200,90,0,17+i);note(d,r,t,f,1,.075,SOFT,.002,[.96,.06])})}],  // locked / not yet
+    wrong:[.36,.26,(d,r)=>{hiss(d,r,0,.5,.001,.006,1100,90,0,19);note(d,r,0,277.18,1,.09,SOFT,.002,[.94,.08])}],                 // a wrong answer
+    warn:[.4,.24,(d,r)=>{note(d,r,0,440,1,.07,SOFT,.004);note(d,r,.13,440,.85,.08,SOFT,.004)}],                                   // look again (empty answers)
+    correct:[.55,.28,(d,r)=>{note(d,r,0,E6,.8,.11,GLASS,.002);note(d,r,.065,A6,.75,.2,GLASS,.002)},[[61,.1]]],                     // a right answer
+    success:[1.1,.32,(d,r)=>{note(d,r,0,C6,.7,.19,GLASS);note(d,r,.075,E6,.62,.19,GLASS);note(d,r,.15,G6,.6,.4,GLASS);note(d,r,.15,G6*2,.05,.1,[[1,1,1]],.002)},[[61,.14],[113,.07]]],  // done well
+    complete:[.8,.3,(d,r)=>{note(d,r,0,G5,.8,.2,WOOD);note(d,r,.1,C6,.8,.32,WOOD)},[[67,.1]]],                                    // finished (a calm result)
+    celebrate:[2.3,.45,(d,r)=>{[C5,E5,G5,C6,E6,G6].forEach((f,i)=>note(d,r,i*.065,f,.5,.26,GLASS));                              // the whole journey / a gift / 100%
+      [C5,E5,G5,C6].forEach(f=>{note(d,r,.4,f,.16,.75,[[1,1,1],[2,.15,.5]],.09);note(d,r,.4,f*1.003,.12,.75,[[1,1,1]],.09)});
+      const q=rng(29),sp=[2093,2637.02,3135.96,4186.01];for(let k=0;k<7;k++)note(d,r,.46+k*.11+q()*.03,sp[k%4],.07,.06,[[1,1,1]],.001)},[[73,.24],[127,.16],[181,.1],[241,.06]]]
+  };
+  // vibration: Android pattern (ms); iPhone [ticks, gap ms] (everything else = 1 tick)
+  const VIBP={tap:10,tick:8,pop:8,open:12,deny:[16,60,16,60,16],wrong:[20,60,20],warn:[24,110,24],correct:[10,60,16],success:[12,70,22],complete:[14,90,14],celebrate:[14,80,14,80,40]};
+  const IOSP={deny:[3,70],wrong:[2,70],warn:[2,120],correct:[2,80],success:[2,90],complete:[2,120],celebrate:[3,110]};
+  const LIGHT={tap:1,tick:1,pop:1};
+
+  /* ---------- sound ---------- */
+  function ac(){if(ctx)return ctx;const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;
+    try{if(amb&&nav.audioSession)nav.audioSession.type='ambient'}catch(e){}   // iPhone: mixes with the student's music, silent switch = silent
+    try{ctx=new A({latencyHint:'interactive'})}catch(e){try{ctx=new A()}catch(e2){return null}}
+    out=ctx.createGain();out.gain.value=.9;out.connect(ctx.destination);return ctx}
+  function buf(k){if(BUF[k])return BUF[k];const s=SND[k];if(!s||!ctx)return null;const sr=ctx.sampleRate;
+    let d=new Float32Array(Math.ceil(s[0]*sr));s[2](d,sr);if(s[3])d=room(d,sr,s[3]);level(d,sr,s[1]);
+    const b=ctx.createBuffer(1,d.length,sr);b.getChannelData(0).set(d);return BUF[k]=b}
+  function prepAll(){const k=Object.keys(SND).find(x=>!BUF[x]);if(!k||!ctx)return;buf(k);later(prepAll)}
+  // called on every tap: phones only start audio inside a tap
+  function wake(){if(off||!P.snd)return;const c=ac();if(!c)return;
+    if(c.state!=='running'){quietly(c.resume());try{const s=c.createBufferSource();s.buffer=c.createBuffer(1,1,c.sampleRate);s.connect(c.destination);s.start(0)}catch(e){}}
+    if(!prep){prep=true;later(prepAll)}}
+  function sound(k){if(off||!P.snd||document.hidden||!SND[k]||!tapped())return;try{if(quiet())return}catch(e){}
+    const c=ac();if(!c)return;const now=performance.now();if(now-(LAST[k]||0)<50)return;LAST[k]=now;
+    if(c.state!=='running')quietly(c.resume());const b=buf(k);if(!b)return;
+    try{const s=c.createBufferSource();s.buffer=b;s.connect(out);s.start()}catch(e){}
+    clearTimeout(idle);idle=setTimeout(()=>{if(ctx&&ctx.state==='running')quietly(ctx.suspend())},15000)}   // let the phone's audio sleep when nothing plays
+
+  /* ---------- vibration ---------- */
+  function tickIOS(){try{if(!sw){sw=document.createElement('label');sw.setAttribute('aria-hidden','true');sw.style.display='none';
+      sw.innerHTML='<input type="checkbox" switch tabindex="-1">';sw.addEventListener('click',e=>e.stopPropagation());document.head.appendChild(sw)}
+    sw.click()}catch(e){}}
+  function haptic(k){if(off||!P.hap||document.hidden||!tapped())return;const now=performance.now(),near=now-hLast<70;
+    if(VIB){if(near&&LIGHT[k])return;hLast=now;try{nav.vibrate(VIBP[k]||10)}catch(e){}return}
+    if(!IOS)return;const p=IOSP[k]||[1,0];if(near&&p[0]===1)return;
+    hLast=now;for(let j=near?1:0;j<p[0];j++)j?setTimeout(tickIOS,j*p[1]):tickIOS()}   // near: the tap's own tick already counts as the first
+
+  /* ---------- press ---------- */
+  const PRESS='button,a[href],[role="button"],[role="tab"],[role="switch"],[data-go],[data-press],summary';
+  function pressable(t){if(!t||!t.closest||(sw&&sw.contains(t)))return null;let el=t.closest(PRESS);
+    if(!el)for(let e=t,i=0;e&&e!==document.body&&i<5;e=e.parentElement,i++)if(typeof e.onclick==='function'&&getComputedStyle(e).cursor==='pointer'){el=e;break}   // a card or the brand with its own click
+    if(!el||el.disabled||el.getAttribute('aria-disabled')==='true'||el.closest('[data-nopress]'))return null;return el}
+  const MINE=new WeakMap();   // element -> its running press/release animation (so a new press starts from the element's own CSS)
+  const run=(el,a)=>{const o=MINE.get(el);if(o&&o!==a)try{o.cancel()}catch(e){}MINE.set(el,a);return a};
+  function down(el){if(pr)up();const r=el.getBoundingClientRect();if(!r.width||!el.animate)return;run(el,null);
+    const cs=getComputedStyle(el),soft=cs.display==='inline'||mm('(prefers-reduced-motion: reduce)'),t0=cs.transform==='none'?'':cs.transform+' ',s=+(1-Math.min(.05,5/Math.max(r.width,r.height))).toFixed(4);
+    try{pr={el,soft,t0,s,a:run(el,soft?el.animate({opacity:[1,.6]},{duration:90,fill:'forwards'}):el.animate({transform:[t0+'scale(1)',t0+'scale('+s+')']},{duration:110,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'}))}}catch(e){pr=null}}
+  function up(){const p=pr;if(!p)return;pr=null;
+    const back=()=>{if(MINE.get(p.el)!==p.a)return;   // pressed again meanwhile: that press owns the element now
+      try{run(p.el,p.soft?p.el.animate({opacity:[.6,1]},{duration:220,easing:'ease-out'}):p.el.animate({transform:[p.t0+'scale('+p.s+')',p.t0+'scale(1)']},{duration:420,easing:'cubic-bezier(.34,1.56,.64,1)'}))}catch(e){}};
+    if(p.a.playState==='running'&&p.a.finished)p.a.finished.then(back,()=>{});else back()}   // a quick tap still shows the whole press
+  function cancel(){clearTimeout(tm);cand=null;up()}
+
+  function init(o){o=o||{};if(o.ns)ns=o.ns;if(o.quiet)quiet=o.quiet;amb=!!o.ambient;load();if(o.off)setOff(true);
+    if(on)return;on=true;if(!off)root.classList.add('fx');
+    const opt={capture:true,passive:true};
+    addEventListener('pointerdown',e=>{pt=e.pointerType||'mouse';if(off||e.button>0)return;if(pt==='mouse')wake();
+      const el=pressable(e.target);clearTimeout(tm);cand=el;if(!el)return;sx=e.clientX;sy=e.clientY;
+      if(pt==='mouse')down(el);else tm=setTimeout(()=>{if(cand===el)down(el)},70)},opt);
+    addEventListener('pointermove',e=>{if(cand&&pt!=='mouse'&&(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10))cancel()},opt);
+    addEventListener('pointerup',e=>{clearTimeout(tm);if(off)return;if(e.pointerType!=='mouse')wake();const el=cand;cand=null;if(!el)return;
+      if(!pr&&e.pointerType!=='mouse')down(el);up()},opt);
+    addEventListener('pointercancel',cancel,opt);
+    addEventListener('scroll',()=>{if(cand&&pt!=='mouse')cancel()},opt);
+    addEventListener('click',e=>{if(off||!e.isTrusted||e.detail===0||pt==='mouse')return;if(pressable(e.target))haptic('tap')},true);   // touch: a light tick on every tap
+    addEventListener('change',e=>{const t=e.target;if(!off&&e.isTrusted&&t&&t.matches&&t.matches('input[type="checkbox"],input[type="radio"],select'))haptic('tick')},true);
+    addEventListener('keydown',e=>{if(off||e.repeat||(e.key!=='Enter'&&e.key!==' '))return;wake();const el=pressable(e.target);if(el&&el===document.activeElement)down(el)},true);
+    addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')up()},true);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&ctx&&ctx.state==='running')quietly(ctx.suspend())});
+    addEventListener('storage',e=>{if(e.key===ns+'snd'||e.key===ns+'hap')load()})}
+  function setOff(v){off=!!v;root.classList.toggle('fx',on&&!off);if(off){cancel();if(ctx&&ctx.state==='running')quietly(ctx.suspend())}}
+
+  return {init,sound,haptic,
+    play(k){sound(k);haptic(k)},
+    get:k=>P[k],
+    set(k,v){P[k]=!!v;wr(k,v?'1':'0');if(k==='snd'&&v)wake()},
+    canHaptic:()=>(VIB&&nav.maxTouchPoints>0)||IOS,   // phones and tablets only
+    off:setOff,
+    _render:k=>{if(!ac())return null;return buf(k)},names:()=>Object.keys(SND)};
+})();
+
 /* =================== SETTINGS =================== */
 const CLOUD_URL = "https://tuffyskazbkbezsghgtk.supabase.co/functions/v1/api";
 const BOOSTER_URL = "https://toxirovteacher.github.io/edunest-multilevel/booster.html";
@@ -326,20 +474,13 @@ const IC={
  trophy:'<svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/><path d="M12 14v4M8 21h8M9 18h6"/></svg>'};
 const icon=(k,c)=>`<span class="ic ${c||''}">${IC[k]}</span>`;
 
-/* ---------- sound (tiny synth, no files) ---------- */
-const SND={ctx:null,on:store(ST+'snd')!=='0'};
-function tone(f,t0,d,type,vol){const c=SND.ctx;const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,c.currentTime+t0);
-  g.gain.setValueAtTime(0.0001,c.currentTime+t0);g.gain.exponentialRampToValueAtTime(vol||0.18,c.currentTime+t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t0+d);
-  o.connect(g).connect(c.destination);o.start(c.currentTime+t0);o.stop(c.currentTime+t0+d+0.02)}
-function sfx(k){if(!SND.on)return;try{SND.ctx=SND.ctx||new (window.AudioContext||window.webkitAudioContext)();if(SND.ctx.state==='suspended')SND.ctx.resume();
-  if(k==='tap')tone(740,0,.07,'triangle',.12);
-  else if(k==='open'){tone(523,0,.12,'triangle');tone(784,.08,.16,'triangle')}
-  else if(k==='lock'){tone(196,0,.12,'square',.06);tone(165,.1,.14,'square',.05)}
-  else if(k==='win'){[523,659,784,1047].forEach((f,i)=>tone(f,i*.11,.28,'triangle',.16));tone(1568,.48,.35,'sine',.08)}
-  else if(k==='grand'){[392,523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.12,.4,'triangle',.15));[523,659,784].forEach(f=>tone(f,.8,.9,'sine',.07))}
-}catch(e){}}
-function sndBtn(){return `<button class="iconbtn sndb" id="sndBtn" aria-label="${SND.on?'Ovozni o‘chirish':'Ovozni yoqish'}" aria-pressed="${SND.on}">${SND.on?IC.sound:IC.mute}</button>`}
-function bindSnd(){const b=$('#sndBtn');if(b)b.onclick=()=>{SND.on=!SND.on;store(ST+'snd',SND.on?'1':'0');b.outerHTML=sndBtn();bindSnd();if(SND.on)sfx('tap')}}
+/* ---------- sound + vibration + press feedback: the FEEL engine (top of this script; source platform/feel.js) ----------
+   sfx() keeps the old names used across this page: tap, open, lock, win, grand, done (+ the new correct / wrong / warn). */
+FEEL.init({ns:ST,ambient:true});
+const SFX={tap:'tick',open:'open',lock:'deny',win:'success',grand:'celebrate',done:'success'};
+function sfx(k){FEEL.play(SFX[k]||k)}
+function sndBtn(){const on=FEEL.get('snd');return `<button class="iconbtn sndb" id="sndBtn" aria-label="${on?'Ovozni o‘chirish':'Ovozni yoqish'}" aria-pressed="${on}">${on?IC.sound:IC.mute}</button>`}
+function bindSnd(){const b=$('#sndBtn');if(b)b.onclick=()=>{const on=!FEEL.get('snd');FEEL.set('snd',on);b.outerHTML=sndBtn();bindSnd();if(on)FEEL.play('pop')}}
 
 /* ---------- confetti ---------- */
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -871,9 +1012,16 @@ function profHTML(p){
   <h2 class="sech">Ramkalar — qanday almashadi?</h2>
   <div class="card frl"><p class="muted">Ramkangiz XP darajangizga qarab <b>o‘zi almashadi</b>. XP — Booster testlari, topshiriq bosqichlari va kunlik seriya sovg‘alari uchun beriladi.</p>
     <div class="frs">${LVS.map((l,i)=>`<div class="fr ${i===li?'on':i<li?'pass':''}">${avHTML(p.av,s.name,i,'md')}<b>${l[1]} ${esc(l[2])}</b><small>${l[0]} XP${i===li?' · siz shu yerdasiz':i<li?' · ✓':' · yana '+(l[0]-x.T)+' XP'}</small><span>${esc(FRAMES[i])}</span></div>`).join('')}</div></div>
-  ${R.length?`<h2 class="sech">So‘nggi natijalar</h2><div class="card rlist">${R.slice(-10).reverse().map(r=>`<div class="rrow"><span class="rsc ${pcCls(pctOf(r))}">${r.k==='exam'&&r.b!=null?r.b:r.ok+'/'+r.of}</span><span class="rtx"><b>${esc(r.ti||'Mashq')}</b><small>${dmY(r.at)} ${hm(r.at)}${r.sec?' · '+durUz(r.sec):''}${r.k==='exam'&&r.lv?' · '+esc(r.lv):''}</small></span><em>${pctOf(r)}%</em></div>`).join('')}</div>`:''}`;
+  ${R.length?`<h2 class="sech">So‘nggi natijalar</h2><div class="card rlist">${R.slice(-10).reverse().map(r=>`<div class="rrow"><span class="rsc ${pcCls(pctOf(r))}">${r.k==='exam'&&r.b!=null?r.b:r.ok+'/'+r.of}</span><span class="rtx"><b>${esc(r.ti||'Mashq')}</b><small>${dmY(r.at)} ${hm(r.at)}${r.sec?' · '+durUz(r.sec):''}${r.k==='exam'&&r.lv?' · '+esc(r.lv):''}</small></span><em>${pctOf(r)}%</em></div>`).join('')}</div>`:''}
+  ${fxHTML()}`;
 }
-function bindProf(){const b=$('#pfAv');if(b)b.onclick=avPick}
+/* "Ovoz va tebranish" (26.11.2026): this device's FEEL settings, also used by the exercise and grammar pages */
+function fxHTML(){const row=(id,on,t,d)=>`<label class="fxrow" data-press><span class="fxt"><b>${t}</b><small>${d}</small></span><input type="checkbox" class="fxsw" role="switch" id="${id}"${on?' checked':''}></label>`;
+  return `<h2 class="sech">Ovoz va tebranish</h2><div class="card fxset">${row('fxSnd',FEEL.get('snd'),'🔊 Ovozlar','Tanlash, to‘g‘ri va xato javob, yutuqlar ovozi')}${FEEL.canHaptic()?row('fxHap',FEEL.get('hap'),'📳 Tebranish','Tugma bosilganda telefon yengil tebranadi'):''}</div>`}
+function bindFx(){const s=$('#fxSnd'),h=$('#fxHap');
+  if(s)s.onchange=()=>{FEEL.set('snd',s.checked);if(s.checked)FEEL.sound('pop')};
+  if(h)h.onchange=()=>{FEEL.set('hap',h.checked);if(h.checked)FEEL.haptic('success')}}
+function bindProf(){const b=$('#pfAv');if(b)b.onclick=avPick;bindFx()}
 function avPick(){const a=actOf(P),cur=P.av||'';
   const cell=(k,v)=>{const lock=v[3]&&a.best<v[3];return `<button class="avc ${k===cur?'on':''} ${lock?'lock':''}" data-av="${k}" ${lock?'aria-disabled="true"':''} aria-label="${esc(v[2])}"><span class="avi em" style="background:${v[1]}">${v[0]}</span><small>${lock?'🔒 '+v[3]+' kun':esc(v[2])}</small></button>`};
   modal(`<h3>Rasmingizni tanlang</h3><p class="muted" style="margin:4px 0 10px">Maxsus rasmlar ketma-ket kirgan kunlar uchun sovg‘a bo‘lib ochiladi.</p>
@@ -1569,7 +1717,7 @@ function bxResult(t,resume){
     <div class="bx-ans">${t.ans.map((a,i)=>{const ok=r.cat[i]==='ok';return `<div class="bx-an ${ok?'ok':'no'}"><span class="n">${ok?'✓':i+1}</span><div>
       <div class="w">${ok?esc(a):`${r.ans[i]?`<s>${esc(r.ans[i])}</s>`:'<em>(bo‘sh)</em>'} → <b>${esc(a)}</b>`} <span class="tag">${BXCAT[r.cat[i]]}</span></div><div class="ev">📍 ${bxEvidence(t,i)}</div></div></div>`}).join('')}</div>
     <div class="bx-bar"><button class="btn ghost" id="bxMap">Xarita</button><button class="btn red big" id="bxB">B · Kalit so‘zlar →</button></div></div>`;
-  bxAnim();if(!resume){sfx(r.score>=4?'win':'tap')}
+  bxAnim();if(!resume){sfx(r.score>=4?'win':'complete')}
   $('#bxMap').onclick=()=>go('#/me/a/'+BOOSTER_AID);$('#bxB').onclick=()=>bxB(t,{});
 }
 /* ---------- tap-to-match (B and D) ---------- */
@@ -1591,10 +1739,10 @@ function bxMatch(t,o){
     document.querySelectorAll('.bx-slot').forEach(s=>s.onclick=()=>{const i=+s.dataset.i;if(k.locked[i])return;if(k.placed[i]!=null){k.placed[i]=null;k.row=null}else if(k.chip!=null){k.placed[i]=k.chip;k.chip=null}else k.row=k.row===i?null:i;draw()});
     document.querySelectorAll('.bx-uz').forEach(b=>b.onclick=()=>$('#bxU'+b.dataset.u).classList.toggle('hide'))};
   const finish=()=>{o.done(k.first==null?0:k.first);const b=$('#bxChk');b.textContent=o.nextLabel;b.onclick=o.next;$('#bxRev').classList.add('hide');sfx('win');toast(k.first===n?'Mukammal! 🎉':'Bajarildi ✓')};
-  $('#bxChk').onclick=()=>{if(k.placed.some(p=>p==null)){toast('Avval hamma katakni to‘ldiring');return}k.checks++;const wrong=[];let right=0;
+  $('#bxChk').onclick=()=>{if(k.placed.some(p=>p==null)){sfx('warn');toast('Avval hamma katakni to‘ldiring');return}k.checks++;const wrong=[];let right=0;
     k.placed.forEach((p,i)=>{if(k.locked[i])return;if(p===i){k.locked[i]=true;right++}else{wrong.push(i);k.placed[i]=null}});if(k.first==null)k.first=right;draw();
     wrong.forEach(i=>{const s=document.querySelector(`.bx-slot[data-i="${i}"]`);s.classList.add('shake')});
-    if(k.locked.every(Boolean)){finish();return}sfx('lock');toast(`${n-wrong.length}/${n} to‘g‘ri — qolganlarini qayta urinib ko‘ring`);if(k.checks>=2)$('#bxRev').classList.remove('hide')};
+    if(k.locked.every(Boolean)){finish();return}sfx('wrong');toast(`${n-wrong.length}/${n} to‘g‘ri — qolganlarini qayta urinib ko‘ring`);if(k.checks>=2)$('#bxRev').classList.remove('hide')};
   $('#bxRev').onclick=()=>{o.rows.forEach((r,i)=>{if(!k.locked[i]){k.placed[i]=i;k.locked[i]=true;k.rev[i]=true}});draw();finish()};
   draw();scrollTo(0,0);
 }
@@ -1610,7 +1758,7 @@ function bxC(t,acc){let i=0,ok=0;
       <div class="bx-card"><div class="bx-ck">Bo‘sh joy ${i+1} / 6</div><p class="bx-sent">${esc(s.trim()).replace(/\{(\d)\}/g,(m,dd)=>+dd===i+1?`<span class="bx-gx">${i+1}</span>`:'_____')}</p>
         <div class="bx-wt">${['N','P','V','A'].map(k=>`<button data-k="${k}"><b>${BXWT[k][0]}</b><small>${BXWT[k][1]}</small></button>`).join('')}</div><div id="bxCf"></div></div>
       <div class="bx-bar"><span><b>${ok}</b> to‘g‘ri</span><button class="btn red big hide" id="bxNx">${i<5?'Keyingi →':'D · So‘z juftliklari →'}</button></div></div>`;
-    let did=false;document.querySelectorAll('.bx-wt button').forEach(b=>b.onclick=()=>{if(did)return;did=true;const good=b.dataset.k===t.types[i];if(good)ok++;sfx(good?'win':'lock');
+    let did=false;document.querySelectorAll('.bx-wt button').forEach(b=>b.onclick=()=>{if(did)return;did=true;const good=b.dataset.k===t.types[i];if(good)ok++;sfx(good?'correct':'wrong');
       b.classList.add(good?'ok':'no');if(!good)document.querySelector(`.bx-wt [data-k="${t.types[i]}"]`).classList.add('ok');
       $('#bxCf').innerHTML=`<div class="bx-cfb ${good?'ok':'no'}"><b>${good?'To‘g‘ri!':'Unchalik emas.'}</b> Belgi: <mark>${esc(ex[0])}</mark> ${esc(ex[2])}<div>Javob: <b>${esc(t.ans[i])}</b></div></div>`;
       const nb=$('#bxNx');nb.classList.remove('hide');nb.onclick=()=>{if(i<5){i++;draw();scrollTo(0,0)}else{acc.c=ok;bxD(t,acc)}}})};draw()}
@@ -1628,7 +1776,7 @@ function bxE(t,acc){const e=t.extra.e;
   $('#bxTx').onclick=()=>modal(`<h3>${esc(t.title)}</h3><div class="bx-modaltext">${bxFull(t).split('\n\n').map(p=>`<p>${esc(p)}</p>`).join('')}</div>`,[{t:'Yopish',cls:'red'}]);
   $('#bxEc').onclick=()=>{const ins=[...document.querySelectorAll('[data-e]')];if(ins.some(x=>!x.value.trim())){toast('Avval hamma bo‘sh joyni to‘ldiring');return}
     let ok=0;ins.forEach((x,i)=>{const good=e.ans[i].map(a=>a.toLowerCase()).includes(bxNorm(x.value));if(good)ok++;x.readOnly=true;x.parentNode.classList.add(good?'ok':'no');if(!good)x.value=x.value+' → '+e.ans[i][0]});
-    acc.e=ok;sfx(ok>=5?'win':'tap');
+    acc.e=ok;sfx(ok>=5?'win':'complete');
     $('#bxEf').innerHTML=`<div class="bx-cfb ${ok>=5?'ok':'no'}"><b>${ok}/6 to‘g‘ri.</b> ${ok===6?'A’lo — matnni to‘liq tushundingiz!':'Qizil joylarni asl matndan toping.'}</div>`;
     const b=$('#bxEc');b.textContent='Testni yakunlash 🏁';b.onclick=()=>bxDone(t,acc)}}
 /* ---------- finish: save, XP, then the final page ---------- */

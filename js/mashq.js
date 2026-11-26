@@ -292,10 +292,10 @@ function showResult(scroll){
   $('#res').innerHTML=`<div class="score"><div class="big" style="--p:${pc}"><span>${ok}/${of}</span></div><p><b>${msg}</b>Yashil — to‘g‘ri, qizil — xato. To‘g‘ri javob yonida ko‘rsatilgan.</p></div>`;
   document.querySelectorAll('input.gap,select[data-n]').forEach(e=>e.disabled=true);
   nums().forEach(n=>{
-    const good=res[n];const right=SEC.ans[n][0];
+    const good=res[n];const acc=SEC.ans[n];   /* every accepted option turns green (26.11.2026: RT6 Q29 accepts B and C) */
     document.querySelectorAll(`[data-q="${n}"]`).forEach(el=>{el.classList.remove('ok','bad');el.classList.add(good?'ok':'bad')});
     const btns=document.querySelectorAll(`.opt[data-n="${n}"]`);
-    if(btns.length){btns.forEach(b=>{b.disabled=true;if(b.dataset.v===right)b.classList.add('right');else if(b.dataset.v===ANS[n])b.classList.add('wrong')})}
+    if(btns.length){btns.forEach(b=>{b.disabled=true;if(acc.includes(b.dataset.v))b.classList.add('right');else if(b.dataset.v===ANS[n])b.classList.add('wrong')})}
     else if(!good){const host=document.querySelector(`.gapw[data-q="${n}"]`)||document.querySelector(`.box[data-q="${n}"] .boxh`);if(host&&!host.querySelector('.fix'))host.insertAdjacentHTML('beforeend',`<span class="fix">✓ ${esc(SEC.ans[n].join(' / '))}</span>`)}
   });
   if(SEC.kind==='listen'&&$('#scr')){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}

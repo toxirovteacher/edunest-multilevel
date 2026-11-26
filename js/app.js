@@ -510,7 +510,7 @@ function listHTML(p,T){
 /* ================= KNOWLEDGE GLOBE (Multi-Level, 25.11.2026) =================
    Feedback: the long list of sections made students forget what was at the top. Now every kind of task is a place on
    a small planet: tap its pin (or its chip under the planet) and the planet turns, zooms in and that kind's tasks open
-   below. A WebGL fractal (2D dotted planet on weak devices), no library. "Ro‘yxat" brings the old list back (remembered per student, on this device only). */
+   below. The real continents (Natural Earth map) on one 2D canvas, no library. "Ro‘yxat" brings the old list back (remembered per student, on this device only). */
 const GREG={mock:['🏁','#FF4D5A'],reading:['📖','#19B5BA'],listening:['🎧','#9B6BFF'],writing:['✍️','#2BC46A'],vocab:['🔤','#F2B000'],grammar:['🧩','#4C8DFF'],other:['⭐','#F0558A']};
 const homeView=()=>store(ST+'hv:'+U.id)==='list'?'list':'globe';
 const viewTog=cur=>`<div class="vtog" role="group" aria-label="Ko‘rinish">${[['globe','🌍','Sayyora'],['list','☰','Ro‘yxat']].map(([k,e,l])=>`<button data-hv="${k}" class="${cur===k?'on':''}" aria-pressed="${cur===k}"><i aria-hidden="true">${e}</i><span>${l}</span></button>`).join('')}</div>`;
@@ -534,159 +534,146 @@ function gpanelHTML(r,T){
     <div class="tgrid">${r.ts.map(t=>tcardHTML(t,T.indexOf(t))).join('')}</div></div>`}
 function bindCards(root){
   root.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>{sfx('open');go(c.dataset.go)})}
-/* ===== Knowledge universe (25.11.2026): a living 3D fractal (Mandelbulb, WebGL shader) with the sections orbiting it.
-   Spins freely in every direction (trackball + inertia), pinch / ctrl+wheel / +− zoom, adaptive quality,
-   and the light 2D dotted planet for phones that cannot draw the fractal fast enough. ===== */
-const GLB={};   /* one WebGL canvas per page: it survives redraws of the home tab, so the shader is compiled only once */
-const GLQ=[[1.25,130,8],[1,112,8],[.82,94,7],[.66,80,6],[.52,66,6],[.4,54,5]];   /* [pixels per CSS pixel, ray steps, fractal iterations] */
-const GLB_FS=`precision highp float;
-uniform vec2 uRes;uniform mat3 uRot;uniform float uD,uT,uPow,uTan;uniform int uSteps,uIter;
-vec3 pal(float t){return .5+.5*cos(6.28318*(t+vec3(0.,.33,.67)));}
-float de(vec3 p,out vec4 tr){
-  vec3 w=p;float m=dot(w,w),dz=1.;tr=vec4(abs(w),m);
-  for(int i=0;i<8;i++){
-    if(i>=uIter)break;
-    float r=max(sqrt(m),1e-5);
-    dz=uPow*pow(r,uPow-1.)*dz+1.;
-    float b=uPow*acos(clamp(w.y/r,-1.,1.)),a=uPow*atan(w.x,w.z);
-    w=p+pow(r,uPow)*vec3(sin(b)*sin(a),cos(b),sin(b)*cos(a));
-    tr=min(tr,vec4(abs(w),m));
-    m=dot(w,w);if(m>256.)break;
-  }
-  tr.x=m;return .25*log(m)*sqrt(m)/dz;
-}
-void main(){
-  float s=min(uRes.x,uRes.y);
-  vec2 uv=(gl_FragCoord.xy-.5*uRes)/(.5*s);
-  vec3 o=vec3(0.,0.,uD)*uRot,d=normalize(vec3(uv*uTan,-1.))*uRot;
-  float bb=dot(o,d),c2=dot(o,o)-bb*bb,cd=sqrt(max(c2,0.));
-  vec3 col=(pal(uT*.02+cd*.32+.55)*.7+vec3(.12,.2,.55))*exp(-max(cd-.9,0.)*4.)*.36;
-  float hit=0.,h=1.5625-c2;
-  if(h>0.){
-    h=sqrt(h);float t=max(-bb-h,.01),t1=-bb+h,pa=uTan/(.5*s),dm=1e3,st=0.;vec4 tr=vec4(0.);
-    for(int i=0;i<130;i++){
-      if(i>=uSteps)break;
-      float e=de(o+d*t,tr);
-      dm=min(dm,e/t);
-      if(e<pa*t*.6){hit=1.;st=float(i)/float(uSteps);break;}
-      t+=e;if(t>t1)break;
-    }
-    if(hit>0.){
-      vec3 p=o+d*t;float ep=pa*t*.5;vec2 k=vec2(1.,-1.);vec4 q;
-      vec3 n=normalize(k.xyy*de(p+k.xyy*ep,q)+k.yyx*de(p+k.yyx*ep,q)+k.yxy*de(p+k.yxy*ep,q)+k.xxx*de(p+k.xxx*ep,q));
-      vec3 L=normalize(vec3(.6,.8,.55))*uRot,base=pal(tr.y*1.15+tr.z*.85+sqrt(tr.w)*.9+uT*.03);
-      float occ=clamp((.12+1.25*tr.w)*(1.-.55*st),0.,1.);
-      float dif=clamp(dot(n,L),0.,1.),fre=pow(clamp(1.+dot(n,d),0.,1.),2.),spe=pow(clamp(dot(reflect(d,n),L),0.,1.),24.);
-      col=base*(.2+.95*dif)*occ+spe*.6*occ+fre*(base*.55+vec3(.25,.35,.65))*.75;
-    }else col+=(pal(uT*.02+.15)*.8+.2)*exp(-dm*60.)*.55;
-  }
-  col=clamp(col,0.,1.);
-  gl_FragColor=vec4(col,max(hit,max(col.r,max(col.g,col.b))));
-}`;
-function glbStart(){   /* compile the fractal shader once; with KHR_parallel_shader_compile it compiles off the main thread */
-  if(GLB.r||GLB.dead||GLB.busy)return;
-  const c=document.createElement('canvas');c.className='glbgl';c.setAttribute('aria-hidden','true');
-  let gl=null;try{gl=c.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,depth:false,stencil:false})}catch(_){}
-  if(!gl){GLB.dead=true;return}
-  try{const hp=gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);if(!hp||hp.precision<20){GLB.dead=true;return}}catch(_){GLB.dead=true;return}
-  const ext=gl.getExtension('KHR_parallel_shader_compile'),vs=gl.createShader(gl.VERTEX_SHADER),fs=gl.createShader(gl.FRAGMENT_SHADER),pr=gl.createProgram();
-  gl.shaderSource(vs,'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}');gl.shaderSource(fs,GLB_FS);
-  gl.compileShader(vs);gl.compileShader(fs);gl.attachShader(pr,vs);gl.attachShader(pr,fs);gl.linkProgram(pr);
-  GLB.busy={c,gl,pr,ext,t0:performance.now()}}
-function glbReady(){   /* true once the fractal can be drawn */
-  const b=GLB.busy;if(!b)return !!GLB.r&&!GLB.dead;
-  const{c,gl,pr,ext}=b;
-  if(ext&&!gl.getProgramParameter(pr,ext.COMPLETION_STATUS_KHR)){if(performance.now()-b.t0>15000){GLB.busy=null;GLB.dead=true}return false}
-  GLB.busy=null;
-  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){GLB.dead=true;return false}
-  gl.useProgram(pr);gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-  const a=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);
-  const U={};'uRes uRot uD uT uPow uTan uSteps uIter'.split(' ').forEach(k=>U[k]=gl.getUniformLocation(pr,k));
-  c.addEventListener('webglcontextlost',e=>{e.preventDefault();GLB.dead=true});
-  const coarse=matchMedia('(pointer:coarse)').matches,weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
-  GLB.cap=coarse?2:0;GLB.ql=weak?4:coarse?3:1;GLB.r={c,gl,U};return true}
+/* ===== Earth globe (26.11.2026): a green hologram of the real continents (Natural Earth 1:110m land): the land as a fine grid
+   of light, glowing coasts, light orbits round it. One 2D canvas, no WebGL, no library.
+   Spins freely in every direction (trackball + inertia), pinch / ctrl+wheel / +− zoom. A tapped section flies to the front
+   with north up; left alone, the globe settles upright and turns slowly on its own axis. ===== */
+const GEO_LAND='nlB_xBFJFJpBCrBAXGACLEuBAqBBQIKI.vjD1xBlBBZGLIBALGMImBDUFOF.nc3wBaJILCHCJfFfFlBDpBDvBAZIEIqBGSGMIKIMGMKKAeE.3rC9tBaDYELFRFbCTGEI.vuC9tBgBHLCZCbEOG.79B9sBWDWCMJPCXBXCbBTEJIMEaD.5qBrsBEHDHFHXBVDZAKIXBVDPGAIWIOCWAGKCIAQKKSCMHEFIJIH.vwD90BCAQMkBHECECICGCCAEACAcHaIEA6BEUDKBeH4BDuBFsCF6BG2CDwBF0BG4BGEItCChCEPI1BEEKIIGGDKfEPIdGwBBuBEeFiBGiBGQIHIZEbGpBCjBClBCNIZGPIFWKBSFiBCgBCQHgBCaEaGWGeCAIHIGGaEMFeEYEcAaCcGWEYEQBOAcCcDaAcEaBeBcAcAeAcAUGYEaDYCWIMFIHMFUGYHcBWFeCYEeBcBcDKINIJGXCLIDGHQQDaAaAYBUFIHcAaCaEaCUDaCSOQHWDaCQHaAYBYFQIIIUHcCUDOHaCUEWGYCcEaCSEMGGKDIFIFGFIFIAICIIGIKEGDKBIIIMGMIOGQGIIMGMGUAMGOEQCOGMGQCMDHHTFHDPEPBNDNFJFBHAHKFNDRBLFLFLJDHIHKFQDQFIHEHGHKFGHCRGHCHGHBJLHLFZDHFNHdFZDXDbDPHfBjBCfBfAGHeDWFMFVFhBCbFBHAHYFEHYHsBBkBFcFkBFyBDwBDiBFmBHUHKHYGgBGkBGqBGiBGyBAyBBoBFMIcG0BCmBEmBEqBCsBEeGNGHIAGlBApBDlBAFICQKEcEiBEYGYGSIcEaCOCgBCcCaEYEWGcGSGSGGIVEIIOIUCWGUGQIKKOEYAKHYAAIKIWBGHYBaEYCWAKHWGUEWCWCWGWCQGMGQDUCQJKFYEIIUEaAIHQIWCYAWAWBWBIFOFWEWAYAWAUEWCQGUCUCQGKMMGUDIFSDUAOFOFWGGISEWGSCYEQEQGQESBSGOGSASECISGQCUESCSBUBQDCJQFMFYBOFQFUAQESISDUBSDUAUAQVADBJTDPHCHYADHJFJJQFYBWEMIGIMGMGEGMKMCWCUCUCKIGIOIUEQEMIMCOEUBSCUCWAOEKOIFIJSBSBUCUBSAOCQBQDSEWASCUBOGKGOGYOOBOFOFaLUBSAWEUCSGMGYAOEQDKFOFWAODYFYBWCQGMGSCSBWBSCSASBSBSEWEUAWAUCSCEKCIMFEHGHIHSDWCaASCaAUAaAWBOFDHMFWDWFaDcBUDWAOGSDOFSFYBYBKHWDQHWBWAWBYAYAWDWDUDOFBHJFJJFFJJZBLHZDJHLFPHHHDFBJAHMHEFIHmBBIJjBBdDlBBRJDJHHJFaHKHSHYFcFeFuBFKJ6BDEBOF4BEuBF.rqBzhBaNcDHJTAJGFHPFVCPGTCZMTKbYSDcNaHKKGOUIOBGJ.xkB9fQHFHbFHIRJJKYKQD.-rBhffBAMEIAEOFSDCD.86CvZUFKCQEMBCXHFBPFGNNDANCLQBOLQAK.ksDxZEHQIEHAJFHNPJHIJPAPFFNLTPJJDRALGVCDGKQaUMEQGQMMKKOIGCKOK.ktDzWOTCOIFEPQFMBMIKBDRFLPCFFCJBDHJJNPHBGHCKQFMVICIOGCQAMHOAEJINSJOIAMJOF.uoD7NHDJGNINMLODGKAKHKFGFQL.wvD5KGFBLNBJCBKIGIB.vwDrK0gHDNDBIKEGAzgHGECBJ.8oDpKFBFIAG.uoDpJEPFCDBBGBQ.qfvICXGHBJDFFMDFEPBHFDBRHVJbLlBHbHVPFRHLGPGDKBSHQAOCQKCAIKOCOFIDOASGKCOKAMEIEIAMMQMGKBIIBKOCMGKGJGH.45CzIGNOGGHKHBHERCJGBGRBJGNWJOJMHBDMNITIEIJEEEVOLKHQPEPCJBNKPBRDJDRAJDNJTNHHPFJFRHJDNDNCFLHVARHJHLHPILECKJDRNRGJCLCTGLMDQDKJITCGKDOJNRDMMCMIKBOPRLFHPPIAMLOJIEEZMNATKjBBZFVHTCTJRFDJFHRALBRENBNBLJFAJDJHNCNATMLEAMKCEEAICOBMJUDMAKHOAGHIDQJQDIKHHSKFGHAKJQBGDGCMEECKBMIOCNIOSGIIQIKCEBQGMCEGGAKAWGKKGKKKCIAKOSIRKEHKGKKDCOKKGIKEAGIBAEKCKEOJMLMAMBDMKQIEBGIMMGKBSEAKPGMEMFMHQDGCMFMEIAECKJFJHHFACHFJHJCFQLQFKFOLGAKFEFSFOGEMEICMGQBIAGBMEQCEBGEKEMAGIGGJCLEBCHGJCL.qlDxGGFNAHMMD.urCrGHBZOSEKFIF.ykDlGHALCFECIODGD.ilD_FDDNSDMGAIP.4tCpGPFBECGIMUICEQGOAICGBFFVHPF.2pChFIFMCEHVDNBLAIKKC.6sChFBLdDbCAIQEMFOA.-jDlFADPIJGHIECIFQH.uiDxEDBHEHIAEMH.8jCnEmBBGIkBHINeDYLVHVKRBVCREXINCHDjBIDKRAOUYBQFIB.m0C7DJNBQEGEIEF.uhDnEFBHIJMDQECCFGFILKF.g_CtDJBDDJFLDJAPGLGCGSDKCEKCACJMAGIKGBMMCEDAL.wvClCFFNEDIUC.yxC9BGPPKPALANAEMaA.2_C5CFFDMDIHGLKNGEEMFGDIDIJIF.6zCXGfWLQWWMSASHOFWDiBNmBLOJKJELgBLGJRBENSLMVMAAHODFDWHBFNBDGRCTEPMJMLQZKPFLFCPPFJCVCRQTEDFZAIQOGFWJQlBSPAdUFJHBDIAIPKWGOABGdAHMREHKcEKGgBH.ouCcPTNDTEfARDDNSRMIkBIAJJEHLRHUZDFSXALLFHGKQTHDGCINMCUNFCXAbLDHGGSDUHAFOIOCOKgBEISOQFYBYAUO.uwCWBPJCBNIJFBHMFaEQGICLMB.kiC1DVAPSZQHMPQJOPcPSFQHQROJQPMTWBKMBgBDSRONMHSVWAQNMPOJHPMHIACNIJOBKNDX.2pCkBWRXBFNARRNBTHdBGVHHMNCJGXHHKNAPCBaJGJQBSCSMOOFQEEQIEYEOQKMIISKOOKQIAKJCHMFSFBHNAEJNHLROR.gvCoFCLALFRHUHJGPFHXMFOGKLIFHJCNLDGIQMGMIGJQGEKOABQQJCJ.4yB8DRDHQDcIgBOJKNKVDT.hmBqGRBDCGGAIMCEA.wtCuGHHFLFFLOEGEGCMMADLQS.iqC6FZRKOOMMOKUEPNL.msCuHMFMAAHJJLFAKAK.uuC0HGXPGAFGLJFAOFCDMMBAILQSB.-rCmIDRJKJQSB.6rCyLMFGGCFBHGNDPLHDPEPMBICaJBLGDBJPKHMDHNMRDJGCIGEFGBHJMDIAUIHCgBGS._oBsLDDPALBAKCCQAKB.hwBmLFDLEJGCGIAEAOBKDEF.rtBuMSDCEQAMFEAEFMABFKAKHHHJEHAHABDHADEFBHNFEAENEHBNCHDLGCIUDOBIGJIAILCEG.-kC2LPJPGBSKIWGMAEHHH.lhD-LDDDEAEDICCCEAEACCBIBEBCBGHHF.xhD8MFADEBCCCGBGB._hDoNABJAAC.xiDqNBAFADEACGCCA.xjD4NDBFECACCEA.5xBoOIHUCGDSLMJGAMDBFQAOHBDNDLANCdBOKHGLAHGDMLAREFEZEHEIETCNJHADFHBJCMGEIIEKEQCECSBQA.twB8OFBDMHGEMGAIR.4rCoOJPJQBQMSQQKFDL.zwB0QVDBIKCOB.jwB0QDNDCCKJIAC.k0CqVEFLLHGJDFLLGAKKMMDIK.0VqWNJCBABTHJCDIIACACGQA.6OqWKFQAQABDMCBFdBAEXE.2J8XFPCFDJPIJCbKEKWBWC.4F4ZMNBZJAHFHGAYDMKB.k4CmXHPEJJNZHjBBbVNGAQjBDVJXAUPNfLJJIESLGHOUGKMUMOMoBGWDUkBOJeUKIOYDYIMWEKbAPRT.gGsaHPHEFOEGOI.-5C0bODOIEVbFRTfOJVVADUKOWCGcGQWV.5nBidQBSAJHHAXIFGIG.zmB2eJAZGRKGCaFWH.ltCqeJBhBIFIPGDGVEFKAGWDMDSBIHKHUH.hjB2fNROGMDFFSFIGUHFNOECJINJPHBNEEQDEXRLAOKTETAnBABGMIHEQMUgBOMQGKADF.9yC4hBUCHVSPHALIHKJGBKAG.45C2fWhBdGLbSVANPMLNDQCUBWEOCcLSCcSKHIKEENITBR.nE2gBjBLbCQWJUcQOISCULJNEN.-H4iBLPVMBIeG.z_C2jBTHJGDKSGMEMBKF.7B0kBVTUCWADPRRUBUZOBMXGHYDBLLFIJRJZAhBFJELJRCNFLEeUSEfEFIWGLKEOeBEMNMXEFGIIFGLJAULKIUQQQA.vnDulBLBLCNGUEQB.xxB8mBHLHCFGCCIGIA.lzBmnBXJNADGQIaA.prD8nBMDMCQFUBBBNDPEHERBDC.n1BipBEJKEMFWFYFAJQCOHRFdGLITJbJHKZBQKEQGS.hJypBDNWNZN5BNRDZC3BIUIrBKkBEAGpBEMOgBCeNeMaFgBK.tvB-pBVADKIKSEQFAHBD.vwDkrByBP0BTBLOFFQ2BDoBRTJfBBRHDRAPGZGDKTCXBJGEIXDKJLHghHAZJZCSJMPKFCHFFjBE3BNRBfPbLHHbOzBPJIRJbEFNXTCHWDBbTBHPIHhBLHVdDFVbRHOHeLsBKcSMAIgBGiBYkBUkBQQeXBLRzBVPazBHxBfQNrBDdBAOdEZJ7BChCF_BlBtCvBgBBKLUDMKWBcVCRPTBXHfdbHNZXbVLLbLLALKbNBHHCHHFFANJDDDHFLDJDAJBBIBMJQXGLAXHJRDPHRBBKEQJUQENQJEBBFBBEDAFEGIEEBCGMBELCHEbFPHTFKKDIQMLKPFXNLLTBJJMLQDAJQDWOSHOACLbDJLRJJNUJITMROPAPLDELMFDPDPLBNTPbRXbRbPVBLJHGLHbJTDHVJAFOGIbGJBZRPRDNOVUZSLMPIlBBhBPNXLPRXRHMGOPMPCHMJURIRAEQRABVJdFPAPOAIRERKJMDKJGBMLILANBJCFCLIFGRAFNBRQXQBKLMBSHKCODKHGDKJMJKDLDKEOGSBQGOHMCWHKFYDaHQNJVNLCLEGaDSPYEGLENQFKBKDKHMRACHFLJEBBFCHCBHNAXDAPJJbNXXNLTNAHJFRFJBFPEZCPHRAhBLBHPGFRFHLHFRSJcHUFKJSFaDMRcHmBFaAYDUbLNCZYIIFGVSPEFQNOlBDfAbBlBGVEVCHaJCPBTJXGTQTGLSPaJBNGFHLCEJBDGNIRKDEHOHAHBHCFGFEFCDBOGKGCGFALDLEHECAFQEQAMBOOOMOOGGCBBHBDCPINMFODMBKLEFIDADHLBFHFHNJCDFBJCLBDJALFBJDDLAHFAHJFLCLFJANFDJAFTHfJRNJBFCJHNDPBFADFFABFJAFBNAFMCMDGDOFIECBICEAIBKHGAIJGLSFQNOHCNUBOCMLWJIJEFMAEFKFEFQNQJOJAEKAIEIBCFHDPDJFDFIJINeBBIVMTQfIJGLSVDBANYREDGTDDCTIXIDKHMXGRKJcRKLMLGFKFEFAHLFIDIDEHIJKAUGUCSGKCIEKAIAIEMCIGIAAFBJALDFDVJVLZRdRVVZTRdRTPVXDJDFNHFHFBDNFHDLHHJXCLMFCFFLCFBJGLKTGDEJBTEPAfEJFNHNLLTHVJVVHBNPHDBNKPEJAFEABTBHEDBHJHPFXLHFCHEBBJDPBPFJNJDBHJFJJNXVNLNHVHJBBDLCJDVELBHAVHPBLHJAHGFCJIABDECMHOGEAOLUJQPaNQHODUFOFeAYBMHIJQLYDOPSBQBMESGSCKGSEIMMGKCOAMFGFMDMAEGIFUDOJMCEBGFQPUTUNSLUAGEGGQEODEGWEQHMJEDKDCAGTHHCHFPCJMHONONARAPDPDfLLFRFRGHANELAXDNFTHDCFATIRQRKLOFCNIJKDIBOJMHIDCFEBKBEFCLKHADGAEFEBEBQCIHQJGIEKOEKBMGKESDUBKCKDKLICIAKIGGKAGGOMOGCGMAKIOMGOUKISCQOKGQQDaIQCMMMUKQIOUGOOAMJUCUDIAUKWEMIUGiBEgBCKDUIUAIDOAWKODAJQICDJJAJGDBRLJCJMAEJIDYFICQDaHKRSDcHWJKEKKFQGIQKMCcDGHIAGDUBGFaAUFSFKBQGIGSCODGJEIQFQAKEGGBCGKEOCGIQKOBQEIFKIILBRENLdBPKVCDHNDTMVALUNKKQLKWSeCIOmBBYMYGiBAiBNcHYESBYKCKDMLILCFGZSXIPKOEQQJIcIAGRDPBLFTBPFALKFUCDHVDZJLEEITGCEUIFEfEAITBFLPNAFJDFCDXLHFNGLCHSFDDXBHFPJHICENCJAXDOLJBLAJKDDGLKJHDKJKFAJREGJLBIRNAPIHQDOHKJKAGDCAELIBICOCGBEDCFGJERGLIRGPOECJIAILCFHFGAIECPCPFCJBFGJSJKPWPQAGFFDSFOFSJCDDHLKPCHLOHBJJBJPHBAGEMEEHKFKHEFILEJINCPIRONKFUJCPIJDLHHBRLlBGdFBLALRNZDBFLLHPILLHDNNDNNZATALHHHJCFIFKTEHFJEJBEQBMJCDGCOIIAIEMAIDGAIAOHIcOYBcAWDQCgBBKMEoBTWPKdIBOaEiBFFYSJuBQGQSEQEKGSecIQAEEQAEDOKDIBMHKAUEGEGSCIEQGBJDFCFKBDHFCPNGJAHUDAHWEKGWHKFOGgBIYIUDCFUAEKcGDQAQKMSIQPQAEQCMFBNGBMaGaCUDWCWKTKjBBjBFfFLMTGEUHSIMSMuBWOEBIbKhBFTNELfPnBRNbONUJRVVFHhBJRXCLPXAFSPWPeLMnBXZDbKHWFuBSM2BSmBUmBcwBmBgBQ4BYsBKgBBeQmBAkBE-BNZFWLUGiBL2BDsCXQHANVJfF5CQNDgBNCdaFQDCILKOGwBLQGLOuBUSBUFKOPMKMNM4BHKJXBALOFgBEEMqBKmCSQBTLYBOGmBCeIWLYMVMMI6BHcFoCVOKTKBGXCIILQAGkBSOSOE2BDELTPOFGNDbWLJNlBbWBIGWGGKSKLKIOVCDKQUZQkBODOKCKLHTWBJOiBIqBAkBLRSBUkBGwBBqBCPMYMWAoBK0BEGE2BCQDsBKmBAEKUIwBIiBFbFuBBEJUE6BAsBJQHDJVFzBJPFYDeDSEKNKGgBEgCDEJ0CBCOqBBgBAgBLKLLHYPgBHUUgBHiBGmBHOGiBBPScI0FLSL0BPwCEoBBQHBPYFcEkBCkBDmBCkBRYGPOKI-BFqBC6BJ.2e6ZKNKBGDPBDPDHFDAJGNSDOJeDeGCEDOEWPGGONAESUFQINMFKPDBPFOBEGIDIXGHSLGAGUBAOSEQBESDOTBPEXHRDJLRDTTSRBNWX.37BmrBNFZGPBbISGOIUDMDGD.vwD2sBghHNVADG.vwD2sBCCSAcFBDTDZB.x4BurBATaQYNFNUNUOOSCWcBeBaJCJPLOJBJlBNbBVGFJRRFHXNbBPHBLVDZPTVHPBXeBITKNcEmBHUHOJYFWHgBBWBBPGTOVeTQGKWJeNMgBIWOMOBONSXOYWJSFeOGiBFUBSESFYLGHkBAARGXSDOLeMUWMIQRaXWXHNaJSLgBFOFIPODIFCXNFNHhBFXRhBBrBEdATBPNZHdbVRQEgBaqBQeCSJRLGVGPaJiBEUWANOHXLtBLRHXPNCBSkBQfAVDCFTJVFTFLNBBALGJIABGGDBFLBJAPDHALBPFeEGDbFNAAEFFGBDNNPBGDAFGEJEDAHFHJPBCGMJIDQBHELNCOFARGBCFETNPTFNLJAJHBFVNLJHLDNENGPKNAJIVANAHFLFBJCBIHGJQJQDIEODKPQHETJDCJKLEVBRCPBHBEFAHEDDBHCHDNANMRBNELBRDRPTHJJFHANCJEFHRDNBbBJEJGJEPONELIJWDIJSGOCQEMEMIGMAQEGOGWEQAMAGDAJLJDNEBDJDNFEDAABEBADDJCBBHCBDJDDBBDFGDCEGDCAEEGACBCAKAKAGCCCGAGBEAECKBCBGDGDIBGFBBBDCHDFBHBJCDAJBBBHAFDDCFCDGJIHKHGHADIACAGDKCIEMEGGMABBMBIDIFGDMBOOICAIEQMKMACEQBQKIGIIIAGFDFBFJBGHALJJIPIAGQHGAQYIBIIIGNOBOJAFSBWCKHQBMGAEYCYAPFGJQAQJCPKAIDOHMNAJIAMJIFYDCEQAUDIDODWPCHIAELMhBKDCNPPGFkBBATQMYFiBNKJDLYGmBJeAePaVOFSAIHGXELHhBJLbbNXNPFBFNClBFdBNFHDZTZBTRJDLVAdHPHVFVPRTBNCLDTDJNJVjBRPNHHTNLHLVLPEJBRKNBLMBJaRDNOHBJRZdJnBDVCELDPEJLFVDRIHFCTOFKIGLRFPLBTFJRAPLFNUNUDHRXLLXRHHHGVMLHCRAHDRHDRHBXIVOXKHOGMJMBiBIUWQdGSQGiBYHKqBNGFZLEGcGmBKMFUBWICMgBOgBKeFeGQBYMaEmBGqBGsBBgBDeTKBIlBUjBWPOHQCGPaTkBRoBHKHONOPIIIJUGOQMKODKHJLKEEBSGEEMIOBIMEMIBGICBKGGKCIMIKHGEMDSEEDSHKFGDMEEDCDGJGJBDFHFDABDKLFBBBJBDMBDFCDIHCFCHAADDCJEDGCCAGFEHEFCBGFECFDDDEHCBEAGCIDCEEHGHIDGJIJICEEDCCDGFCBFLCFCJEJAFEJELAJEJIXWJGPGLBPFJBNENERKPCVKRIDGLCTGHIVMJMDKGCBGEGAGFKBIFKRUTOJORIBECMJGLKDOLALMHKBGJOHQCIPIFBLGBHCJCNIHONEFCAEHCAELGFGFMJGTGHGJAJKAIJIHADJHBAFMNMNKJEAQBKJGNKBDDGNELMCCIBIIAKNOLGHMHMHQHSDKLMJCBGLCFETCDEBMTUPcAEJGNSDQJKEQASFQISEkBDcFQFKCEeHKRGGDQFQDAlBUNIjBILSEMZKDQXOAKLIRGDSZQLSRCfAXGpBUREjBIbBlBKXIVDENLBVDRFVDDKKUWGFGZLNLbNOJRPVHTFFHdJFJXHNARDTHRFhBFBEWISGWMYCKIcMEEQICOMMXFFELHLKFFHKTHLABMEGLIZDRKLEBMNIIMQKGKQCOBQIQAOGDIJEOILAVDFFNGdDbGHIZMcIsBKQABJqBAPMXINKTIbIMKkBAYKGKUIUCmBKSBeMeFQHIEiBBBDgBDUCqBFmBBQBaEeFWDmBDgBJUBSIYGeBeIgBGOHOEGKOBgBRcOCPYEIGYBgBHuBHcDUCaJbJkBD2BCSEULWKTIMIYASCQDULWCiBJgBEeADMSEgBHARMQQAKUVMXICWYOaBUJcVRJ.rnC2tBJHuBGaJYKSHQRKINUSCUBWHMTGNiBJkBJBHfBMHFFjBCjBGVBlBF7BDZBLKZGRBXQMCgBCcAaElBErBBbAJIuBIfAhBGQOOI2BM.phC8tBRLdOGCaA.1vB2tBAFTCVAVDFCVKCIICuBB.j2B4tBQNSQ0BKiBVDLoBGUIsBLcHCJmBGUNwBHSHSRjBJuBLgBFeReAFNhBXXIfUZBBLULcJIDMTFNZExBQcPWLCH1BIpBMXKGGdKbKAF5BDRIOOmBAoBEFGIKYUDIHIdKpBGOEVORAPIJFjBDnCGrBGfCPIUIbAFUQSUI0BG.3-BkuBYDkBEGFTJgBHDRhBHRCNGxBQAGqBBVO.45C4tBdApBCBCSIaCcH.n6BwtBVPVCLQAKKKUEqBAmBDdR.prC0sBzBJJItBMGGQQSOTMkCCcDyBAUFWHZFvBNZN.m-C-uBVHfClBIGGkBD.v6B8uBLHbCXEKKcESF.26CovBPPpCAfDnBOKMaE2BA.x9B-vBQHALJNfBVEAKfABOWAeGcA.zjC0vBIHSEUAEJLJjCBxBJdADGqBK5CDbEcUSG4BHkBLiBAbSSIUB.-jBmsBLB_BEFIjBGBKUEBMoBQREwBQFKuBKiCOiCCiBIoBCOHNFnCJ7BH9BTdTfRER.l7BmwBWFoBASFFHYFMDcAcBgBEoBCiBBUHGHNDbFZE5BDnBAhBCzBGHMBKTIpBCVIII.zoCwwBBNPHRAlBHfDbEiBQqBMeA.z6BuwBJAlBCDEoBAOD.7kCywBlBFbGQIcCcD.uP2wBrBJjBGOELIqBEIH.xkCkxBXDfAAEUGKB.77B6wBdFPGJIAIaBKAYH.x-B-wBIHfCfGtBCUGXEBIoBB2BH.2hC-wBxDHmBaQCOA0BL.uL6xBgCNxBHJPRDJPXApBMSGdGnBSPQ4BGKFcAIGeC.8PoyBoBFdL5BB5BEDEbCVI-BGcDUG.-fqyBZBRBBBXDVEMItBAoBEeAEFMGSCeD.u-BqxBpBB3BEhBIPOZE0BOqBGoBLuBR.r2B6xBYHbFjBNjBBpBCVKCGQGlBAVGLKOIOGUCHEuBCaLiBDgBD.5qB-zB2BBqBBkBFADvBJxBDRDsBAtBLhBFhBPnBDND7BBcBNDQJRFfFJHbFEDiBAAD1BLzBG5BDdClBCBKkBEJOOC0BJZOhBEQIkBEGGbIHM2BBQBgBItBClCBjBIPIXGDGeEYAmBEeIYBWFQMaCkBC8BCMB6BCqBA.9Qm0B-DPlBHrCArDBKDmCC-BFmBGQHVJ0BGgDI8BDMHxCNJF_BBuBBXNPLAXYLdBhBFmBJERVAaRrBBYHHFbDbAaNAHnBIJFcDaLGPhBDPIXKGLXL2BAcB1BP1BP7BHVATHbTrBNLBbDbDRNANJLfPIPJPJTbBdSnBARKNUhBYJODSbSIONIUYeGIIEQVFLDRBXGBOIKUAoBDhBMRGTBPGWSLIPOXUZIAI1BMpBC1BBvBAXGhBM0BGoBCzCEtBICIsCKqCKII1BGSIkCOeCHKuBE-BE-BAWF0BKwBFcBqBFvBKCIkCMmCAaGmCC';   /* land outlines: Natural Earth 1:110m (public domain) via world-atlas@2.0.2; 0.1° steps, delta-coded */
+const GEO={};   /* decoded once per page: coastlines, the land mask and the dot grid */
+function geoData(){
+  if(GEO.coast)return GEO;
+  const rad=Math.PI/180,A='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',T=new Uint8Array(128);
+  for(let i=0;i<64;i++)T[A.charCodeAt(i)]=i;
+  const rings=GEO_LAND.split('.').map(s=>{let i=0,x=0,y=0;const r=[];
+    const rd=()=>{let v=0,sh=0,c;do{c=T[s.charCodeAt(i++)];v|=(c&31)<<sh;sh+=5}while(c&32);return v&1?-((v+1)>>1):v>>1};
+    while(i<s.length){x+=rd();y+=rd();r.push(x/10,y/10)}return r});
+  const V=(lo,la)=>[Math.cos(la*rad)*Math.sin(lo*rad),Math.sin(la*rad),Math.cos(la*rad)*Math.cos(lo*rad)];
+  /* coastlines as one flat list of unit vectors; b[k]=1 where a new line starts */
+  const p=[],b=[];
+  for(const r of rings){const n=r.length/2;let on=false;
+    for(let k=1;k<=n;k++){const i=2*(k-1),j=2*(k%n),a0=r[i],a1=r[i+1],c0=r[j],c1=r[j+1];
+      if(Math.abs(a0)>179.95&&Math.abs(c0)>179.95){on=false;continue}   /* the map is cut along 180° (Wrangel Island): not a coast */
+      if(!on){p.push(...V(a0,a1));b.push(1);on=true}p.push(...V(c0,c1));b.push(0)}}
+  GEO.coast={p:new Float32Array(p),b:new Uint8Array(b)};
+  /* land mask (equirectangular, 0.25°): rings unwrapped across 180°, Antarctica closed round the pole, the Caspian left as water */
+  const mw=1440,mh=720,mc=document.createElement('canvas');mc.width=mw;mc.height=mh;const mx=mc.getContext('2d');
+  mx.beginPath();
+  for(const r of rings){const n=r.length/2,L=[r[0]];let sl=r[1];
+    for(let k=1;k<n;k++){let lo=r[2*k];const p=L[k-1];while(lo-p>180)lo-=360;while(lo-p<-180)lo+=360;L.push(lo);sl+=r[2*k+1]}
+    let d=r[0]-L[n-1];while(d>180)d-=360;while(d<-180)d+=360;const sw=L[n-1]+d-L[0],pole=sl<0?-90:90;
+    for(const o of[-360,0,360]){const X=lo=>(lo+o+180)/360*mw,Y=la=>(90-la)/180*mh;
+      mx.moveTo(X(L[0]),Y(r[1]));for(let k=1;k<n;k++)mx.lineTo(X(L[k]),Y(r[2*k+1]));
+      if(Math.abs(sw)>180){mx.lineTo(X(L[0]+sw),Y(r[1]));mx.lineTo(X(L[0]+sw),Y(pole));mx.lineTo(X(L[0]),Y(pole))}
+      mx.closePath()}}
+  mx.fillStyle='#fff';mx.fill('evenodd');
+  const im=mx.getImageData(0,0,mw,mh).data,mask=new Uint8Array(mw*mh);for(let i=0;i<mask.length;i++)mask[i]=im[4*i+3]>127?1:0;
+  GEO.land=(lo,la)=>mask[Math.min(mh-1,Math.max(0,Math.floor((90-la)/180*mh)))*mw+((Math.floor((lo+180)/360*mw)%mw+mw)%mw)];
+  GEO.dc={};
+  return GEO}
+function geoDots(n){   /* an even grid of dots over the land (Fibonacci sphere), as unit vectors */
+  const G=geoData();if(G.dc[n])return G.dc[n];
+  const o=[],ga=Math.PI*(3-Math.sqrt(5)),dg=180/Math.PI;
+  for(let i=0;i<n;i++){const y=1-2*(i+.5)/n,r=Math.sqrt(1-y*y),t=ga*i,x=Math.cos(t)*r,z=Math.sin(t)*r;
+    if(G.land(Math.atan2(x,z)*dg,Math.asin(y)*dg))o.push(x,y,z)}
+  return G.dc[n]=new Float32Array(o)}
 function globeInit(){
   const cv=$('#glbCv'),R=ui.greg||[],T=ui.gT||[];if(!cv||!R.length)return;
   const ctx=cv.getContext('2d');if(!ctx)return;
   const box=cv.parentNode,panel=$('#glbPanel'),back=$('#glbBack'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const rad=Math.PI/180,TAU=Math.PI*2,LAT=[16,-12,24,-20,6,-26,20,-6];
-  const TAN=.5,DH=3.6,DSEL=2.45,DMIN=2.05,DMAX=5,ORB=1.42,PR=1.12,AUTO=.00014;
-  /* quaternion helpers: the planet's turn is one quaternion, so it can spin in any direction without locking */
+  const rad=Math.PI/180,TAU=Math.PI*2;
+  const TAN=.5,DH=3.6,DSEL=2.45,DMIN=2.05,DMAX=5,GR=1.25,HM=1.13,AUTO=.0001;
+  /* quaternion helpers: the globe's turn is one quaternion, so it can spin in any direction without locking */
   const qm=(a,b)=>[a[0]*b[0]-a[1]*b[1]-a[2]*b[2]-a[3]*b[3],a[0]*b[1]+a[1]*b[0]+a[2]*b[3]-a[3]*b[2],a[0]*b[2]-a[1]*b[3]+a[2]*b[0]+a[3]*b[1],a[0]*b[3]+a[1]*b[2]-a[2]*b[1]+a[3]*b[0]];
   const qa=(x,y,z,g)=>{const s=Math.sin(g/2);return[Math.cos(g/2),x*s,y*s,z*s]};
   const qn=q=>{const l=Math.hypot(q[0],q[1],q[2],q[3])||1;return[q[0]/l,q[1]/l,q[2]/l,q[3]/l]};
   const qs=(a,b,t)=>{let d=a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];if(d<0){b=b.map(v=>-v);d=-d}
     if(d>.9995)return qn(a.map((v,i)=>v+(b[i]-v)*t));const th=Math.acos(d),s=Math.sin(th),wa=Math.sin((1-t)*th)/s,wb=Math.sin(t*th)/s;return a.map((v,i)=>v*wa+b[i]*wb)};
   const qmat=q=>{const[w,x,y,z]=q;return[1-2*(y*y+z*z),2*(x*y-w*z),2*(x*z+w*y),2*(x*y+w*z),1-2*(x*x+z*z),2*(y*z-w*x),2*(x*z-w*y),2*(y*z+w*x),1-2*(x*x+y*y)]};
-  const qarc=(u,f)=>{const c=[u[1]*f[2]-u[2]*f[1],u[2]*f[0]-u[0]*f[2],u[0]*f[1]-u[1]*f[0]],l=Math.hypot(c[0],c[1],c[2]),d=u[0]*f[0]+u[1]*f[1]+u[2]*f[2];
-    return l<1e-6?(d>0?[1,0,0,0]:qa(0,1,0,Math.PI)):qa(c[0]/l,c[1]/l,c[2]/l,Math.atan2(l,d))};
   const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
-  /* each section is a glowing place on an orbit around the fractal, spread around it, alternately north and south */
-  const C=R.map((r,i)=>{const lo=(i*360/R.length+15)*rad,la=LAT[i%LAT.length]*rad;return{lo,v:[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)]}});
+  const G=geoData();
+  /* the sections stand on real land, spread round the world (Tashkent first) */
+  const ANC=[[69.3,41.3],[-98,39],[134,-24],[22,2],[-60,-11],[9,49],[113,33],[78,22]];
+  const C=R.map((r,i)=>{const a=ANC[i%ANC.length],lo=a[0]*rad,la=a[1]*rad;return{lo,la,v:[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)]}});
   let sd=7;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
-  const STARS=Array.from({length:700},()=>{const z=rnd()*2-1,t=rnd()*TAU,r=Math.sqrt(1-z*z);return[r*Math.cos(t),z,r*Math.sin(t),rnd()*TAU,.6+rnd()*1.1]});
-  /* the light 2D planet (shown while the fractal prepares, and on phones too slow for it): Fibonacci dots, coloured near each place */
-  const P=[],cap=Math.cos(30*rad),ga=Math.PI*(3-Math.sqrt(5));
-  for(let i=0;i<900;i++){const y=1-2*(i+.5)/900,r=Math.sqrt(1-y*y),t=ga*i,v=[Math.cos(t)*r,y,Math.sin(t)*r];let b=-1,bd=cap;
-    C.forEach((c,j)=>{const d=v[0]*c.v[0]+v[1]*c.v[1]+v[2]*c.v[2];if(d>bd){bd=d;b=j}});P.push([v[0],v[1],v[2],b])}
-  const S={q:qm(qa(1,0,0,.3),qa(0,1,0,-C[0].lo+.55)),w:[0,0,0],D:DH,Dt:DH,sel:-1,tw:null,drag:null,pinch:null,hover:false,vis:true,
-    hit:[],time:0,gl:false,fade:0,dirty:true,pf:[],warm:20,good:0,mode:''};
+  const STARS=Array.from({length:300},()=>{const z=rnd()*2-1,t=rnd()*TAU,r=Math.sqrt(1-z*z);return[r*Math.cos(t),z,r*Math.sin(t),rnd()*TAU,.6+rnd()*.9]});
+  const NDOT=22000;   /* dots over the whole sphere; the land keeps about 29% of them */
+  const S={q:qm(qa(1,0,0,.38),qa(0,1,0,-55*rad)),w:[0,0,0],sp:0,D:DH,Dt:DH,sel:-1,tw:null,drag:null,pinch:null,hover:false,vis:true,
+    hit:[],time:0,pf:[],warm:20,lq:0,rel:0};
+  const DPRQ=[2,1.5,1];
   let W=0,H=0,dpr=1,last=performance.now(),M=qmat(S.q);
-  const size=()=>{const b=box.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height),d=Math.min(2,devicePixelRatio||1);
-    if(w===W&&h===H&&d===dpr)return;W=w;H=h;dpr=d;cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.max(1,Math.round(H*dpr));S.dirty=true;
+  const size=()=>{const b=box.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height),d=Math.min(DPRQ[S.lq],devicePixelRatio||1);
+    if(w===W&&h===H&&d===dpr)return;W=w;H=h;dpr=d;cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.max(1,Math.round(H*dpr));
     if(W&&H)draw(last)};   /* redraw at once: a resized canvas is blank until drawn */
   const ro=window.ResizeObserver?new ResizeObserver(size):null;if(ro)ro.observe(box);
   const io=window.IntersectionObserver?new IntersectionObserver(es=>{S.vis=es[es.length-1].isIntersecting;S.pf=[];S.warm=10}):null;if(io)io.observe(box);
   const rv=v=>[M[0]*v[0]+M[1]*v[1]+M[2]*v[2],M[3]*v[0]+M[4]*v[1]+M[5]*v[2],M[6]*v[0]+M[7]*v[1]+M[8]*v[2]];
   const pill=(x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()};
+  const BUF={};
   function draw(t){
     if(!W||!H)return;
-    const cx=W/2,cy=H/2,F=Math.min(W,H)/2/TAN,D=S.D,pj=q=>{const k=F/Math.max(.2,D-q[2]);return[cx+q[0]*k,cy-q[1]*k,k]};
-    const Rs=F*PR/Math.sqrt(Math.max(.05,D*D-PR*PR)),k0=F/DH,zp=S.sel>=0?Math.max(0,Math.min(1,(DH-D)/(DH-DSEL))):0;
+    const cx=W/2,cy=H/2,F=Math.min(W,H)/2/TAN,D=S.D,Rs=F*GR/Math.sqrt(Math.max(.05,D*D-GR*GR)),zc=GR*GR/D,k0=F/DH;
+    const zp=S.sel>=0?Math.max(0,Math.min(1,(DH-D)/(DH-DSEL))):0,lo=S.lq>=2,sc=Math.sqrt(Rs/(F*GR/Math.sqrt(DH*DH-GR*GR)));
+    const m=M.map(v=>v*GR),pj=q=>{const k=F/Math.max(.2,D-q[2]);return[cx+q[0]*k,cy-q[1]*k,k]};
+    const proj=(src,key)=>{let b=BUF[key];if(!b||b.length!==src.length)b=BUF[key]=new Float32Array(src.length);
+      for(let i=0,n=src.length;i<n;i+=3){const x=src[i],y=src[i+1],z=src[i+2],X=m[0]*x+m[1]*y+m[2]*z,Y=m[3]*x+m[4]*y+m[5]*z,Z=m[6]*x+m[7]*y+m[8]*z,k=F/Math.max(.2,D-Z);
+        b[i]=cx+X*k;b[i+1]=cy-Y*k;b[i+2]=Z}return b};
+    const path=(L,b,front)=>{ctx.beginPath();let on=false;const f=L.b;
+      for(let k=1,n=f.length;k<n;k++){if(f[k]){on=false;continue}const i=3*k-3,j=3*k,z=(b[i+2]+b[j+2])/2;
+        if(front?z>zc:z<=zc){if(!on){ctx.moveTo(b[i],b[i+1]);on=true}ctx.lineTo(b[j],b[j+1])}else on=false}};
+    const dots=(b,front,sz,col,a0,a1)=>{const nb=front?4:1,span=GR-zc,P=[];for(let q=0;q<nb;q++)P.push(new Path2D());
+      for(let i=0,n=b.length;i<n;i+=3){const z=b[i+2];if(front?z<=zc:z>zc)continue;
+        const q=front?Math.min(nb-1,((z-zc)/span*nb)|0):0,s=sz*(front?.55+.45*(q+.5)/nb:.8);P[q].rect(b[i]-s/2,b[i+1]-s/2,s,s)}
+      ctx.fillStyle=col;for(let q=0;q<nb;q++){ctx.globalAlpha=a0+(a1-a0)*(q+.5)/nb;ctx.fill(P[q])}ctx.globalAlpha=1};
+    const disc=r=>{ctx.beginPath();ctx.arc(cx,cy,r,0,TAU)};
+    const glow=(r0,r1,st,ox,oy)=>{const g=ctx.createRadialGradient(cx+(ox||0),cy+(oy||0),r0,cx,cy,r1);st.forEach(s=>g.addColorStop(s[0],s[1]));ctx.fillStyle=g;disc(r1);ctx.fill()};
+    const ORB=[[1.3,1.2,.4,1],[1.5,-.45,2.2,-1],[1.72,.18,4.1,1]];   /* [radius, tilt, phase, direction] of the light orbits (hologram) */
+    const orbits=front=>{const fa=1-.75*zp;ctx.lineCap='round';
+      for(const[r0,tl,a0,dr]of ORB){const ph=a0+(RM?0:S.time*.00003*dr),cp=Math.cos(ph),sp=Math.sin(ph),ct=Math.cos(tl),st=Math.sin(tl),r=r0*GR;
+        const at=th=>{const x=Math.cos(th)*r,z0=Math.sin(th)*r,z1=z0*ct;return[x*cp+z1*sp,-z0*st,-x*sp+z1*cp]};
+        ctx.strokeStyle='#3DF5C4';ctx.lineWidth=1;ctx.globalAlpha=fa*.26;ctx.beginPath();
+        let p=at(0),ps=pj(p);
+        for(let n=1;n<=96;n++){const q=at(n/96*TAU),s=pj(q);if((p[2]+q[2]<0)!==front){ctx.moveTo(ps[0],ps[1]);ctx.lineTo(s[0],s[1])}p=q;ps=s}
+        ctx.stroke();
+        if(!RM){const h=a0*3+S.time*.00055*dr;ctx.lineWidth=2;
+          for(let n=0;n<18;n++){const q0=at(h-dr*n*.035),q1=at(h-dr*(n+1)*.035);if((q0[2]+q1[2]<0)===front)continue;const s0=pj(q0),s1=pj(q1);
+            ctx.globalAlpha=fa*(1-n/18)*.9;ctx.strokeStyle=n<3?'#E6FFF8':'#3DF5C4';ctx.beginPath();ctx.moveTo(s0[0],s0[1]);ctx.lineTo(s1[0],s1[1]);ctx.stroke()}}}
+      ctx.globalAlpha=1};
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-    /* stars far away: they turn with the universe, hidden behind the planet */
-    ctx.fillStyle='#fff';
+    /* stars far away: they turn with the globe, hidden behind it */
+    ctx.fillStyle='#B9FFEA';
     for(const s of STARS){const q=rv(s);if(q[2]>-.25)continue;const k=F/-q[2],x=cx+q[0]*k,y=cy-q[1]*k;
-      if(x<0||y<0||x>W||y>H||Math.hypot(x-cx,y-cy)<Rs)continue;ctx.globalAlpha=RM?.5:.25+.45*Math.abs(Math.sin(t/1300+s[3]));ctx.fillRect(x,y,s[4],s[4])}
+      if(x<0||y<0||x>W||y>H||Math.hypot(x-cx,y-cy)<Rs*1.04)continue;ctx.globalAlpha=RM?.35:.12+.3*Math.abs(Math.sin(t/1700+s[3]));ctx.fillRect(x,y,s[4],s[4])}
     ctx.globalAlpha=1;
-    const pa=1-S.fade;   /* the 2D planet fades out once the fractal is ready */
-    if(pa>.01){
-      ctx.globalAlpha=pa;let g=ctx.createRadialGradient(cx,cy,Rs*.86,cx,cy,Rs*1.32);g.addColorStop(0,'rgba(96,150,255,.5)');g.addColorStop(1,'rgba(96,150,255,0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rs*1.32,0,TAU);ctx.fill();
-      g=ctx.createRadialGradient(cx-Rs*.38,cy-Rs*.42,Rs*.08,cx,cy,Rs);g.addColorStop(0,'#3F6BD6');g.addColorStop(.55,'#1D3474');g.addColorStop(1,'#0A1330');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,Rs,0,TAU);ctx.fill();
-      const zv=PR*PR/D;
-      for(const p of P){const q=rv(p);q[0]*=PR;q[1]*=PR;q[2]*=PR;if(q[2]<=zv)continue;const s=pj(q),own=p[3]>=0,a=.18+.82*(q[2]/PR);
-        ctx.globalAlpha=pa*(own?Math.min(1,a*1.15):a*.42);ctx.fillStyle=own?R[p[3]].c:'#C7D8FF';ctx.beginPath();ctx.arc(s[0],s[1],(own?2.9:1.5)*(.55+.45*q[2]/PR)*Math.sqrt(s[2]/k0),0,TAU);ctx.fill()}
-      ctx.globalAlpha=1}
-    /* orbit lanes between the places, with a light travelling along each */
-    const behind=(q,s)=>q[2]<0&&Math.hypot(s[0]-cx,s[1]-cy)<Rs;
-    if(R.length>1){const fa=1-.85*zp;ctx.lineWidth=1.6;ctx.lineCap='round';
-      for(let i=0;i<R.length;i++){const j=(i+1)%R.length;if(R.length===2&&i===1)break;
-        const a=C[i].v,b=C[j].v,om=Math.acos(Math.max(-1,Math.min(1,a[0]*b[0]+a[1]*b[1]+a[2]*b[2]))),so=Math.sin(om)||1;
-        const at=u=>{const wa=Math.sin((1-u)*om)/so,wb=Math.sin(u*om)/so,l=ORB*(1+.07*Math.sin(Math.PI*u));return rv([(a[0]*wa+b[0]*wb)*l,(a[1]*wa+b[1]*wb)*l,(a[2]*wa+b[2]*wb)*l])};
-        let pq=at(0),ps=pj(pq);
-        for(let n=1;n<=22;n++){const q=at(n/22),s=pj(q);
-          if(!behind(q,s)&&!behind(pq,ps)){ctx.globalAlpha=fa*(q[2]>0?.5:.18);ctx.strokeStyle=n<=11?R[i].c:R[j].c;ctx.beginPath();ctx.moveTo(ps[0],ps[1]);ctx.lineTo(s[0],s[1]);ctx.stroke()}
-          pq=q;ps=s}
-        if(!RM){const q=at((S.time/2600+i*.37)%1),s=pj(q);if(!behind(q,s)){ctx.globalAlpha=fa*(q[2]>0?1:.35);
-          const g=ctx.createRadialGradient(s[0],s[1],0,s[0],s[1],7);g.addColorStop(0,'#fff');g.addColorStop(.35,R[j].c);g.addColorStop(1,'rgba(0,0,0,0)');
-          ctx.fillStyle=g;ctx.beginPath();ctx.arc(s[0],s[1],7,0,TAU);ctx.fill()}}}
-      ctx.globalAlpha=1}
-    /* the places themselves, back to front */
-    S.hit=[];
-    const pins=C.map((c,i)=>{const v=rv(c.v),q=[v[0]*ORB,v[1]*ORB,v[2]*ORB];return{i,q,s:pj(q)}}).sort((a,b)=>a.q[2]-b.q[2]);
-    for(const o of pins){const r=R[o.i],sel=o.i===S.sel,zn=o.q[2]/ORB,x=o.s[0],y=o.s[1];
-      let al=Math.min(1,Math.max(.14,(zn+.45)/.55));if(behind(o.q,o.s))al*=.3;if(S.sel>=0&&!sel)al*=1-.8*zp;if(sel)al=1;
+    /* the hologram: a glass globe, the land as a fine grid of light, glowing coasts, light orbits; the far side shows faintly through */
+    glow(Rs*.9,Rs*1.4,[[0,'rgba(40,230,180,.22)'],[1,'rgba(40,230,180,0)']]);
+    orbits(false);
+    const bd=proj(geoDots(lo?Math.round(NDOT*.6):NDOT),'d'),bc=proj(G.coast.p,'c');
+    dots(bd,false,1.1*sc,'#3DF5C4',.1,.1);
+    path(G.coast,bc,false);ctx.strokeStyle='rgba(61,245,196,.16)';ctx.lineWidth=1;ctx.stroke();
+    glow(0,Rs,[[0,'rgba(4,34,38,.55)'],[.75,'rgba(6,52,56,.62)'],[1,'rgba(20,110,100,.72)']]);
+    glow(Rs*.7,Rs,[[0,'rgba(61,245,196,0)'],[1,'rgba(61,245,196,.3)']]);
+    dots(bd,true,1.5*sc,'#3DF5C4',.3,.95);
+    path(G.coast,bc,true);ctx.globalCompositeOperation='lighter';
+    if(!lo){ctx.strokeStyle='rgba(61,245,196,.28)';ctx.lineWidth=3.2;ctx.stroke()}
+    ctx.strokeStyle='rgba(185,255,233,.85)';ctx.lineWidth=1.1;ctx.stroke();ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle='rgba(120,255,220,.55)';ctx.lineWidth=1.4;disc(Rs);ctx.stroke();
+    orbits(true);
+    /* the sections: a glass badge on a thin stem above its place, back to front */
+    S.hit=[];const zt=GR/D;
+    const pins=C.map((c,i)=>{const v=rv(c.v),b0=[v[0]*GR,v[1]*GR,v[2]*GR],q=[b0[0]*HM,b0[1]*HM,b0[2]*HM];return{i,fz:v[2],b:pj(b0),q,s:pj(q)}}).sort((a,b)=>a.q[2]-b.q[2]);
+    for(const o of pins){const r=R[o.i],sel=o.i===S.sel,x=o.s[0],y=o.s[1];
+      let al=Math.max(0,Math.min(1,(o.fz-zt+.1)/.28));if(S.sel>=0&&!sel)al*=1-.8*zp;if(sel)al=1;
       if(al<.03)continue;
-      const pr=22*Math.min(1.22,Math.max(.72,o.s[2]/k0))*(sel?1.08:1);
-      ctx.globalAlpha=al;ctx.globalCompositeOperation='lighter';
-      let g=ctx.createRadialGradient(x,y,pr*.6,x,y,pr*2.4);g.addColorStop(0,r.c);g.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.globalAlpha=al*.55;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,pr*2.4,0,TAU);ctx.fill();ctx.globalCompositeOperation='source-over';
-      if((r.open||sel)&&!RM){const ph=(t/1500+o.i*.27)%1;ctx.strokeStyle=r.c;ctx.globalAlpha=al*(1-ph)*.85;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,pr+ph*16,0,TAU);ctx.stroke()}
-      ctx.globalAlpha=al;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,pr,0,TAU);ctx.fill();ctx.lineWidth=sel?4:3;ctx.strokeStyle=r.c;ctx.stroke();
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#000';ctx.font=Math.round(pr*1.05)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';ctx.fillText(r.e,x,y+1);
-      const la=sel?1:al*Math.min(1,Math.max(0,(zn+.05)/.3));
+      const pr=20*Math.min(1.25,Math.max(.8,o.s[2]/k0))*(sel?1.08:1);
+      ctx.globalAlpha=al*.85;ctx.strokeStyle=r.c;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(o.b[0],o.b[1]);ctx.lineTo(x,y);ctx.stroke();
+      ctx.globalCompositeOperation='lighter';
+      let g=ctx.createRadialGradient(o.b[0],o.b[1],0,o.b[0],o.b[1],7);g.addColorStop(0,r.c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(o.b[0],o.b[1],7,0,TAU);ctx.fill();
+      g=ctx.createRadialGradient(x,y,pr*.7,x,y,pr*2.1);g.addColorStop(0,r.c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=al*.4;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,pr*2.1,0,TAU);ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+      if((r.open||sel)&&!RM){const ph=(t/1500+o.i*.27)%1;ctx.strokeStyle=r.c;ctx.globalAlpha=al*(1-ph)*.8;ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(x,y,pr+ph*14,0,TAU);ctx.stroke()}
+      ctx.globalAlpha=al;ctx.fillStyle='rgba(7,13,30,.9)';ctx.beginPath();ctx.arc(x,y,pr,0,TAU);ctx.fill();ctx.lineWidth=sel?3:2;ctx.strokeStyle=r.c;ctx.stroke();
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.font=Math.round(pr*1.02)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';ctx.fillText(r.e,x,y+1);
+      const la=sel?1:al*Math.max(0,Math.min(1,(o.fz-zt)/.25));
       if(la>.05){const sub=r.d+'/'+r.n;ctx.font='700 13px Inter,system-ui,sans-serif';
         const w1=ctx.measureText(r.l).width;ctx.font='600 12px Inter,system-ui,sans-serif';const w2=ctx.measureText(sub).width,w=w1+w2+26,ly=Math.min(y+pr+7,H-26);
         const lx=Math.max(4,Math.min(W-4-w,x-w/2));   /* keep the whole label inside the frame */
@@ -696,53 +683,47 @@ function globeInit(){
       ctx.globalAlpha=1;
       if(al>.5)S.hit.push({i:o.i,x,y:y+6,r:pr+14})}
   }
-  function glDraw(){
-    const g=GLB.r,gl=g.gl,U=g.U,q=GLQ[GLB.ql],m=Math.min(q[0],Math.max(1,devicePixelRatio||1)),w=Math.max(1,Math.round(W*m)),h=Math.max(1,Math.round(H*m));
-    if(g.c.width!==w||g.c.height!==h){g.c.width=w;g.c.height=h}
-    gl.viewport(0,0,w,h);gl.uniform2f(U.uRes,w,h);gl.uniformMatrix3fv(U.uRot,false,[M[0],M[3],M[6],M[1],M[4],M[7],M[2],M[5],M[8]]);
-    gl.uniform1f(U.uD,S.D);gl.uniform1f(U.uT,S.time/1000);gl.uniform1f(U.uPow,8+(RM?0:.7*Math.sin(S.time*.00009)));gl.uniform1f(U.uTan,TAN);
-    gl.uniform1i(U.uSteps,q[1]);gl.uniform1i(U.uIter,q[2]);gl.drawArrays(gl.TRIANGLES,0,3)}
+  /* left alone, the globe comes back upright (north up, tilted at most a little) */
+  function upright(dt){
+    const Q=qmat(S.q),n=[Q[1],Q[4],Q[7]];let a=Math.atan2(n[2],n[1]);a=Math.max(-.35,Math.min(.55,a));
+    const nt=[0,Math.cos(a),Math.sin(a)],c=[n[1]*nt[2]-n[2]*nt[1],n[2]*nt[0]-n[0]*nt[2],n[0]*nt[1]-n[1]*nt[0]],l=Math.hypot(c[0],c[1],c[2]),d=n[0]*nt[0]+n[1]*nt[1]+n[2]*nt[2];
+    const g=Math.atan2(l,d);if(g<1e-4)return;const ax=l>1e-6?[c[0]/l,c[1]/l,c[2]/l]:[1,0,0];
+    S.q=qn(qm(qa(ax[0],ax[1],ax[2],g*(1-Math.exp(-dt/700))),S.q))}
   function frame(t){
     if(!cv.isConnected){if(ro)ro.disconnect();if(io)io.disconnect();return}
     requestAnimationFrame(frame);
     const raw=t-last,dt=Math.min(50,raw);last=t;if(!S.vis||!W)return;
-    /* motion: a tween to a place, or the free spin (finger speed after a swipe, easing back into the slow turn) */
+    /* motion: a flight to a place, or the free spin (finger speed after a swipe), then the slow turn on the globe's own axis */
     if(S.tw){const k=Math.min(1,(t-S.tw.t0)/S.tw.d);S.q=qs(S.tw.q0,S.tw.q1,ease(k));if(k>=1)S.tw=null}
-    else if(!S.drag){const ta=S.sel<0&&!RM?(S.hover?.3:1)*AUTO:0,kk=1-Math.exp(-dt/(Math.hypot(S.w[0],S.w[1],S.w[2])>AUTO*1.5?1100:500));
-      S.w=[S.w[0]*(1-kk),S.w[1]+(ta-S.w[1])*kk,S.w[2]*(1-kk)];const m=Math.hypot(S.w[0],S.w[1],S.w[2]);
-      if(m>1e-8)S.q=qn(qm(qa(S.w[0]/m,S.w[1]/m,S.w[2]/m,m*dt),S.q))}
+    else if(!S.drag){const wm=Math.hypot(S.w[0],S.w[1],S.w[2]),kk=1-Math.exp(-dt/(wm>AUTO*1.5?1100:500));
+      S.w=S.w.map(v=>v*(1-kk));const m=wm*(1-kk);
+      if(m>1e-8)S.q=qn(qm(qa(S.w[0]/m,S.w[1]/m,S.w[2]/m,m*dt),S.q));
+      const ts=S.sel<0&&!RM&&!S.pinch?(S.hover?.3:1)*AUTO:0;S.sp+=(ts-S.sp)*(1-Math.exp(-dt/900));
+      if(S.sp>1e-7)S.q=qn(qm(S.q,qa(0,1,0,S.sp*dt)));
+      if(S.sel<0&&!S.pinch&&m<AUTO*3&&t-S.rel>1500)upright(dt)}
     const dD=S.Dt-S.D;S.D=Math.abs(dD)<1e-4||RM?S.Dt:S.D+dD*(1-Math.exp(-dt/240));
     M=qmat(S.q);
-    const moving=!!(S.drag||S.tw||S.pinch)||Math.hypot(S.w[0],S.w[1],S.w[2])>1e-7||Math.abs(S.Dt-S.D)>1e-4,live=S.sel<0&&!RM;
-    if(live||moving)S.time+=dt;
-    /* the fractal: switch on when its shader is ready; off (back to the 2D planet) if the device is too slow or loses WebGL */
-    if(!S.gl&&!GLB.dead&&glbReady()){const c=GLB.r.c;c.style.opacity=S.fade?'1':'0';box.insertBefore(c,cv);S.gl=true;S.dirty=true;S.warm=20;S.pf=[]}
-    if(S.gl&&GLB.dead){GLB.r&&GLB.r.c.remove();S.gl=false;S.fade=0}
-    let drew=false;
-    if(S.gl&&(S.dirty||moving||live)){glDraw();drew=true;S.dirty=false;
-      if(S.fade<1){S.fade=RM?1:Math.min(1,S.fade+dt/700);GLB.r.c.style.opacity=S.fade.toFixed(3)}}
-    const md=GLB.dead?'2d':S.gl?'gl'+GLB.ql:'wait';if(md!==S.mode){S.mode=md;box.dataset.q=md}
-    /* adaptive quality: below ~25 fps step down; at the lowest step and still slow, use the 2D planet */
-    if(drew&&S.lastDrew&&raw<400){if(S.warm>0)S.warm--;else S.pf.push(Math.min(raw,100))}   /* a long gap = tab was hidden, not a slow frame */
-    S.lastDrew=drew;
-    if(S.pf.length>=30){const avg=S.pf.reduce((a,b)=>a+b,0)/S.pf.length;S.pf=[];
-      if(avg>40){S.good=0;if(GLB.ql<GLQ.length-1){GLB.cap=Math.max(GLB.cap,GLB.ql+1);GLB.ql++;S.warm=10;S.dirty=true}else if(avg>46)GLB.dead=true}
-      else if(avg<20&&GLB.ql>GLB.cap){if(++S.good>=3){GLB.ql--;S.good=0;S.warm=10}}else S.good=0}
-    draw(t)}
+    if(!RM)S.time+=dt;
+    const t0=performance.now();draw(t);const cost=performance.now()-t0;
+    /* adaptive quality: when drawing is slow or frames come slower than ~25 fps, draw fewer pixels, then fewer dots and no glow
+       (a steady 30 fps alone is not slow: phones in power saving mode cap the frame rate there) */
+    if(raw<400){if(S.warm>0)S.warm--;else S.pf.push([raw,cost])}   /* a long gap = tab was hidden, not a slow frame */
+    if(S.pf.length>=40){let a=0,c=0;S.pf.forEach(p=>{a+=p[0];c+=p[1]});a/=S.pf.length;c/=S.pf.length;S.pf=[];box.dataset.ms=c.toFixed(1);
+      if((a>40||c>14)&&S.lq<2){S.lq++;S.warm=15;box.dataset.q='q'+S.lq;size()}}}
   const DIRF=(()=>{const l=Math.hypot(0,.2,1);return[0,.2/l,1/l]})();
   function mark(i){document.querySelectorAll('.glbchip').forEach(b=>{const on=+b.dataset.gi===i;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
     back.hidden=i<0;box.classList.toggle('zoomed',i>=0)}
-  /* turn the place to face the student (shortest way) and fly in */
+  /* fly to the place: it comes to the front, north up, and the globe zooms in */
   function pick(i,anim){
     if(i===S.sel&&anim){unpick();return}
-    M=qmat(S.q);const q1=qn(qm(qarc(rv(C[i].v),DIRF),S.q));
-    S.sel=i;ui.gsec=R[i].k;S.w=[0,0,0];S.Dt=DSEL;S.dirty=true;
+    const q1=qn(qm(qa(1,0,0,C[i].la-Math.asin(DIRF[1])),qa(0,1,0,-C[i].lo)));
+    S.sel=i;ui.gsec=R[i].k;S.w=[0,0,0];S.Dt=DSEL;
     if(!anim||RM){S.q=q1;S.tw=null;S.D=DSEL}else S.tw={t0:performance.now(),d:1100,q0:S.q.slice(),q1};
     mark(i);panel.innerHTML=gpanelHTML(R[i],T);bindCards(panel);panel.querySelector('[data-gx]').onclick=()=>{sfx('tap');unpick()};
     if(anim){sfx('open');setTimeout(()=>{if(!panel.isConnected)return;const b=panel.getBoundingClientRect();
       if(b.top>innerHeight*.8)scrollTo({top:scrollY+b.top-innerHeight*.5,behavior:RM?'auto':'smooth'})},RM?0:750)}}
-  function unpick(){S.sel=-1;ui.gsec=null;S.tw=null;S.Dt=DH;S.dirty=true;mark(-1);panel.innerHTML=''}
-  /* pointers: one finger/mouse turns the universe in any direction (it follows the finger), two fingers pinch-zoom, a tap opens a place */
+  function unpick(){S.sel=-1;ui.gsec=null;S.tw=null;S.Dt=DH;S.rel=performance.now();mark(-1);panel.innerHTML=''}
+  /* pointers: one finger/mouse turns the globe in any direction (it follows the finger), two fingers pinch-zoom, a tap opens a place */
   const pts=new Map(),clampD=v=>Math.max(DMIN,Math.min(DMAX,v));
   const begin=(x,y)=>{S.drag={sx:x,sy:y,x,y,t:performance.now(),moved:false,tap:true};S.w=[0,0,0]};
   cv.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);try{cv.setPointerCapture(e.pointerId)}catch(_){}
@@ -755,11 +736,11 @@ function globeInit(){
     if(!d.moved)return;
     const dx=e.clientX-d.x,dy=e.clientY-d.y,l=Math.hypot(dx,dy),now=performance.now();if(l<.01)return;
     const F=Math.min(W,H)/2/TAN,g=l*S.D/(F*1.3),ax=dy/l,ay=dx/l;
-    S.q=qn(qm(qa(ax,ay,0,g),S.q));S.dirty=true;
+    S.q=qn(qm(qa(ax,ay,0,g),S.q));
     const it=g/Math.max(8,now-d.t),wi=[ax*it,ay*it,0];S.w=S.w.map((v,i)=>v*.4+wi[i]*.6);
     const wm=Math.hypot(S.w[0],S.w[1],S.w[2]);if(wm>.012)S.w=S.w.map(v=>v*.012/wm);
     d.x=e.clientX;d.y=e.clientY;d.t=now});
-  const end=e=>{const had=pts.delete(e.pointerId);if(!had)return;
+  const end=e=>{const had=pts.delete(e.pointerId);if(!had)return;S.rel=performance.now();
     if(S.pinch){if(pts.size<2)S.pinch=null;if(pts.size===1){const[p]=[...pts.values()];begin(p[0],p[1]);S.drag.tap=false;S.drag.moved=true}else S.drag=null;return}
     const d=S.drag;S.drag=null;if(!d)return;
     if(d.moved){if(RM||performance.now()-d.t>90)S.w=[0,0,0];return}
@@ -774,7 +755,7 @@ function globeInit(){
   box.querySelectorAll('[data-gz]').forEach(b=>b.onclick=()=>{sfx('tap');S.Dt=clampD(S.Dt*(b.dataset.gz==='1'?.8:1.25));box.classList.add('used')});
   document.querySelectorAll('.glbchip').forEach(b=>b.onclick=()=>pick(+b.dataset.gi,true));
   back.onclick=()=>{sfx('tap');unpick()};
-  if(GLB.r&&!GLB.dead){S.fade=1}else if(!GLB.dead&&!GLB.busy)setTimeout(glbStart,250);
+  box.dataset.q='q0';
   size();
   const k0=R.findIndex(r=>r.k===ui.gsec);if(k0>=0)pick(k0,false);
   setTimeout(()=>box.classList.add('hinted'),5000);   /* the hint fades by itself so it never covers a label for long */

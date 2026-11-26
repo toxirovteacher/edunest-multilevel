@@ -1745,7 +1745,6 @@ body.dark .pfed{background:#E8ECF5}
 .glbc canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
 .glbc #glbCv{touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .glbc #glbCv:active{cursor:grabbing}
-.glbc .glbgl{pointer-events:none}
 .glbz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
 .glbz button{width:36px;height:36px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(8,13,32,.66);color:#fff;font:700 20px/1 var(--body);cursor:pointer;backdrop-filter:blur(6px);transition:transform .15s,background .2s}
 .glbz button:hover{background:rgba(40,56,110,.8)}.glbz button:active{transform:scale(.92)}

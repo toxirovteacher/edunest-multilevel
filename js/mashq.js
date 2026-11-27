@@ -147,28 +147,30 @@ const FEEL=(()=>{
     _render:k=>{if(!ac())return null;return buf(k)},names:()=>Object.keys(SND)};
 })();
 
-/* ===== HL · text highlighter for tests and exercises (27.11.2026, Multi-Level test player) =====
-   Students mark words in the passage, the questions and the listening script, like the highlighter of a computer exam.
-   - Computer: press on a word and drag over the text; a double-click marks one word.
-   - Phone / tablet: hold a word about 0.4 s (a short tick), then slide the finger; lifting it marks the text.
-   - Tap or click a mark: another colour, remove it, or remove every mark of this part (asks once more).
-   The page's protection is untouched: the browser's own text selection stays off and copy / the context menu stay
-   blocked, so a phone never shows its Copy / Share menu. Marks never cover inputs, dropdowns, numbers or answer buttons.
-   Kept on this device per student, test and part (localStorage) and drawn again after every re-render (switching parts
-   in a mock, checking answers, reloading the page). A text block whose words have changed loses its marks.
+/* ===== HL · text highlighter for tests and exercises (Multi-Level test player) =====
+   v2 (27.11.2026 evening): works like the highlighter of the computer-delivered IELTS test, ONE colour (yellow). It replaces the
+   first version (live 27.11.2026 16:51 UTC: three colours, a hint banner); highlights saved by that one are kept and turn yellow.
+   - Computer: drag over the words (or double-click a word): they turn blue (selected) and a small menu with "Highlight"
+     appears; a right-click on the selection opens it too. Click or right-click a highlight: "Clear" (this one) or "Clear all".
+   - Phone / tablet: hold a word about 0.4 s (a short tick), slide the finger and lift it: the same menu. Tap a highlight:
+     "Clear" / "Clear all". A finger that moves at once scrolls the page as always.
+   - Whole words only. Dragging into the top or bottom edge scrolls the text. A highlight that touches or overlaps another
+     joins it. A press anywhere else closes the menu and drops the selection (that press does nothing else).
+   The page's protection is untouched: the browser's own text selection stays off and copy / the context menu stay blocked,
+   so a phone never shows its Copy / Share menu. Never on inputs, dropdowns, numbers or answer buttons.
+   Kept on this device per student, test and part (localStorage) and drawn again after every re-render (switching parts in a
+   mock, checking answers, reloading the page). A text block whose words have changed loses its highlights.
    The page calls HL.init(options) once, HL.scan() after it re-draws something that is not a direct child of the root,
    and HL.clear() / HL.clear(prefix) when an attempt starts again. */
 const HL=(()=>{
-  const HOLD=380,NAMES=['','Sariq','Yashil','Pushti'];
-  const SKIP='.gapw,.pick,.fix,.num,.qm,select,option,input,textarea,button,sup,.nt,mark:not(.uh)>b';   // never inside a mark
-  const NOGO='input,select,textarea,button,a,label,.gapw,.pick,.fix';                                    // a press here never marks
-  const PEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 4.5 5 5L11 18H6v-5z"/><path d="M4 21h16"/></svg>';
-  const BIN='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg>';
+  const HOLD=380,EDGE=44;
+  const SKIP='.gapw,.pick,.fix,.num,.qm,select,option,input,textarea,button,sup,.nt,mark:not(.uh)>b';   // never inside a highlight
+  const NOGO='input,select,textarea,button,a,label,.gapw,.pick,.fix';                                    // a press here never selects
   const isW=c=>!!c&&/[\p{L}\p{N}'’‘-]/u.test(c);
   const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
   const lset=(k,v)=>{try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
   const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)};
-  let O=null,K=null,D={},units=[],pen=1,pop=null,tip=null,drag=null,raf=0,eatUntil=0,shown=[];
+  let O=null,K=null,D={},units=[],shown=[],drag=null,sel=null,menu=null,raf=0,ar=0,mr=0,eat=false,lastPT='mouse',W=0;
 
   /* ---- the text of a block: its text nodes in reading order, without inputs, dropdowns, numbers or answer chips ---- */
   function texts(u){const out=[],w=document.createTreeWalker(u,5,{acceptNode:n=>n.nodeType===1?(n!==u&&n.matches(SKIP)?2:3):1});let n;while((n=w.nextNode()))out.push(n);return out}
@@ -181,19 +183,22 @@ const HL=(()=>{
       else if(c.nodeType===1){if(c.matches(SKIP)||c.tagName==='BR'){brk=true;continue}
         const d=getComputedStyle(c).display,b=d!=='inline'&&d!=='contents';if(b)brk=true;rec(c);if(b)brk=true}}})(u);
     return B}
-  const cont=u=>u.closest('#scr,.qs,.paper,.instr')||u;   // one mark may run over several blocks of ONE text, never into another
+  const cont=u=>u.closest('#scr,.qs,.paper,.instr')||u;   // one selection may run over several blocks of ONE text, never into another
   const sortR=R=>R.sort((a,b)=>a[0]-b[0]);
-  function cut(R,s,e){const out=[];R.forEach(r=>{if(r[1]<=s||r[0]>=e){out.push(r);return}if(r[0]<s)out.push([r[0],s,r[2],r[3]]);if(r[1]>e)out.push([e,r[1],r[2],r[3]])});return out}
+  function cut(R,s,e){const out=[];R.forEach(r=>{if(r[1]<=s||r[0]>=e){out.push(r);return}if(r[0]<s)out.push([r[0],s,r[2]]);if(r[1]>e)out.push([e,r[1],r[2]])});return out}
+  // pieces of one block that overlap or touch become one piece (they belong to one highlight by then)
+  function merge(R){sortR(R);const out=[];for(const r of R){const l=out[out.length-1];if(l&&r[0]<=l[1]){if(r[1]>l[1])l[1]=r[1]}else out.push(r.slice())}return out}
 
-  /* ---- drawing: <mark class="uh cN" data-g="…"> around the marked pieces of text ---- */
+  /* ---- drawing: <mark class="uh" data-g="…"> = a highlight, <mark class="uh sel"> = the selection ---- */
   function unwrap(u){const ms=u.querySelectorAll('mark.uh');if(!ms.length)return;ms.forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m)});u.normalize()}
   function paint(u,R){unwrap(u);
     for(const r of R){let off=0;
       for(const n of texts(u)){const L=n.data.length,a=Math.max(r[0],off),b=Math.min(r[1],off+L);
         if(a<b){let x=n;if(a>off)x=x.splitText(a-off);if(b<off+L)x.splitText(b-a);
-          const m=document.createElement('mark');m.className='uh c'+r[2]+(r[4]?' pv':'');if(r[3])m.dataset.g=r[3];x.parentNode.insertBefore(m,x);m.appendChild(x)}
+          const m=document.createElement('mark');m.className=r[3]?'uh sel':'uh';if(r[2])m.dataset.g=r[2];x.parentNode.insertBefore(m,x);m.appendChild(x)}
         off+=L;if(off>=r[1])break}}}
-  function show(u,pv){const E=D[u.dataset.hu];let R=E?E.r.map(r=>r.slice()):[];if(pv){R=cut(R,pv[0],pv[1]);R.push([pv[0],pv[1],pen,'',1])}paint(u,sortR(R))}
+  // a block with its highlights, and the selection on top of them while there is one
+  function show(u,pv){const E=D[u.dataset.hu];let R=E?E.r.map(r=>r.slice()):[];if(pv){R=cut(R,pv[0],pv[1]);R.push([pv[0],pv[1],'',1])}paint(u,sortR(R))}
 
   /* ---- where a point falls in a block's text: an own hit test, so it works although the text cannot be selected ---- */
   const R0=document.createRange();
@@ -218,7 +223,7 @@ const HL=(()=>{
   // the word around letter p (a letter right after a word, like its comma, gives that word)
   function wordAt(t,p,B){if(!isW(t[p])){if(p>0&&isW(t[p-1])&&!B.has(p))p--;else return null}
     let a=p,b=p+1;while(a>0&&isW(t[a-1])&&!B.has(a))a--;while(b<t.length&&isW(t[b])&&!B.has(b))b++;return [a,b]}
-  // from letter sc of block ua (where the gesture started; it is always inside the mark) to caret ec of block ub (where it is now)
+  // from letter sc of block ua (where the gesture started; it is always inside the selection) to caret ec of block ub (where it is now)
   function segs(ua,sc,ub,ec){let ia=units.indexOf(ua),ib=units.indexOf(ub);if(ia<0||ib<0)return [];
     if(ia===ib&&(ec===sc||ec===sc+1)){const w=wordAt(text(ua),sc,breaks(ua));return w?[[ua,w[0],w[1]]]:[]}   // still on the first letter: its word
     let oa,ob;if(ia<ib||(ia===ib&&ec>sc)){oa=sc;ob=ec}else{[ua,ub,ia,ib]=[ub,ua,ib,ia];oa=ec;ob=sc+1}
@@ -231,20 +236,31 @@ const HL=(()=>{
       if(e>s)out.push([u,s,e])}
     return out}
 
-  /* ---- saved marks: {v:1,u:{<block id>:{h:<hash of its text>,r:[[start,end,colour,group],…]}}} ---- */
-  function load(){D={};if(!K)return;try{const o=JSON.parse(ls(K)||'null');if(o&&o.u&&typeof o.u==='object')D=o.u}catch(e){}}
-  function save(){if(!K)return;const u={};let n=0;for(const id in D)if(D[id].r.length){u[id]=D[id];n++}lset(K,n?JSON.stringify({v:1,u}):null)}
-  const groups=()=>new Set(Object.values(D).flatMap(E=>E.r.map(r=>r[3]))).size;
+  /* ---- saved highlights: {v:2,u:{<block id>:{h:<hash of its text>,r:[[start,end,highlight id],…]}}}
+          (the first version saved {v:1,…,r:[[start,end,colour,highlight id],…]}: read as yellow, written as v:2 at the next change) ---- */
+  function load(){D={};if(!K)return;try{const o=JSON.parse(ls(K)||'null');if(!o||!o.u||typeof o.u!=='object')return;
+    if(o.v===2)D=o.u;
+    else if(o.v===1){   // pieces of two marks of the first version could touch (they had colours); all yellow they look like one, so they join
+      const P=Object.create(null),f=g=>{while(P[g]!==g)g=P[g]=P[P[g]];return g};
+      for(const id in o.u){const E=o.u[id];if(!E||!Array.isArray(E.r))continue;
+        const R=sortR(E.r.filter(r=>Array.isArray(r)).map(r=>[r[0],r[1],String(r[3]||'v1')]));let l=null;
+        for(const r of R){if(!(r[2] in P))P[r[2]]=r[2];if(l&&r[0]<=l[1]){const a=f(l[2]),b=f(r[2]);if(a!==b)P[b]=a;if(r[1]>l[1])l=[l[0],r[1],l[2]]}else l=r}
+        D[id]={h:E.h,r:R}}
+      for(const id in D){D[id].r.forEach(r=>{r[2]=f(r[2])});D[id].r=merge(D[id].r)}}}catch(e){}}
+  function save(){if(!K)return;const u={};let n=0;for(const id in D)if(D[id].r.length){u[id]=D[id];n++}lset(K,n?JSON.stringify({v:2,u}):null)}
   function repaint(ids){units.forEach(u=>{if(ids.includes(u.dataset.hu))show(u)})}
-  function commit(S){if(!S.length)return;const g=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-    S.forEach(([u,s,e])=>{const id=u.dataset.hu,h=hash(text(u));let E=D[id];if(!E||E.h!==h)E=D[id]={h,r:[]};E.r=sortR(cut(E.r,s,e).concat([[s,e,pen,g]]))});
-    save();S.forEach(([u])=>show(u));tipDone()}
-  function drop(g){const ids=[];for(const id in D){const E=D[id],n=E.r.length;E.r=E.r.filter(r=>r[3]!==g);if(E.r.length!==n)ids.push(id);if(!E.r.length)delete D[id]}save();repaint(ids)}
-  function recolor(g,c){pen=c;lset(O.ns+'hlc',String(c));const ids=[];for(const id in D)D[id].r.forEach(r=>{if(r[3]===g){r[2]=c;if(!ids.includes(id))ids.push(id)}});save();repaint(ids)}
+  // "Highlight": the selection turns yellow; old highlights it touches or overlaps join it (so "Clear" removes all of it)
+  function commit(S){if(!S.length)return;const g=Date.now().toString(36)+Math.random().toString(36).slice(2,6),join=new Set(),ids=new Set();
+    S.forEach(([u,s,e])=>{const E=D[u.dataset.hu];if(E&&E.h===hash(text(u)))E.r.forEach(r=>{if(r[0]<=e&&r[1]>=s)join.add(r[2])})});
+    for(const id in D)D[id].r.forEach(r=>{if(join.has(r[2])){r[2]=g;ids.add(id)}});
+    S.forEach(([u,s,e])=>{const id=u.dataset.hu,h=hash(text(u));let E=D[id];if(!E||E.h!==h)E=D[id]={h,r:[]};E.r.push([s,e,g]);ids.add(id)});
+    ids.forEach(id=>{D[id].r=merge(D[id].r)});
+    save();repaint([...ids])}
+  function drop(g){const ids=[];for(const id in D){const E=D[id],n=E.r.length;E.r=E.r.filter(r=>r[2]!==g);if(E.r.length!==n)ids.push(id);if(!E.r.length)delete D[id]}save();repaint(ids)}
   function dropAll(){const ids=Object.keys(D);D={};save();repaint(ids)}
 
-  /* ---- find the blocks of the page and draw their saved marks (after every re-render) ---- */
-  function scan(){if(!O||O.off)return;closePop();if(drag)cancel();
+  /* ---- find the blocks of the page and draw their saved highlights (after every re-render) ---- */
+  function scan(){if(!O||O.off)return;if(menu){menu.remove();menu=null}sel=null;if(drag)cancel();
     const k=O.key()||null;if(k!==K){K=k;load()}
     units=[];shown=[];const root=document.querySelector(O.root);
     if(K&&root){
@@ -256,84 +272,113 @@ const HL=(()=>{
       units.forEach(u=>{const E=D[u.dataset.hu];if(!E){unwrap(u);return}const t=text(u);
         if(E.h!==hash(t)||!Array.isArray(E.r)||E.r.some(r=>!(r[0]>=0&&r[0]<r[1]&&r[1]<=t.length))){delete D[u.dataset.hu];unwrap(u);gone=true;return}
         show(u)});
-      if(gone)save()}
-    tipSync()}
+      if(gone)save()}}
+
+  /* ---- the selection (blue) and the small menu: "Highlight" on a selection, "Clear" / "Clear all" on a highlight ---- */
+  function select(S){sel={S};S.forEach(([u,s,e])=>show(u,[s,e]))}
+  function closeMenu(keep){if(menu){menu.remove();menu=null}if(!keep&&sel){const S=sel.S;sel=null;S.forEach(([u])=>show(u))}}
+  const lim=()=>({t:(O.top?O.top():0)+6,b:innerHeight-(O.bottom?O.bottom():0)-6});   // the free screen between the bars
+  // the line of the selection / highlight nearest to (x,y)
+  function lineBox(ms,x,y){let best=null,bd=1e9;ms.forEach(m=>{for(const r of m.getClientRects()){if(!r.width)continue;
+      const d=(y<r.top?r.top-y:y>r.bottom?y-r.bottom:0)*4+(x<r.left?r.left-x:x>r.right?x-r.right:0);if(d<bd){bd=d;best=r}}});return best}
+  // computer: the menu opens at the pointer, like a right-click menu; touch: above the whole selection (below it when there is
+  // no room), or above the tapped line of a highlight, where the finger does not cover it
+  function openMenu(kind,x,y,touch,g){closeMenu(kind==='sel');if(kind==='sel'&&!sel)return;
+    const ms=[...document.querySelectorAll(kind==='sel'?'mark.uh.sel':'mark.uh[data-g="'+g+'"]')];if(!ms.length)return;
+    menu=document.createElement('div');menu.className='uhm';menu.setAttribute('role','menu');
+    menu.innerHTML=kind==='sel'?'<button type="button" role="menuitem" data-a="hl"><span class="uhsw" aria-hidden="true"></span>Highlight</button>'
+      :'<button type="button" role="menuitem" data-a="clr">Clear</button><button type="button" role="menuitem" data-a="all">Clear all</button>';
+    menu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.a==='hl'){const S=sel?sel.S:[];if(menu){menu.remove();menu=null}sel=null;commit(S)}
+      else{closeMenu();if(b.dataset.a==='clr')drop(g);else dropAll()}});
+    document.body.appendChild(menu);
+    const L=lim(),mw=menu.offsetWidth,mh=menu.offsetHeight;let left,top;
+    if(touch){left=x-mw/2;const near=()=>{const r=lineBox(ms,x,y)||{top:y,bottom:y};top=r.top-mh-12;if(top<L.t)top=r.bottom+12};
+      if(kind==='sel'){const rs=ms.flatMap(m=>[...m.getClientRects()].filter(r=>r.width));
+        top=Math.min(...rs.map(r=>r.top))-mh-12;if(top<L.t){top=Math.max(...rs.map(r=>r.bottom))+12;if(top+mh>L.b)near()}}
+      else near()}
+    else{left=x+2;top=y+2;if(left+mw>innerWidth-8)left=x-mw-2;if(top+mh>L.b)top=y-mh-2}
+    left=Math.max(8,Math.min(innerWidth-mw-8,left));top=Math.max(L.t,Math.min(L.b-mh,top));
+    menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';
+    menu._a=ms[0];menu._r=ms[0].getBoundingClientRect();menu._p=[left,top]}
+  // the menu stays next to its text while the page or the passage scrolls (hidden while it would sit under the bars)
+  function follow(){mr=0;if(!menu)return;const a=menu._a;if(!a||!a.isConnected){closeMenu();return}
+    const r=a.getBoundingClientRect(),L=lim(),left=menu._p[0]+r.left-menu._r.left,top=menu._p[1]+r.top-menu._r.top;
+    menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';menu.classList.toggle('hid',top<L.t||top+menu.offsetHeight>L.b)}
 
   /* ---- gestures ---- */
-  function begin(){drag.on=true;drag.oa=hit(drag.u0,drag.x0,drag.y0,true);drag.ub=drag.u0;drag.ob=hit(drag.u0,drag.x0,drag.y0);closePop();document.body.classList.add('uh-on')}
-  function step(){raf=0;if(!drag||!drag.on)return;const u=unitAt(drag.x,drag.y);
-    if(u&&cont(u)===cont(drag.u0)){drag.ub=u;drag.ob=hit(u,drag.x,drag.y)}
-    const S=segs(drag.u0,drag.oa,drag.ub,drag.ob),now=new Set(S.map(s=>s[0]));
-    shown.forEach(u=>{if(!now.has(u))show(u)});S.forEach(([u,s,e])=>show(u,[s,e]));shown=[...now];drag.S=S}
-  const later=()=>{if(!raf)raf=requestAnimationFrame(step)};
-  // the mark that stays is exactly the preview the student saw (worked out again only if the last move is not drawn yet)
-  function finish(){if(raf){cancelAnimationFrame(raf);raf=0;step()}else if(!drag.S)step();const S=drag.S||[];shown=[];drag=null;document.body.classList.remove('uh-on');commit(S)}
-  function cancel(){if(raf){cancelAnimationFrame(raf);raf=0}if(drag)clearTimeout(drag.tm);const s=shown;shown=[];drag=null;s.forEach(u=>show(u));document.body.classList.remove('uh-on')}
-  // mouse: press and drag (from 6 px on); a plain click changes nothing
+  function scroller(u){for(let p=u.parentElement;p&&p!==document.body&&p!==document.documentElement;p=p.parentElement){
+      const s=getComputedStyle(p).overflowY;if((s==='auto'||s==='scroll')&&p.scrollHeight>p.clientHeight+1)return p}return null}
+  function view(sc){const L=lim();if(!sc)return L;const r=sc.getBoundingClientRect();return {t:Math.max(r.top,L.t),b:Math.min(r.bottom,L.b)}}
+  function begin(){closeMenu();drag.on=true;drag.sc=scroller(drag.u0);drag.oa=hit(drag.u0,drag.x0,drag.y0,true);drag.ub=drag.u0;drag.ob=hit(drag.u0,drag.x0,drag.y0);document.body.classList.add('uh-on')}
+  function step(){raf=0;if(!drag||!drag.on)return;const v=view(drag.sc),x=drag.x,y=Math.min(Math.max(drag.y,v.t+3),v.b-3);
+    const u=unitAt(x,y);if(u&&cont(u)===cont(drag.u0)){drag.ub=u;drag.ob=hit(u,x,y)}
+    const S=segs(drag.u0,drag.oa,drag.ub,drag.ob),nw=new Set(S.map(s=>s[0]));
+    shown.forEach(u=>{if(!nw.has(u))show(u)});S.forEach(([u,s,e])=>show(u,[s,e]));shown=[...nw];drag.S=S}
+  const later=()=>{if(!raf)raf=requestAnimationFrame(step);if(!ar)ar=requestAnimationFrame(roll)};
+  // dragging into the top or bottom edge of the text scrolls it, faster the deeper the pointer goes
+  function roll(){ar=0;if(!drag||!drag.on)return;const v=view(drag.sc),y=drag.y;let d=0;
+    if(y<v.t+EDGE)d=y-(v.t+EDGE);else if(y>v.b-EDGE)d=y-(v.b-EDGE);if(!d)return;
+    d=Math.sign(d)*Math.min(20,Math.ceil(Math.abs(d)/EDGE*16));
+    const el=drag.sc||document.scrollingElement,t0=el.scrollTop;el.scrollTop=t0+d;if(el.scrollTop===t0)return;
+    step();ar=requestAnimationFrame(roll)}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=0}if(ar){cancelAnimationFrame(ar);ar=0}if(drag)clearTimeout(drag.tm);document.body.classList.remove('uh-on')}
+  // the selection that stays is exactly what the student saw while dragging
+  function finish(){if(raf){cancelAnimationFrame(raf);raf=0;step()}else if(!drag.S)step();const S=drag.S||[];stop();shown=[];drag=null;return S}
+  function cancel(){stop();const s=shown;shown=[];drag=null;s.forEach(u=>show(u))}
+  // mouse: press and drag (from 5 px on); a plain click selects nothing
   function mDown(e){if(e.pointerType!=='mouse'||e.button!==0||!K)return;if(drag)cancel();const u=unitFrom(e.target);if(!u)return;
     drag={u0:u,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY,on:false};
     addEventListener('pointermove',mMove,true);addEventListener('pointerup',mUp,true);addEventListener('pointercancel',mUp,true)}
-  function mMove(e){if(!drag||drag.touch)return;drag.x=e.clientX;drag.y=e.clientY;if(!drag.on){if(Math.hypot(drag.x-drag.x0,drag.y-drag.y0)<6)return;begin()}later()}
+  function mMove(e){if(!drag||drag.touch)return;drag.x=e.clientX;drag.y=e.clientY;if(!drag.on){if(Math.hypot(drag.x-drag.x0,drag.y-drag.y0)<5)return;begin()}later()}
   function mUp(e){removeEventListener('pointermove',mMove,true);removeEventListener('pointerup',mUp,true);removeEventListener('pointercancel',mUp,true);
-    if(!drag||drag.touch)return;if(drag.on&&e.type==='pointerup'){drag.x=e.clientX;drag.y=e.clientY;finish();eatUntil=performance.now()+500}else cancel()}
-  // touch: hold still for HOLD ms, then the finger marks instead of scrolling; a moving finger scrolls as always
+    if(!drag||drag.touch)return;if(!drag.on||e.type!=='pointerup'){cancel();return}
+    drag.x=e.clientX;drag.y=e.clientY;const S=finish();eat=true;   // the click that ends a drag does nothing
+    if(S.length){select(S);openMenu('sel',e.clientX,e.clientY,false)}}
+  // touch: hold still for HOLD ms, then the finger selects instead of scrolling; a moving finger scrolls as always
   function tStart(e){if(!K)return;if(drag)cancel();if(e.touches.length!==1)return;const u=unitFrom(e.target);if(!u)return;const t=e.touches[0];
     drag={touch:true,u0:u,x0:t.clientX,y0:t.clientY,x:t.clientX,y:t.clientY,on:false};
     drag.tm=setTimeout(()=>{if(!drag||!drag.touch||drag.on)return;begin();step();if(typeof FEEL!=='undefined')try{FEEL.play('tick')}catch(x){}},HOLD)}
   function tMove(e){if(!drag||!drag.touch)return;const t=e.touches[0];if(!t)return;
     if(!drag.on){if(Math.hypot(t.clientX-drag.x0,t.clientY-drag.y0)>9){clearTimeout(drag.tm);drag=null}return}
     if(e.cancelable)e.preventDefault();drag.x=t.clientX;drag.y=t.clientY;later()}
-  function tEnd(e){if(!drag||!drag.touch)return;clearTimeout(drag.tm);if(!drag.on){drag=null;return}if(e.cancelable)e.preventDefault();finish();eatUntil=performance.now()+600}
+  function tEnd(e){if(!drag||!drag.touch)return;clearTimeout(drag.tm);if(!drag.on){drag=null;return}if(e.cancelable)e.preventDefault();
+    const x=drag.x,y=drag.y,S=finish();if(S.length){select(S);openMenu('sel',x,y,true)}}
   function tCancel(){if(drag&&drag.touch)cancel()}
-  function onClick(e){if(performance.now()<eatUntil){eatUntil=0;e.preventDefault();e.stopPropagation();return}   // the click that ends a drag
-    if(!K)return;const m=e.target.closest&&e.target.closest('mark.uh');if(m&&m.dataset.g&&!e.target.closest(NOGO))openPop(m)}
-  function onDbl(e){if(!K||(e.target.closest&&e.target.closest('mark.uh')))return;const u=unitFrom(e.target);if(!u)return;const c=hit(u,e.clientX,e.clientY,true);commit(segs(u,c,u,c))}
+  // any press outside the menu closes it and drops the selection; that press does nothing else (a press on a highlight opens its menu)
+  function onDown(e){lastPT=e.pointerType||'mouse';eat=false;if(menu&&!menu.contains(e.target)&&e.button!==2){closeMenu();eat=!(e.target.closest&&e.target.closest('mark.uh[data-g]'))}}
+  function onClickCap(e){if(menu&&menu.contains(e.target))return;if(eat){eat=false;e.preventDefault();e.stopPropagation()}}
+  function onClick(e){if(!K)return;const t=e.target,m=t.closest&&t.closest('mark.uh[data-g]');if(!m||t.closest(NOGO))return;
+    openMenu('mark',e.clientX,e.clientY,lastPT==='touch'||lastPT==='pen',m.dataset.g)}
+  function onDbl(e){if(!K||e.button!==0)return;const t=e.target;if(t.closest&&t.closest('mark.uh[data-g]'))return;const u=unitFrom(t);if(!u)return;
+    const c=hit(u,e.clientX,e.clientY,true),S=segs(u,c,u,c);if(!S.length)return;closeMenu();select(S);openMenu('sel',e.clientX,e.clientY,lastPT==='touch')}
+  // right-click, as in the exam: on the selection → "Highlight"; on a highlight → "Clear" / "Clear all"
+  function onCtx(e){if(!K)return;const t=e.target;if(t.closest&&t.closest('input,textarea'))return;e.preventDefault();if(drag)return;
+    const touch=lastPT==='touch'||lastPT==='pen';
+    if(sel&&t.closest&&t.closest('mark.uh.sel')){openMenu('sel',e.clientX,e.clientY,touch);return}
+    const m=t.closest&&t.closest('mark.uh[data-g]');if(m&&!t.closest(NOGO)){openMenu('mark',e.clientX,e.clientY,touch,m.dataset.g);return}
+    closeMenu()}
 
-  /* ---- the small menu on a mark: colour · remove · remove all ---- */
-  function openPop(m){closePop();const g=m.dataset.g,c=+((/\bc(\d)\b/.exec(m.className)||[])[1]||1),n=groups();
-    pop=document.createElement('div');pop.className='uhpop';pop.setAttribute('role','dialog');pop.setAttribute('aria-label','Belgilangan matn');
-    pop.innerHTML=`<div class="uhr">${[1,2,3].map(k=>`<button type="button" class="uhc c${k}${k===c?' on':''}" data-c="${k}" aria-label="${NAMES[k]}" title="${NAMES[k]}" aria-pressed="${k===c}"></button>`).join('')}<button type="button" class="uhd" data-x="1">${BIN}O‘chirish</button></div>${n>1?`<button type="button" class="uha" data-a="1">Hammasini o‘chirish (${n})</button>`:''}`;
-    document.body.appendChild(pop);
-    const r=m.getClientRects()[0]||m.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,lim=(O.top?O.top():0)+8;
-    let top=r.top-ph-10;if(top<lim)top=r.bottom+10;
-    pop.style.left=Math.round(Math.max(8,Math.min(innerWidth-pw-8,r.left+r.width/2-pw/2)))+'px';pop.style.top=Math.round(Math.max(8,Math.min(innerHeight-ph-8,top)))+'px';
-    pop._m=m;pop._y=r.top;
-    pop.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-      if(b.dataset.c){recolor(g,+b.dataset.c);closePop()}
-      else if(b.dataset.x){drop(g);closePop()}
-      else if(b.dataset.a){if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent=`Tasdiqlang: ${n} ta belgi o‘chadi`;return}dropAll();closePop()}})}
-  function closePop(){if(pop){pop.remove();pop=null}}
-
-  /* ---- one-time hint above the text (until "Tushunarli" or the first mark) ---- */
-  function tipSync(){const root=document.querySelector(O.root),want=!!(root&&K&&units.length&&!ls(O.ns+'hltip'));
-    if(!want){if(tip){tip.remove();tip=null;if(O.layout)O.layout()}return}
-    if(tip&&tip.parentNode===root)return;
-    if(!tip){tip=document.createElement('div');tip.className='uhtip';tip.setAttribute('role','note');
-      const touch=matchMedia('(pointer:coarse)').matches;
-      tip.innerHTML=`<span class="uhti" aria-hidden="true">${PEN}</span><div><b>Matnni belgilash (highlight)</b><p>${touch?'So‘zni bosib turing, keyin barmog‘ingizni suring.':'Sichqonchani bosib, kerakli so‘zlar ustidan suring.'} Belgini o‘chirish yoki rangini almashtirish uchun ustiga bosing.</p></div><button type="button">Tushunarli</button>`;
-      tip.querySelector('button').addEventListener('click',tipDone)}
-    root.prepend(tip);if(O.layout)O.layout()}
-  function tipDone(){if(!O)return;lset(O.ns+'hltip','1');if(tip){tip.remove();tip=null;if(O.layout)O.layout()}}
-
-  function clear(p){if(!O||O.off)return;
+  function clear(p){if(!O||O.off)return;closeMenu();
     if(p==null){if(K){const ids=Object.keys(D);D={};lset(K,null);repaint(ids)}return}
     try{const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(p)===0)ks.push(k)}ks.forEach(k=>localStorage.removeItem(k))}catch(e){}
     if(K&&K.indexOf(p)===0){const ids=Object.keys(D);D={};repaint(ids)}}
 
-  /* o: {ns, root, key()→storage key or null (null = no marking here), units (selector), sub {zone: selector},
-         out (selector: blocks inside these are not marked), top()→lowest y the menu may use, layout() after the hint
-         appears or goes, off (true = engine not used on this page)} */
-  function init(o){O=o;pen=+ls(o.ns+'hlc')||1;if(!(pen>=1&&pen<=3))pen=1;if(o.off)return;
-    const root=document.querySelector(o.root);if(!root)return;
-    new MutationObserver(rs=>{if(rs.every(r=>[...r.addedNodes,...r.removedNodes].every(n=>n.nodeType===1&&n.classList.contains('uhtip'))))return;scan()}).observe(root,{childList:true});
+  /* o: {ns, root, key()→storage key or null (null = no highlighting here), units (selector), sub {zone: selector},
+         out (selector: blocks inside these are not used), top()→bottom edge of the bars at the top,
+         bottom()→height of the bars at the bottom, off (true = engine not used on this page)} */
+  function init(o){O=o;if(o.ns){lset(o.ns+'hlc',null);lset(o.ns+'hltip',null)}   // leftovers of the first version (pen colour, hint closed)
+    if(o.off)return;const root=document.querySelector(o.root);if(!root)return;W=innerWidth;
+    new MutationObserver(()=>scan()).observe(root,{childList:true});
     root.addEventListener('pointerdown',mDown);
     root.addEventListener('touchstart',tStart,{passive:true});root.addEventListener('touchmove',tMove,{passive:false});
     root.addEventListener('touchend',tEnd,{passive:false});root.addEventListener('touchcancel',tCancel);
-    root.addEventListener('click',onClick,true);root.addEventListener('dblclick',onDbl);
-    addEventListener('pointerdown',e=>{if(pop&&!pop.contains(e.target))closePop()},true);
-    addEventListener('keydown',e=>{if(e.key==='Escape'){closePop();if(drag)cancel()}});
-    addEventListener('scroll',()=>{if(pop&&(!pop._m.isConnected||Math.abs(pop._m.getBoundingClientRect().top-pop._y)>6))closePop()},{capture:true,passive:true});
-    addEventListener('resize',()=>closePop());
+    root.addEventListener('click',onClick);root.addEventListener('dblclick',onDbl);root.addEventListener('contextmenu',onCtx);
+    addEventListener('pointerdown',onDown,true);addEventListener('click',onClickCap,true);
+    addEventListener('keydown',e=>{if(e.key==='Escape'){if(drag)cancel();closeMenu()}});
+    addEventListener('scroll',()=>{if(menu&&!mr)mr=requestAnimationFrame(follow)},{capture:true,passive:true});
+    // phones change the height while the address bar slides away: only a new width (turning the phone) closes things
+    addEventListener('resize',()=>{if(innerWidth!==W){W=innerWidth;if(drag)cancel();closeMenu()}else if(menu&&!mr)mr=requestAnimationFrame(follow)});
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&drag)cancel()});
     scan()}
   return {on:true,init,scan,clear};
@@ -993,7 +1038,7 @@ function examIntro(){
   EX.view='intro';$('#ttl').textContent=DOC.short;$('#sub').textContent=DOC.title;document.title='EDUNEST · '+DOC.title;$('#foot').hidden=true;$('#jump').hidden=true;examBar();
   $('#main').innerHTML=`<div class="xin"><h2>${esc(DOC.title)}</h2><p class="sub">Haqiqiy imtihon formatida</p>
     <div class="facts"><div><b>${allNums().length}</b><span>savol</span></div><div><b>${DOC.sections.length}</b><span>qism</span></div><div><b>${EX.cfg.mins}</b><span>daqiqa</span></div></div>
-    <ul><li>Barcha qismlar <b>bitta testda</b>: qismlar orasida xohlagancha o‘tishingiz mumkin.</li>${HL.on?'<li>Matndagi so‘zlarni <b>belgilash</b> (highlight) mumkin: kompyuterda sichqoncha bilan bosib suring, telefonda so‘zni bosib turing va suring.</li>':''}<li>Vaqt boshlangach <b>to‘xtamaydi</b>. Sahifani yopsangiz ham vaqt ketaveradi.</li><li>Javoblar faqat <b>oxirida</b> tekshiriladi: to‘g‘ri javoblar soni, ball va daraja chiqadi.</li><li>Tugatgach xaritada <b>sertifikat</b> ochiladi.</li></ul>
+    <ul><li>Barcha qismlar <b>bitta testda</b>: qismlar orasida xohlagancha o‘tishingiz mumkin.</li>${HL.on?'<li>Matnni <b>belgilash</b> (highlight) mumkin: so‘zlarni belgilang va «Highlight»ni bosing (telefonda so‘zni bosib turing, keyin suring).</li>':''}<li>Vaqt boshlangach <b>to‘xtamaydi</b>. Sahifani yopsangiz ham vaqt ketaveradi.</li><li>Javoblar faqat <b>oxirida</b> tekshiriladi: to‘g‘ri javoblar soni, ball va daraja chiqadi.</li><li>Tugatgach xaritada <b>sertifikat</b> ochiladi.</li></ul>
     <button class="xbtn" id="xgo">Testni boshlash</button></div>`;
   $('#xgo').onclick=()=>{HL.clear(ST+'hl:'+UID+':'+H.d+':x:');EX.t0=Date.now();ANS={};save();examGo(0);scrollTo(0,0)};
 }
@@ -1117,13 +1162,14 @@ addEventListener('hashchange',()=>location.reload());
    behaviour: no feedback on those pages (writing tasks switch it off in render()). Sounds wait while the listening audio plays and
    during a mock exam until its result (vibration still works). */
 FEEL.init({ns:ST,off:('speak' in H)||('ai' in H),quiet:()=>!!(window.AU&&!window.AU.paused)||!!(EX&&EX.view!=='result')});
-/* text highlighter (HL, top of this script; 27.11.2026): the passages, questions, instructions and listening script of every
-   test and exercise. Not on vocabulary cards, writing tasks (they hold the AI Writing checker), AI Writing or AI Speaking.
-   Marks are kept per student, test and part; "Qayta ishlash" and a new mock attempt start with a clean text. */
+/* text highlighter (HL, top of this script; v2 27.11.2026 evening, like the computer IELTS test: yellow only, select → "Highlight",
+   a highlight → "Clear" / "Clear all"): the passages, questions, instructions and listening script of every test and exercise.
+   Not on vocabulary cards, writing tasks (they hold the AI Writing checker), AI Writing or AI Speaking.
+   Highlights are kept per student, test and part; "Qayta ishlash" and a new mock attempt start with a clean text. */
 HL.init({ns:ST,root:'#main',off:('speak' in H)||('ai' in H),
   key:()=>SEC&&H.d&&SEC.kind!=='study'&&SEC.kind!=='write'&&(!EX||EX.view==='part'||EX.view==='review')?ST+'hl:'+UID+':'+H.d+':'+(EX?'x:':'')+SEC.id:null,
   units:'.instr,.paper h2,.paper>p,.paper .row,.paper h3.sub,.box .boxh>strong,.box>div:not([class]),.side h3,.side li>span,.qs .note,.qs .qh>div',
   sub:{s:'#scr .script>p:not(.hint)'},out:'#scr,#res,#aft,#pl,.nt',
   top:()=>{let b=0;for(const s of ['.bar','#xtabs']){const e=document.querySelector(s);if(e&&!e.hidden)b=Math.max(b,e.getBoundingClientRect().bottom)}return b},
-  layout:()=>{if(EX)examFit()}});
+  bottom:()=>{const f=$('#foot');return f&&!f.hidden?Math.max(0,innerHeight-f.getBoundingClientRect().top):0}});
 boot();

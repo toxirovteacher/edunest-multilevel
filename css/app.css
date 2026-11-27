@@ -1765,7 +1765,76 @@ body.dark .pfed{background:#E8ECF5}
 .glbp-x{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
 @keyframes glbIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 @media (max-width:560px){.glb{padding:14px 12px 12px;border-radius:22px}.glbh{flex-direction:column;gap:10px}.glbh h2{font-size:20px}.glbc{margin:4px -4px 2px}}
-@media (prefers-reduced-motion:reduce){.glbp{animation:none}}/* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
+@media (prefers-reduced-motion:reduce){.glbp{animation:none}}
+
+/* ===== v29 landing (27.11.2026): phone/tablet menu, zoomable screenshots, pictures in "Qanday boshlanadi", 8 material cards, quiz review ===== */
+/* menu: below 980px the bar keeps logo + Kirish + a menu button; the same links open in a panel under the bar */
+.lp-menu{display:none}
+.lp [id^="lp-"]{scroll-margin-top:72px}
+@media (max-width:980px){
+  #landing .lp-bar .lp-btn-sm{margin-left:auto}
+  .lp-menu{display:grid;place-content:center;gap:5px;width:44px;height:44px;flex:none;padding:0;border:0;border-radius:12px;background:var(--mist);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .lp-menu i{display:block;width:20px;height:2px;border-radius:2px;background:var(--ink);transition:transform .2s,opacity .2s}
+  .lp-menu:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .lp-bar.open{border-bottom-color:var(--line)}
+  .lp-bar.open .lp-menu i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .lp-bar.open .lp-menu i:nth-child(2){opacity:0}
+  .lp-bar.open .lp-menu i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .lp-bar.open .lp-nav{display:flex;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:2px;margin:0;padding:8px clamp(12px,4vw,44px) 14px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 30px 40px -30px rgba(20,27,45,.4)}
+  .lp-bar.open .lp-nav a{padding:14px 12px;font-size:17px;color:var(--ink)!important;border-radius:12px}
+  .lp-bar.open .lp-nav a:hover,.lp-bar.open .lp-nav a:focus-visible{background:var(--mist)}
+}
+@media (max-width:520px){#landing .lp-bar{gap:10px}}
+@media (prefers-reduced-motion:reduce){.lp-menu i{transition:none}}
+/* skill-card screenshots: a magnifier on the picture; the viewer shows the whole screenshot */
+.stk-win{position:relative}
+.stk-img{cursor:zoom-in}
+.stk-zoom{position:absolute;right:12px;bottom:12px;width:40px;height:40px;display:grid;place-items:center;padding:0;border:0;border-radius:12px;background:rgba(20,27,45,.78);color:#fff;cursor:zoom-in;opacity:.92;transition:opacity .15s,transform .15s}
+.stk-zoom:hover{opacity:1;transform:scale(1.06)}.stk-zoom:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.stk-zoom svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.stk-win.nf .stk-zoom{display:none}
+html.shot-on{overflow:hidden}
+.shot-lb{position:fixed;inset:0;z-index:210;display:flex;align-items:center;justify-content:center;padding:64px 16px 20px;background:rgba(10,14,24,.94);opacity:0;transition:opacity .18s}
+.shot-lb.in{opacity:1}.shot-lb[hidden]{display:none}
+.shot-lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:100%}
+.shot-lb img{display:block;width:auto;height:auto;max-width:min(1290px,100%);max-height:calc(100vh - 120px);border-radius:12px;background:#fff;box-shadow:0 30px 80px -24px #000}
+@supports (height:100dvh){.shot-lb img{max-height:calc(100dvh - 120px)}}
+.shot-lb figcaption{color:#C9D0DE;font-size:14px;font-weight:600;text-align:center}
+.shot-x{position:absolute;top:12px;right:12px;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.shot-x:hover{background:rgba(255,255,255,.16)}.shot-x:focus-visible{outline:3px solid #F5B700;outline-offset:2px}
+.shot-x svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+@media (prefers-reduced-motion:reduce){.shot-lb,.stk-zoom{transition:none}}
+/* "Qanday boshlanadi": a real screen above each step (Multi-Level only; build.py removes them from General English 3) */
+.lp-stp{display:block;margin:0 0 18px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#F5F7FA;box-shadow:0 18px 40px -28px rgba(20,27,45,.45);aspect-ratio:16/10}
+.lp-stp img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0}
+@media (max-width:860px){.lp-stp{margin:2px 0 14px;max-width:440px}}
+/* materials: 8 cards = 4 per row on desktop, 2 per row on tablets and phones (compact on phones) */
+.lp-show.n8{grid-template-columns:repeat(4,minmax(0,1fr))}
+.lp-show.n8 .lp-sc .tcov{height:132px}
+.lp-show.n8 .lp-scb b{font-size:17px}
+.lp-show.n8 .rv:nth-child(n){transition-delay:0s}.lp-show.n8 .rv:nth-child(4n+2){transition-delay:.07s}.lp-show.n8 .rv:nth-child(4n+3){transition-delay:.14s}.lp-show.n8 .rv:nth-child(4n){transition-delay:.21s}
+@media (max-width:1080px){.lp-show.n8 .cw{font-size:26px}}
+@media (max-width:980px){.lp-show.n8{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-show.n8 .rv:nth-child(n){transition-delay:0s}.lp-show.n8 .rv:nth-child(2n){transition-delay:.07s}}
+@media (max-width:520px){
+  .lp-show.n8{gap:10px}
+  .lp-show.n8 .lp-sc{border-radius:14px}
+  .lp-show.n8 .lp-sc .tcov{height:84px;padding:8px}
+  .lp-show.n8 .ck{left:10px;top:9px;font-size:10.5px;max-width:calc(100% - 20px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lp-show.n8 .cw{left:9px;top:25px;font-size:17px}
+  .lp-show.n8 .cart{width:52%;height:58%;top:20px}
+  .lp-show.n8 .tbadge{padding:2px 6px;font-size:12px}.lp-show.n8 .tbadge span{display:none}
+  .lp-show.n8 .lp-scb{padding:10px 11px 12px}.lp-show.n8 .lp-scb b{font-size:14.5px;line-height:1.25}.lp-show.n8 .lp-scb small{display:block;margin-top:3px;font-size:12.5px;line-height:1.35}
+}
+/* quiz result: the wrong questions with their right answers */
+.qz-miss{list-style:none;margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--line);display:grid;gap:10px}
+.qz-miss li{display:grid;gap:3px;font-size:15px;line-height:1.45;color:var(--ink)}
+.qz-miss u{text-decoration:none;border-bottom:2px solid var(--ink);display:inline-block;min-width:34px}
+.qz-miss em{font-style:normal;font-size:14px;font-weight:600;color:var(--slate)}.qz-miss em b{color:#13803D;font-weight:800}
+.qz-res .lp-actions{align-items:center}
+.qz-res .lp-actions .lp-btn{min-height:50px;padding:0 22px;font-size:16px}
+.qz-again{border:0;background:none;padding:10px 6px;font:inherit;font-weight:700;font-size:15px;color:var(--slate);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.qz-again:hover{color:var(--ink)}.qz-again:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
+@media (max-width:520px){.qz-again{margin:0 auto}}/* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
 /* no grey tap flash (the press animation is the feedback), no double-tap zoom delay */
 html.fx{-webkit-tap-highlight-color:transparent}
 html.fx :is(button,a[href],[role="button"],[role="tab"],[role="switch"],[data-go],[data-press],summary,label){touch-action:manipulation}

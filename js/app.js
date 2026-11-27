@@ -205,6 +205,15 @@ document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);document.querySelecto
 {const t=document.getElementById('tPhoto');if(t){const fb=()=>{if(t.src!==PHOTO)t.src=PHOTO};t.addEventListener('error',fb);if(t.complete&&!t.naturalWidth)fb()}}
 $('#c1share').onclick=async()=>{const url=location.href.split('#')[0]+'#/c1';const d={title:'Listening 5.0 dan 7.5–8.0 ga: A\'zamjon Toxirovning usuli',text:'1.5 oyda Listening’ni 7.5–8.0 ga chiqargan 10 qadam',url};try{if(navigator.share){await navigator.share(d);return}await navigator.clipboard.writeText(url);toast('Havola nusxalandi')}catch(e){}};
 document.querySelectorAll('[data-scroll]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.scroll).scrollIntoView({behavior:'smooth'})});
+/* landing menu on phones and tablets (27.11.2026): the same links as the desktop bar; closes on a link, outside tap, Esc or page change */
+{const bar=document.querySelector('#landing .lp-bar'),b=$('#lpMenu'),nav=$('#lpNav');if(bar&&b&&nav){
+  const set=o=>{bar.classList.toggle('open',o);b.setAttribute('aria-expanded',String(o))},isOpen=()=>bar.classList.contains('open');
+  b.onclick=e=>{e.stopPropagation();set(!isOpen())};
+  nav.addEventListener('click',e=>{if(e.target.closest('a'))set(false)});
+  document.addEventListener('click',e=>{if(isOpen()&&!bar.contains(e.target))set(false)});
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&isOpen()){set(false);b.focus()}});
+  addEventListener('hashchange',()=>set(false));
+  addEventListener('resize',()=>{if(isOpen()&&innerWidth>980)set(false)},{passive:true})}}
 /* results wall: Multi-Level / IELTS tabs (click, or left/right arrow keys) */
 {const T=[...document.querySelectorAll('.nt-tab')];const sel=t=>T.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});
   T.forEach((t,i)=>{t.onclick=()=>sel(t);t.onkeydown=e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();const n=T[(i+d+T.length)%T.length];sel(n);n.focus()}})}
@@ -410,23 +419,51 @@ const QZ=[['My sister ___ in a bank since 2019.',['works','has worked','is worki
   ['I wish I ___ that to her. It really hurt her feelings.',['didn’t say','hadn’t said','wouldn’t say','don’t say'],1],
   ['Hardly ___ the station when the train left.',['we had reached','had we reached','we reached','did we reached'],1],
   ['The decision was made ___ the fact that costs were rising.',['despite of','in spite','in light of','because'],2]];
-function renderQuiz(){const box=$('#lpQuiz');if(!box||G3||box.dataset.on)return;box.dataset.on=1;let i=0,ok=0;
+function renderQuiz(){const box=$('#lpQuiz');if(!box||G3||box.dataset.on)return;box.dataset.on=1;let i=0,ok=0,miss=[];
+  const blank=s=>esc(s).replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>');
   const draw=()=>{if(i>=QZ.length){const lv=ok>=7?'C1':ok>=5?'B2':ok>=3?'B1':'A2';
+      /* 27.11.2026: each wrong question with its right answer, and a way to sign up for lessons */
       box.innerHTML=`<div class="qz-res"><small>Taxminiy darajangiz</small><b>${lv}</b><p>${ok}/${QZ.length} to‘g‘ri. Bu faqat grammatika va so‘z bo‘yicha qisqa taxmin. To‘liq natija uchun Writing va Speaking’ni AI bilan tekshiring.</p>
-        <div class="lp-actions"><a class="lp-btn" href="#/login">Platformaga kirish</a><button class="lp-btn lp-btn-line" id="qzAgain" type="button">Qayta</button></div></div>`;
-      $('#qzAgain').onclick=()=>{i=0;ok=0;draw()};return}
+        ${miss.length?`<ol class="qz-miss">${miss.map(k=>`<li><span>${blank(QZ[k][0])}</span><em>To‘g‘ri javob: <b>${esc(QZ[k][1][QZ[k][2]])}</b></em></li>`).join('')}</ol>`:''}
+        <div class="lp-actions"><a class="lp-btn" href="#/login">Platformaga kirish</a><a class="lp-btn lp-btn-line" href="#lp-enroll" id="qzEnroll">Darsga yozilish</a><button class="qz-again" id="qzAgain" type="button">Qayta</button></div></div>`;
+      $('#qzAgain').onclick=()=>{i=0;ok=0;miss=[];draw()};
+      $('#qzEnroll').onclick=e=>{e.preventDefault();$('#lp-enroll').scrollIntoView({behavior:'smooth'})};return}
     const q=QZ[i];box.innerHTML=`<div class="qz-top"><span>${i+1} / ${QZ.length}</span><span class="qz-dots">${QZ.map((_,k)=>`<i class="${k<i?'on':k===i?'cur':''}"></i>`).join('')}</span></div>
       <p class="qz-q">${esc(q[0]).replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>')}</p><div class="qz-opts">${q[1].map((o,k)=>`<button type="button" data-k="${k}">${esc(o)}</button>`).join('')}</div>`;
-    box.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(k===q[2])ok++;
+    box.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(k===q[2])ok++;else miss.push(i);
       box.querySelectorAll('[data-k]').forEach(x=>{x.disabled=true;if(+x.dataset.k===q[2])x.classList.add('ok');else if(x===b)x.classList.add('no')});
       setTimeout(()=>{i++;draw()},650)})};draw()}
-function showLanding(){document.title=G3?'EDUNEST · General English 3':'EDUNEST · Multi-Level';renderShow();renderQuiz();document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
+function showLanding(){document.title=G3?'EDUNEST · General English 3':'EDUNEST · Multi-Level';renderShow();renderQuiz();shotZoom();document.body.classList.remove('st-mode');$('#app').classList.add('hide');$('#login').classList.add('hide');$('#themeFloat').classList.add('hide');$('#landing').classList.remove('hide')}
 function showC1(){document.body.classList.remove('st-mode');['#app','#login','#landing'].forEach(x=>$(x).classList.add('hide'));$('#themeFloat').classList.add('hide');$('#c1page').classList.remove('hide');scrollTo(0,0);
   document.title='C1 Listening yo‘li · A\'zamjon Toxirov · EDUNEST'}
 function renderShow(){const box=$('#lpShow');if(!box||box.dataset.done)return;box.dataset.done=1;
-  const items=G3?[['u5a','5A · Fast forward','Comparatives, as … as va sonlar: dars va mashqlar'],['u5b','5B · Superlative cities?','Superlatives va shahar so‘zlari: dars va mashqlar'],['grammar','Past Simple, Would - Used to','Grammatika: dars, formula va mashqlar']]:[['lmock','Listening Mock Tests','20 ta to‘liq test: audio, natija va sertifikat'],['reading','Reading Mock Tests','10 ta to‘liq test: natija va sertifikat'],['booster','Reading Part 1 Booster','30 ta matn, har birida 5 xil mashq'],
-    ['rp3','Reading Part 3 · Sarlavhalar','12 ta matn, tahlil va tarjima bilan'],['wr2','Writing namunalari','30 ta Part 1 savol va 60 ta Part 2 mavzu, C1 javoblar'],['vocab','Speaking iboralari','60 ta ibora: tarjima, misol va mashqlar']];
-  box.innerHTML=items.map(([k,t,d],i)=>`<div class="lp-sc">${coverHTML(k,i,'<span class="tbadge">🔒 O‘quvchilar uchun</span>')}<div class="lp-scb"><b>${t}</b><small>${d}</small></div></div>`).join('');lpFx()}
+  /* 27.11.2026: 8 Multi-Level cards (+ Listening Part 2/4/5/6 packs and the grammar topic, all live for ALL); the
+     Listening-packs cover is given here, not in COVERS, so the teacher's banner chips stay as they are */
+  const LPX={k:'Listening · Part 2, 4, 5, 6',w:'MASHQLAR',c1:'#221640',c2:'#7B3FE4',art:'wave'};
+  const items=G3?[['u5a','5A · Fast forward','Comparatives, as … as va sonlar: dars va mashqlar'],['u5b','5B · Superlative cities?','Superlatives va shahar so‘zlari: dars va mashqlar'],['grammar','Past Simple, Would - Used to','Grammatika: dars, formula va mashqlar']]:[['lmock','Listening Mock Tests','20 ta to‘liq test: audio, natija va sertifikat'],['reading','Reading Mock Tests','10 ta to‘liq test: natija va sertifikat'],
+    ['lpx','Listening mashqlari','Part 2, 4, 5 va 6 bo‘yicha alohida mashqlar',LPX],['booster','Reading Part 1 Booster','30 ta matn, har birida 5 xil mashq'],
+    ['rp3','Reading Part 3 · Sarlavhalar','12 ta matn, tahlil va tarjima bilan'],['wr2','Writing namunalari','30 ta Part 1 savol va 60 ta Part 2 mavzu, C1 javoblar'],['vocab','Speaking iboralari','60 ta ibora: tarjima, misol va mashqlar'],
+    ['grammar','Grammatika','Past Simple, Would - Used to: dars, formula va mashqlar']];
+  box.classList.toggle('n8',items.length===8);
+  box.innerHTML=items.map(([k,t,d,cv],i)=>`<div class="lp-sc">${coverHTML(k,i,'<span class="tbadge">🔒<span> O‘quvchilar uchun</span></span>',cv)}<div class="lp-scb"><b>${t}</b><small>${d}</small></div></div>`).join('');lpFx()}
+/* landing (27.11.2026): the skill-card screenshots open whole and large; the card itself shows a 16:10 crop */
+function shotZoom(){const S=$('#lpStack');if(!S||G3||S.dataset.zm)return;S.dataset.zm=1;
+  S.querySelectorAll('.stk-win').forEach(w=>{const im=w.querySelector('.stk-img');if(!im)return;
+    const b=document.createElement('button');b.type='button';b.className='stk-zoom';b.setAttribute('aria-label','Rasmni kattalashtirish: '+im.alt);
+    b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8M10.5 7.5v6M7.5 10.5h6"/></svg>';
+    w.appendChild(b);const open=()=>{if(!w.classList.contains('nf'))shotOpen(im,b)};b.onclick=open;im.addEventListener('click',open)})}
+function shotOpen(im,back){let lb=$('#shotLb');
+  if(!lb){lb=document.createElement('div');lb.id='shotLb';lb.className='shot-lb';lb.hidden=true;lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');
+    lb.innerHTML='<button type="button" class="shot-x" aria-label="Yopish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><figure><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(lb);
+    lb.addEventListener('click',e=>{if(!e.target.closest('img'))shotClose()});
+    lb.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();shotClose()}else if(e.key==='Tab'){e.preventDefault();lb.querySelector('.shot-x').focus()}});
+    addEventListener('hashchange',shotClose)}
+  const pic=lb.querySelector('img');pic.src=im.currentSrc||im.src;pic.alt=im.alt;pic.width=+im.getAttribute('width');pic.height=+im.getAttribute('height');
+  lb.querySelector('figcaption').textContent=(im.closest('.stk-win').querySelector('.stk-bar span')||{}).textContent||'';
+  lb._back=back;lb.hidden=false;document.documentElement.classList.add('shot-on');requestAnimationFrame(()=>lb.classList.add('in'));lb.querySelector('.shot-x').focus()}
+function shotClose(){const lb=$('#shotLb');if(!lb||lb.hidden)return;lb.classList.remove('in');document.documentElement.classList.remove('shot-on');
+  setTimeout(()=>{lb.hidden=true},180);if(lb._back)lb._back.focus({preventScroll:true})}
 /* landing motion: sections rise in as they scroll into view; band numbers count up once. Content stays visible without JS. */
 function lpFx(){const L=$('#landing');if(!L||L.dataset.fx||!('IntersectionObserver' in window))return;L.dataset.fx=1;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -550,8 +587,8 @@ function coverArt(a){
   if(a==='dots')return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">${Array.from({length:40},(_,i)=>`<circle cx="${(i%10)*20+10}" cy="${Math.floor(i/10)*20+10}" r="${2+(i*7)%5}"/>`).join('')}</svg>`;
   return `<svg class="cart" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMid meet" aria-hidden="true"><path d="M110 18c22-8 44-8 66 0v52c-22-8-44-8-66 0zM110 18c-22-8-44-8-66 0v52c22-8 44-8 66 0z" fill="none" stroke-width="4"/><path d="M60 30h36M60 42h36M124 30h36M124 42h36" stroke-width="3"/></svg>`;
 }
-function coverHTML(key,i,extra){
-  const c=COVERS[key]||{k:'Topshiriq',w:'MASHQ',c1:`hsl(${(i*53+200)%360} 45% 22%)`,c2:`hsl(${(i*53+230)%360} 60% 46%)`,art:'dots'};
+function coverHTML(key,i,extra,cv){   /* cv: an explicit cover (landing only), else COVERS[key] */
+  const c=cv||COVERS[key]||{k:'Topshiriq',w:'MASHQ',c1:`hsl(${(i*53+200)%360} 45% 22%)`,c2:`hsl(${(i*53+230)%360} 60% 46%)`,art:'dots'};
   return `<div class="tcov" style="--c1:${c.c1};--c2:${c.c2}">${coverArt(c.art)}<span class="ck">${esc(c.k)}</span><b class="cw">${esc(c.w)}</b>${extra||''}</div>`;
 }
 /* ================= ASSIGNMENT MODEL (Booster + teacher maps) ================= */

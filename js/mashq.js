@@ -235,7 +235,8 @@ function render(){
   let left='',right='';
   const paper=!s.blocks.length?'':`<div class="paper">${s.blocks.map(blockHTML).join('')}${s.kind==='listen'?'<div id="scr"></div>':''}</div>`;
   if(s.side){const side=`<div class="paper side"><h3>${esc(s.side.title)}</h3><ol>${s.side.items.map(i=>`<li data-l="${i[0]}"><i>${i[0]}</i><span>${i[2]?`<b>${esc(i[1])}</b>${esc(i[2])}`:esc(i[1])}</span></li>`).join('')}</ol></div>`;if(s.sideAfter){left=paper;right=side}else{left=side;right=paper}}
-  else if(s.qs.length&&!paper){left=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
+  /* 27.11.2026: a listening section with questions only (Part 1, Part 5) keeps its script in a card under the questions (shown after checking) */
+  else if(s.qs.length&&!paper){left=`<div class="qs">${s.qs.map(qHTML).join('')}</div>${s.kind==='listen'&&(s.script||[]).length?'<div class="paper scrp" hidden><div id="scr"></div></div>':''}`}
   else if(s.qs.length){left=paper;right=`<div class="qs">${s.qs.map(qHTML).join('')}</div>`}
   else{left=paper}
   $('#main').innerHTML=`<div id="res"></div>${s.kind==='listen'?'<div id="pl"></div>':''}<div class="instr"><b>${esc(s.label)}</b>${esc(s.instr)}</div>
@@ -298,7 +299,7 @@ function showResult(scroll){
     if(btns.length){btns.forEach(b=>{b.disabled=true;if(acc.includes(b.dataset.v))b.classList.add('right');else if(b.dataset.v===ANS[n])b.classList.add('wrong')})}
     else if(!good){const host=document.querySelector(`.gapw[data-q="${n}"]`)||document.querySelector(`.box[data-q="${n}"] .boxh`);if(host&&!host.querySelector('.fix'))host.insertAdjacentHTML('beforeend',`<span class="fix">✓ ${esc(SEC.ans[n].join(' / '))}</span>`)}
   });
-  if(SEC.kind==='listen'&&$('#scr')){$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
+  if(SEC.kind==='listen'&&$('#scr')){const sp=$('#scr').closest('.scrp');if(sp)sp.hidden=false;$('#scr').innerHTML=`<button class="reveal" id="rv">Skriptni ochish — javoblar sariq rangda</button>`;$('#rv').onclick=script}
   if(SEC.notes){Object.keys(SEC.notes).forEach(n=>{if(document.querySelector(`[data-nt="${n}"]`))return;
       const g=document.querySelector(`.gapw[data-q="${n}"]`);const host=document.querySelector(`.q[data-q="${n}"],.row[data-q="${n}"]`)||(g&&g.closest('p,.row,.q'));
       if(host)host.insertAdjacentHTML('afterend',`<details class="nt nx" data-nt="${n}"><summary></summary><div></div></details>`)});

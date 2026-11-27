@@ -111,6 +111,7 @@ main{max-width:1240px;margin:0 auto;padding:14px 12px 130px}
 .score .big span{width:62px;height:62px;border-radius:50%;background:var(--ink);display:grid;place-items:center;font-size:19px}
 .score p{margin:0;font-size:15px;line-height:1.45;color:var(--slate)}.score p b{display:block;color:var(--ink);font-size:17px}
 .reveal{display:block;width:100%;min-height:58px;border:2px dashed #b9c1d3;background:#fff;border-radius:16px;font-size:16px;font-weight:800;color:var(--ink);cursor:pointer;margin:12px 0 0}
+.paper.scrp{margin-top:10px}.paper.scrp .reveal{margin:0}
 .script{margin-top:12px}
 .script mark.qm{background:#FFE58A;color:#141B2D;border-radius:6px;padding:0 4px;margin:0 2px;font-size:.8em;vertical-align:1px}
 .script .hint{font-size:.85em;opacity:.7;margin-top:-4px}

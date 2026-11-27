@@ -503,7 +503,7 @@ function foot(){
   if(SEC.kind==='study'||SEC.kind==='write'||SEC.kind==='note'){f.innerHTML=`<button id="dn">${H.a&&H.s!=null?'Bajardim':'Xaritaga qaytish'}</button>`;
     $('#dn').onclick=()=>{if(H.a&&H.s!=null){
       if(SEC.kind==='write'&&!Object.values(WR.t||{}).some(x=>typeof x==='string'&&x.trim().split(/\s+/).length>=30)){toast('Avval kamida bitta javobni yozing (30 so‘zdan ko‘p). Shundan keyin “Bajardim” ishlaydi.');return}
-      if(SEC.kind==='study'||SEC.kind==='note'){if(Date.now()-OPENED<60000){toast(SEC.kind==='note'?'Avval materialni o‘qib chiqing. Kamida 1 daqiqa ishlang.':`Avval ${SEC.unit==='so‘z'?'so‘zlarni':'iboralarni'} o‘qib chiqing. Kamida 1 daqiqa ishlang.`);return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR,v:Date.now()}))}}
+      if(SEC.kind==='study'||SEC.kind==='note'){if(Date.now()-OPENED<60000){toast(SEC.kind==='note'?'Avval materialni o‘qib chiqing. Kamida 1 daqiqa ishlang.':`Avval ${SEC.unit==='so‘z'?'so‘zlarni':SEC.unit==='fe’l'?'fe’llarni':'iboralarni'} o‘qib chiqing. Kamida 1 daqiqa ishlang.`);return}lset(key(),JSON.stringify({a:ANS,r:DONE,w:WR,v:Date.now()}))}}
       goDone()};return}
   const total=nums().length,a=answered();
   if(!DONE){

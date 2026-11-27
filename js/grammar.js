@@ -212,6 +212,41 @@ const isOk=(v,acc)=>!!norm(v)&&acc.some(a=>norm(a)===norm(v));
 /* markers: \x01..\x02 bold, \x03..\x04 italic, \x05..\x06 highlight, \x0e..\x0f red text, \x10..\x11 strikethrough */
 const rich=x=>esc(x).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<i>').replace(/\x04/g,'</i>').replace(/\x05/g,'<mark class="hl">').replace(/\x06/g,'</mark>').replace(/\x0e/g,'<span class="rd">').replace(/\x0f/g,'</span>').replace(/\x10/g,'<s>').replace(/\x11/g,'</s>');
 const CTRL=/[\x01-\x06\x0e-\x11]/g;
+const cap1=s=>{s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1)};
+
+/* the device's own English voice (since 26.11.2026, General English 3): listening tasks and the 🔊 buttons. Nothing is downloaded;
+   a phone or computer without an English voice shows the text instead. */
+const TTS={ok:typeof speechSynthesis!=='undefined'&&typeof SpeechSynthesisUtterance!=='undefined',v:null,tok:null,
+  pick(){let vs=[];try{vs=speechSynthesis.getVoices()||[]}catch(e){}
+    const en=vs.filter(v=>/^en([-_]|$)/i.test(v.lang||''));if(!en.length)return null;
+    const gb=v=>/^en[-_]gb/i.test(v.lang||''),nice=v=>/natural|neural|online|enhanced|premium|google|siri|daniel|serena|kate|hazel|libby|sonia|ryan|arthur|martha|oliver|stephanie/i.test(v.name||'');
+    return en.find(v=>gb(v)&&nice(v))||en.find(gb)||en.find(nice)||en.find(v=>/^en[-_]us/i.test(v.lang||''))||en[0]},
+  say(t,slow,end){if(!this.ok){end&&end();return}
+    let prev='';try{const s=navigator.audioSession;if(s){prev=s.type;s.type='playback'}}catch(e){}   /* iPhone: heard with the silent switch on (the page's own sounds are 'ambient') */
+    if(!this.v)this.v=this.pick();
+    const parts=String(t).replace(CTRL,'').replace(/([.!?])\s+(?=[A-Z0-9“"‘'(])/g,'$1\n').split('\n').map(x=>x.trim()).filter(Boolean);
+    const tok={};this.tok=tok;
+    const done=()=>{if(this.tok!==tok)return;this.tok=null;try{if(prev==='ambient')navigator.audioSession.type='ambient'}catch(e){}end&&end()};
+    const go=()=>{if(this.tok!==tok)return;if(!parts.length){done();return}
+      parts.forEach((p,i)=>{const u=new SpeechSynthesisUtterance(p);u.rate=slow?.62:.92;u.pitch=1;
+        if(this.v){u.voice=this.v;u.lang=this.v.lang}else u.lang='en-GB';
+        if(i===parts.length-1)u.onend=u.onerror=done;
+        try{speechSynthesis.speak(u)}catch(e){done()}})};
+    let busy=false;try{busy=speechSynthesis.speaking||speechSynthesis.pending;speechSynthesis.cancel()}catch(e){}
+    if(busy)setTimeout(go,80);else go()},   /* right away when nothing plays: iPhone only speaks inside the tap */
+  stop(){this.tok=null;if(this.ok)try{speechSynthesis.cancel()}catch(e){}document.querySelectorAll('.lsb.on').forEach(x=>x.classList.remove('on'))}};
+if(TTS.ok)try{speechSynthesis.addEventListener('voiceschanged',()=>{TTS.v=TTS.pick()})}catch(e){}
+const sayOf=x=>String(x||'').replace(CTRL,'').split(' — ')[0].trim();   /* an example "English — o‘zbekcha": only the English part is read */
+const sayBtns=t=>TTS.ok?`<div class="lsb"><button type="button" class="play" data-say="${esc(String(t).replace(CTRL,''))}">▶ Tinglash</button><button type="button" class="play slow" data-say="${esc(String(t).replace(CTRL,''))}" data-slow="1">🐢 Sekinroq</button></div>`:'';
+function bindSay(root){(root||document).querySelectorAll('[data-say]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();
+  const box=b.closest('.lsb');document.querySelectorAll('.lsb.on').forEach(x=>x.classList.remove('on'));if(box)box.classList.add('on');
+  TTS.say(b.dataset.say,!!b.dataset.slow,()=>{if(box)box.classList.remove('on')})})}
+/* a fixed shuffle per question (the same order every time the question is opened), never the right order itself */
+function seedOf(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function order(n,seed,same){let s=seed||1;const rnd=()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};
+  let r=[...Array(n).keys()];
+  for(let k=0;k<8;k++){for(let i=n-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[r[i],r[j]]=[r[j],r[i]]}if(n<2||!same(r))break}
+  if(n>1&&same(r))r.push(r.shift());return r}
 
 function toast(m){let d=$('#toast');if(!d){d=document.createElement('div');d.id='toast';d.className='toast';d.setAttribute('role','status');document.body.appendChild(d)}d.textContent=m;d.style.opacity=1;clearTimeout(d._t);d._t=setTimeout(()=>d.style.opacity=0,3200)}
 function fail(h,p,back){$('#main').innerHTML=`<div class="msg"><h2>${esc(h)}</h2><p>${esc(p)}</p><a href="${back||'./#/login'}">${back?'Xaritaga qaytish':'Platformaga kirish'}</a></div>`;$('#foot').hidden=true}
@@ -235,9 +270,17 @@ function cardsOf(){
   n.blocks.forEach(b=>{const lines=b.t==='h'?[['h',b.x]]:String(b.x||'').split('\n').map(l=>['p',l]);
     if(b.t==='h'||!cards.length)cards.push({id:'c'+(cards.length+1),parts:[]});cards[cards.length-1].parts.push(...lines)});
   return cards}
+/* item types: gap (rows with {{n}}), mcq; since 26.11.2026 also scr (build the sentence from word tiles), tap (tap the right
+   words / parts of words), match (pair the two columns) and gap inside qs; any item can have q (a line above it) and say (heard, not shown) */
+const gapNs=x=>[...String(x).matchAll(/\{\{(\d+)\}\}/g)].map(m=>m[1]);
 function itemsOf(sec){const out=[],nt=sec.notes||{};
-  (sec.blocks||[]).forEach(b=>{if(b.t!=='row')return;const ns=[...String(b.x).matchAll(/\{\{(\d+)\}\}/g)].map(m=>m[1]);if(ns.length)out.push({t:'gap',x:b.x,ns,note:nt[ns[0]]||''})});
-  (sec.qs||[]).forEach(q=>{if(q.t==='mcq')out.push({t:'mcq',q:q.q,o:q.o,n:String(q.n),note:nt[q.n]||''})});
+  (sec.blocks||[]).forEach(b=>{if(b.t!=='row')return;const ns=gapNs(b.x);if(ns.length)out.push({t:'gap',x:b.x,ns,q:b.q||'',say:b.say||'',note:nt[ns[0]]||''})});
+  (sec.qs||[]).forEach(q=>{const n=String(q.n),c={q:q.q||'',say:q.say||'',big:!!q.big,n,note:nt[q.n]||''};
+    if(q.t==='mcq')out.push({t:'mcq',...c,o:q.o});
+    else if(q.t==='scr')out.push({t:'scr',...c,w:q.w,post:q.post||''});
+    else if(q.t==='tap')out.push({t:'tap',...c,w:q.w});
+    else if(q.t==='match')out.push({t:'match',...c,p:q.p});
+    else if(q.t==='gap'){const ns=gapNs(q.x);if(ns.length)out.push({t:'gap',...c,x:q.x,ns,note:nt[ns[0]]||''})}});
   return out}
 const enOf=sec=>((sec.blocks||[]).find(b=>b.t==='sub')||{}).x||'';
 const crumb=()=>`<a class="crumb" href="${link('')}">‹ <span>${esc(DOC.title)}</span></a>`;
@@ -253,11 +296,12 @@ function hubView(){
   const xs=exs.map(s=>({s,...exState(s)}));const dEx=xs.filter(x=>x.st.r).length;
   const total=(note?1:0)+exs.length,dAll=(ln.v?1:0)+dEx,pc=total?Math.round(dAll/total*100):0;
   $('#main').innerHTML=`<section class="hero"><span class="eb">${esc(DOC.short||'Grammatika')}</span><h1>${esc(DOC.title)}</h1>
-      <p>${note?'Avval darsni o‘qing, keyin mashqlarni bajaring. ':''}Har bir javob darhol tekshiriladi va o‘zbekcha tushuntiriladi.</p>
-      <div class="hstats"><div><b>${note?(ln.v?'✓':cards.length):'–'}</b><span>${note?(ln.v?'dars o‘qildi':'dars qismi'):'dars yo‘q'}</span></div><div><b>${dEx}/${exs.length}</b><span>mashq bajarildi</span></div><div><b>${pc}%</b><span>umumiy</span></div></div>
+      <p>${DOC.hub?esc(DOC.hub):(note?'Avval darsni o‘qing, keyin mashqlarni bajaring. ':'')+'Har bir javob darhol tekshiriladi va o‘zbekcha tushuntiriladi.'}</p>
+      <div class="hstats"><div><b>${note?(ln.v?'✓':cards.length):'–'}</b><span>${note?(ln.v?'dars o‘qildi':'dars qismi'):'dars yo‘q'}</span></div>${exs.length?`<div><b>${dEx}/${exs.length}</b><span>mashq bajarildi</span></div>`:''}<div><b>${pc}%</b><span>umumiy</span></div></div>
       <div class="hbar"><b style="width:${pc}%"></b></div></section>
-    ${note?`<h2 class="sech">Dars</h2><a class="lcard" href="${link(note.id)}"><span class="lic">${BOOK}</span><span class="ltx"><b>${esc(DOC.title)}</b><small>${cards.length} qism: qoida, formula, misollar va mini-testlar</small></span><span class="st ${ln.v?'g':ln.c?'b':''}">${ln.v?'O‘qildi ✓':ln.c?'Davom etmoqda':'Yangi'}</span></a>`:''}
-    ${exs.length?`<h2 class="sech">Mashqlar</h2><div class="xlist">${xs.map((x,i)=>`<a class="xitem" href="${link(x.s.id)}"><span class="xn">${i+1}</span><span class="xt"><b>${esc(x.s.title)}</b><small>${x.n} ta savol${x.st.best&&x.st.r&&(x.st.best.ok>x.st.r.ok)?' · eng yaxshi: '+x.st.best.ok+'/'+x.st.best.of:''}</small></span><span class="st ${x.cls}">${esc(x.txt)}</span></a>`).join('')}</div>`:''}`;
+    ${note?`<h2 class="sech">Dars</h2><a class="lcard" href="${link(note.id)}"><span class="lic">${BOOK}</span><span class="ltx"><b>${esc(DOC.title)}</b><small>${cards.length} qism: ${cards.some(c=>(c.chk||[]).length)?'qoida, formula, misollar va mini-testlar':'qoida, formula va misollar'}</small></span><span class="st ${ln.v?'g':ln.c?'b':''}">${ln.v?'O‘qildi ✓':ln.c?'Davom etmoqda':'Yangi'}</span></a>`:''}
+    ${xs.map((x,i)=>{const g=x.s.grp||'Mashqlar',newG=!i||g!==(xs[i-1].s.grp||'Mashqlar');   /* grp: "Student’s Book", "Workbook"… (one heading "Mashqlar" when none) */
+      return `${newG?`${i?'</div>':''}<h2 class="sech">${esc(g)}</h2><div class="xlist">`:''}<a class="xitem" href="${link(x.s.id)}"><span class="xn">${i+1}</span><span class="xt"><b>${esc(x.s.title)}</b><small>${x.s.grp?esc(x.s.label)+' · ':''}${x.n} ta savol${x.st.best&&x.st.r&&(x.st.best.ok>x.st.r.ok)?' · eng yaxshi: '+x.st.best.ok+'/'+x.st.best.of:''}</small></span><span class="st ${x.cls}">${esc(x.txt)}</span></a>${i===xs.length-1?'</div>':''}`}).join('')}`;
   watermark();
   const nx=xs.find(x=>!x.st.r);
   if(note&&!ln.v)foot([{t:ln.c?'Darsni davom ettirish →':'Darsni boshlash →',f:()=>go(note.id)}]);
@@ -267,19 +311,21 @@ function hubView(){
 
 /* ================= lesson ================= */
 let LI=0;const QA={};
-function chipKind(p){const s=p.trim().toLowerCase();if(s==='subject'||s==='s')return 's';if(/^verb\b/.test(s))return 'v';if(s==='obj'||s==='object')return 'o';if(s==='wh-word')return 'w';return 'x'}
+function chipKind(p){const s=p.trim().toLowerCase();if(s==='subject'||s==='s')return 's';if(/^verb(\b|ing\b)/.test(s))return 'v';if(/^obj(ect)?\.*$/.test(s))return 'o';if(s==='wh-word')return 'w';   /* 27.11.2026: also "Verbing" and "object..." (his Past Continuous / Present Perfect Continuous formulas) */
+  if(/\b(adjective|adverb|participle)\b/.test(s))return 'v';if(/\bnoun\b/.test(s))return 's';return 'x'}   /* the last two: General English 3 formulas (26.11.2026) */
 function formula(x,noLabel){   /* his formula line, word for word, shown as coloured parts */
   let t=String(x).replace(CTRL,''),lab='',cap='',q='';
   const ci=t.indexOf(': '),pi=t.indexOf(' + ');if(ci>0&&pi>ci){lab=t.slice(0,ci+1);t=t.slice(ci+2)}
   const m=/\s*\(([^)]*)\)\s*$/.exec(t);if(m){cap=m[1];t=t.slice(0,m.index)}
   if(/\?$/.test(t)){q='?';t=t.slice(0,-1)}
-  const chips=t.split(' + ').map(p=>`<span class="ch ${chipKind(p)}">${esc(p)}</span>`).join('<span class="pl">+</span>');
+  let on=false;const hl=String(x).split(' + ').map(p=>{const a=on||p.includes('\x05');on=a&&!p.includes('\x06');return a});   /* a part he marked with the yellow highlighter keeps a yellow ring (27.11.2026) */
+  const chips=t.split(' + ').map((p,i)=>`<span class="ch ${chipKind(p)}${hl[i]?' hl':''}">${esc(p)}</span>`).join('<span class="pl">+</span>');
   return `<div class="f">${lab&&!noLabel?`<span class="flab">${esc(lab)}</span>`:''}<div class="fr">${chips}${q?'<span class="fq">?</span>':''}</div>${cap?`<span class="fcap">(${esc(cap)})</span>`:''}</div>`}
 function partsHTML(parts){let h='',i=0;
   while(i<parts.length){const r=parts[i][0],x=parts[i][1];
     if(r==='c'||r==='e'){let j=i;while(j<parts.length&&parts[j][0]===r)j++;const g=parts.slice(i,j).map(p=>p[1]);
       h+=r==='c'?`<div class="cc">${g.map(l=>`<span>${rich(l)}</span>`).join('')}</div>`
-        :`<div class="exs"><span class="el">${g.length>1?'Misollar':'Misol'}</span>${g.map(l=>`<p class="e">${rich(l)}</p>`).join('')}</div>`;
+        :`<div class="exs"><span class="el">${g.length>1?'Misollar':'Misol'}</span>${g.map(l=>`<p class="e">${rich(l)}${DOC.tts&&TTS.ok?`<button type="button" class="say" data-say="${esc(sayOf(l))}" aria-label="Tinglash">🔊</button>`:''}</p>`).join('')}</div>`;
       i=j;continue}
     if(r==='h')h+=`<h3 class="sh">${rich(x)}</h3>`;
     else if(r==='k')h+=`<div class="k">${rich(x)}</div>`;
@@ -304,9 +350,11 @@ function cardHTML(c,i,n){
   const parts=c.parts||[],hasH=parts.length&&parts[0][0]==='h',title=hasH?parts[0][1]:(c.title||'');
   const body=partsHTML(hasH?parts.slice(1):parts),hasF=parts.some(p=>p[0]==='f')||!!c.fx;
   return `<article class="card" data-c="${i}"><div class="ceb"><span>${i+1}-qism</span><i>${esc(DOC.short||'Grammatika')}</i></div>
-    <h2>${rich(title)}</h2>${hasF&&i===0?LEGEND:''}${body}
+    <h2>${rich(title)}</h2>${hasF&&i===0&&DOC.legend!==false?LEGEND:''}
+    ${c.pic?`<figure class="pic">${c.pic}${c.pcap?`<figcaption>${esc(c.pcap)}</figcaption>`:''}</figure>`:''}${body}
+    ${c.wg?`<div class="wg">${c.wg.map(w=>`<button type="button" class="wgi" data-say="${esc(w[1])}" aria-label="${esc(w[1])}${TTS.ok?' — tinglash':''}"><span class="wge${/[0-9A-Za-z]/.test(w[0])?' wgt':''}" aria-hidden="true">${esc(w[0])}</span><b>${esc(w[1])}</b>${w[2]?`<small>${esc(w[2])}</small>`:''}</button>`).join('')}</div>`:''}
     ${c.tl?timeline(c.tl):''}
-    ${c.tbl?`<div class="vt"><h3>Bu mavzudagi Irregular fe’llar</h3><div class="g">${c.tbl.map(r=>`<div><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('')}</div></div>`:''}
+    ${c.tbl?`<div class="vt"><h3>${esc(c.tblh||'Bu mavzudagi Irregular fe’llar')}</h3><div class="g">${c.tbl.map(r=>`<div><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('')}</div></div>`:''}
     ${c.cmp?`<div class="cmpw"><table class="cmp"><thead><tr>${c.cmp.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${c.cmp.rows.map(r=>`<tr><th scope="row">${esc(r[0])}<small>${esc(r[4]||'')}</small></th>${[1,2,3].map(j=>`<td class="${r[j]?'y':'n'}" aria-label="${r[j]?'ha':'yo‘q'}">${r[j]?'✓':'✗'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''}
     ${c.fx?`<div class="fx"><h3>Formulalar</h3>${c.fx.map(f=>`<div class="fxr"><span>${esc(f[0])}</span>${formula(f[1],true)}</div>`).join('')}</div>`:''}
     ${c.tip?`<div class="tip"><b>Diqqat</b><p>${esc(c.tip)}</p></div>`:''}
@@ -322,11 +370,11 @@ function bindChk(c){(c.chk||[]).length&&document.querySelectorAll('.cq').forEach
 function lessonView(){const note=NOTE(),cards=cardsOf();if(!note||!cards.length){go('');return}
   const st=sget(note.id);LI=Math.min(Math.max(+st.c||0,0),cards.length-1);drawCard()}
 function drawCard(){
-  VIEW='lesson';const note=NOTE(),cards=cardsOf(),n=cards.length,c=cards[LI],st=sget(note.id);
+  VIEW='lesson';TTS.stop();const note=NOTE(),cards=cardsOf(),n=cards.length,c=cards[LI],st=sget(note.id);
   st.c=LI;st.seen=[...new Set([...(st.seen||[]),c.id])];sput(note.id,st);
   setBar((DOC.short||'Grammatika')+' · Dars',DOC.title);
   $('#main').innerHTML=`${crumb()}<div class="lnav"><div class="dots">${cards.map((x,i)=>`<button type="button" data-i="${i}" class="${i===LI?'on':st.seen.includes(x.id)?'seen':''}" aria-label="${i+1}-qism"${i===LI?' aria-current="step"':''}></button>`).join('')}</div><span class="cnt">${LI+1} / ${n}</span></div>${cardHTML(c,LI,n)}`;
-  watermark();bindChk(c);
+  watermark();bindChk(c);bindSay($('#main'));
   document.querySelectorAll('.dots button').forEach(b=>b.onclick=()=>{LI=+b.dataset.i;drawCard();scrollTo(0,0)});
   const last=LI===n-1;
   foot([LI>0?{t:'← Oldingi',cls:'alt',f:lessonPrev}:{t:'‹ Mavzu',cls:'alt',f:()=>go('')},
@@ -347,39 +395,101 @@ function finishLesson(){
 }
 
 /* ================= exercises: one question at a time, checked at once ================= */
-let XS=null;   /* {sec, items, st, run:{list, A, K, pos, prac}} */
-const blankQ=q=>esc(q).replace(/_{3,}/g,'<span class="blank" aria-label="bo‘sh joy"></span>');
+let XS=null;   /* {sec, items, st, run:{list, A, K, pos, prac, S: tiles placed, T: parts tapped, M: pairs found, O: shuffled orders}} */
+const newRun=(list,A,K,pos,prac)=>({list,A,K,pos,prac,S:{},T:{},M:{},O:{}});
+const blankQ=q=>rich(q).replace(/_{3,}/g,'<span class="blank" aria-label="bo‘sh joy"></span>');
 const gapIn=n=>`<input class="gap" data-n="${n}" aria-label="Javob" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">`;
 function solved(sec,it){   /* the sentence with the right answers in it */
-  const s=esc(it.x).replace(/\{\{(\d+)\}\}/g,(_,n)=>`<b>${esc((sec.ans[n]||[''])[0])}</b>`);
+  const s=rich(it.x).replace(/\n/g,'<br>').replace(/\{\{(\d+)\}\}/g,(_,n)=>`<b>${esc((sec.ans[n]||[''])[0])}</b>`);
   return s.replace(/^(\s*<b>)([a-z])/,(_,a,c)=>a+c.toUpperCase())}
-function checkItem(sec,it,A){if(it.t==='mcq'){const ok=A[it.n]===sec.ans[it.n][0];return{ok,per:{[it.n]:ok}}}
+function checkItem(sec,it,A){const one=ok=>({ok,per:{[it.n]:ok}});
+  if(it.t==='mcq'||it.t==='tap')return one(A[it.n]===sec.ans[it.n][0]);
+  if(it.t==='scr')return one(isOk(A[it.n],sec.ans[it.n]));
+  if(it.t==='match')return one(A[it.n]==='m0');
   const per={};it.ns.forEach(n=>per[n]=isOk(A[n],sec.ans[n]));return{ok:it.ns.every(n=>per[n]),per}}
+/* scrambled sentence: the tiles in the order placed, the first word with a capital letter */
+const scrText=(it,S)=>cap1(S.map(i=>it.w[i]).join(' '))+(it.post||'');
+/* tap: w = tokens; "~" = joined to the token before (part of the same word), "_" = plain text (not tappable); answer = "i,j" (sorted) */
+const tokOf=t=>{let x=String(t),g=false,p=false;if(x[0]==='~'){g=true;x=x.slice(1)}if(x[0]==='_'){p=true;x=x.slice(1)}return{x,g,p}};
+const idxs=v=>String(v||'').split(',').filter(s=>s!=='').map(Number);
+function tapHTML(it,chk,sel,ans){const R=idxs(ans);let h='',open=false;
+  it.w.forEach((t,i)=>{const {x,g,p}=tokOf(t);if(!g||!open){if(open)h+='</span>';h+='<span class="wd">';open=true}
+    if(p){h+=`<span class="tkp">${esc(x)}</span>`;return}
+    const s=sel.includes(i),r=R.includes(i),c=chk?(s&&r?'ok':s?'bad':r?'miss':''):(s?'sel':'');
+    h+=`<button type="button" class="tk ${c}" data-i="${i}" aria-pressed="${s}"${chk?' disabled':''}>${esc(x)}</button>`});
+  return h+(open?'</span>':'')}
+function tapText(it,v,html){const R=idxs(v);let h='';   /* the sentence, the chosen parts [in brackets] (html: underlined) */
+  it.w.forEach((t,i)=>{const {x,g}=tokOf(t);h+=(i&&!g?' ':'')+(R.includes(i)?(html?`<span class="tgk">${esc(x)}</span>`:'['+x+']'):(html?esc(x):x))});return h}
 /* a result saved by the old mashq page (grammar lived there until 20.11.2026) is counted per blank:
    turn it into this page's per-question form once (same answers, same keys; only the counting changes) */
 function fromOld(sec,items,st){if(!st.r||st.k||!st.r.res)return;
   const k={},res={};let ok=0;
-  items.forEach((it,j)=>{const per={};(it.t==='mcq'?[it.n]:it.ns).forEach(n=>per[n]=!!st.r.res[n]);const g=Object.values(per).every(Boolean);k[j]={ok:g,per};res[j]=g;if(g)ok++});
+  items.forEach((it,j)=>{const per={};(it.ns||[it.n]).forEach(n=>per[n]=!!st.r.res[n]);const g=Object.values(per).every(Boolean);k[j]={ok:g,per};res[j]=g;if(g)ok++});
   st.k=k;st.r={ok,of:items.length,res};st.best={ok,of:items.length};st.at=st.at||Date.now();sput(sec.id,st)}
 function exView(sec){
   const items=itemsOf(sec),st=sget(sec.id);st.a=st.a||{};fromOld(sec,items,st);st.k=st.k||{};
-  XS={sec,items,st,run:null,t0:Date.now()};
+  XS={sec,items,st,run:null,t0:Date.now(),tx:true};TTS.stop();
   if(st.r){exResult();return}
   const list=items.map((_,j)=>j);const first=list.findIndex(j=>!st.k[j]);
-  XS.run={list,A:st.a,K:st.k,pos:first<0?0:first,prac:false};
+  XS.run=newRun(list,st.a,st.k,first<0?0:first,false);
   if(first<0){finishRun();return}
   exDraw()}
+/* above the question: a picture (fig), a reading text, or a listening text (heard, shown only on the result page) */
+const paras=x=>`<div class="tb">${String(x||'').split(/\n+/).map(p=>`<p>${rich(p)}</p>`).join('')}</div>`;
+function secTop(sec){let h='';
+  if(sec.fig)h+=`<figure class="xfig">${sec.fig}${sec.figc?`<figcaption>${esc(sec.figc)}</figcaption>`:''}</figure>`;
+  const T=sec.text;if(!T)return h;
+  if(!T.listen)return h+`<details class="txd top"${XS.tx?' open':''}><summary>📖 ${esc(T.h||'Matn')}</summary>${paras(T.x)}</details>`;
+  return h+`<div class="lsn"><div class="lsh"><b>🎧 ${esc(T.h||'Tinglang')}</b><small>${TTS.ok?'Tinglang va savollarga javob bering. Kerak bo‘lsa, qayta yoki sekinroq tinglang.':'Bu qurilmada ingliz tilidagi ovoz yo‘q. Matnni o‘qib, savollarga javob bering.'}</small></div>${sayBtns(T.say||T.x)}${TTS.ok?'':`<details class="txd" open><summary>Matn</summary>${paras(T.x)}</details>`}</div>`}
+function itemHTML(sec,it,j){const run=XS.run,k=run.K[j],A=run.A;
+  const lead=(it.say?(TTS.ok?sayBtns(it.say):`<div class="nov">🎧 ${esc(String(it.say).replace(CTRL,''))}</div>`):'')+(it.q&&it.t!=='mcq'?`<p class="itq${it.big?' big':''}">${rich(it.q)}</p>`:'');
+  if(it.t==='gap')return lead+`<p class="itx">${rich(it.x).replace(/\n/g,'<br>').replace(/\{\{(\d+)\}\}/g,(_,n)=>gapIn(n))}</p>`;
+  if(it.t==='scr')return lead+`<div class="sline" id="sl" aria-live="polite"></div><div class="spool" id="sp"></div>`;
+  if(it.t==='tap')return lead+`<p class="itx tapw" id="tw">${tapHTML(it,!!k,k?idxs(A[it.n]):(run.T[j]||[]),sec.ans[it.n][0])}</p>`;
+  if(it.t==='match')return lead+matchHTML(it,j);
+  return lead+`${it.q?`<p class="itx${it.big?' big':''}">${blankQ(it.q)}</p>`:''}<div class="opts">${it.o.map(([L,t])=>`<button type="button" class="opt" data-v="${esc(L)}"><i>${esc(L.toUpperCase())}</i><span>${rich(t)}</span></button>`).join('')}</div>`}
+function scrPaint(){const {items,run}=XS,j=run.list[run.pos],it=items[j],k=run.K[j],sl=$('#sl'),sp=$('#sp');if(!sl||!sp)return;
+  const S=run.S[j]||(run.S[j]=[]),word=(i,p)=>p?it.w[i]:cap1(it.w[i]);
+  if(k){const t=S.length===it.w.length?scrText(it,S):String(run.A[it.n]||'');   /* opened again later: the saved sentence */
+    sl.className='sline '+(k.ok?'ok':'bad');sl.innerHTML=`<span class="tile">${esc(t)}</span>`;sp.innerHTML='';sp.hidden=true;return}
+  sl.className='sline';
+  sl.innerHTML=S.length?S.map((i,p)=>`<button type="button" class="tile on" data-p="${p}" aria-label="${esc(it.w[i])} — olib tashlash">${esc(word(i,p))}</button>`).join('')+(it.post&&S.length===it.w.length?`<span class="spost">${esc(it.post)}</span>`:'')
+    :'<span class="sph">So‘zlarni to‘g‘ri tartibda bosing</span>';
+  const O=run.O[j]||(run.O[j]=order(it.w.length,seedOf(DID+'|'+XS.sec.id+'|'+it.n),r=>r.map(i=>it.w[i]).join(' ')===it.w.join(' ')));
+  sp.innerHTML=O.map(i=>S.includes(i)?`<span class="tile used" aria-hidden="true">${esc(it.w[i])}</span>`:`<button type="button" class="tile" data-i="${i}">${esc(it.w[i])}</button>`).join('');
+  sl.querySelectorAll('button').forEach(b=>b.onclick=()=>{S.splice(+b.dataset.p,1);FEEL.play('tick');scrPaint();exFoot()});
+  sp.querySelectorAll('button').forEach(b=>b.onclick=()=>{S.push(+b.dataset.i);FEEL.play('tick');scrPaint();exFoot()})}
+function bindTap(){const {items,run}=XS,j=run.list[run.pos],it=items[j];if(run.K[j])return;const T=run.T[j]||(run.T[j]=[]);
+  document.querySelectorAll('#tw .tk').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,p=T.indexOf(i);if(p>=0)T.splice(p,1);else T.push(i);
+    b.classList.toggle('sel',p<0);b.setAttribute('aria-pressed',String(p<0));FEEL.play('tick');exFoot()})}
+/* match: left column as written, right column shuffled; a right pair stays coloured, a wrong one shakes and counts as a mistake */
+function matchHTML(it,j){const run=XS.run,k=run.K[j],M=run.M[j]||(run.M[j]={sel:null,done:[],miss:0}),done=k?it.p.map((_,i)=>i):M.done;
+  const R=run.O[j]||(run.O[j]=order(it.p.length,seedOf(DID+'|'+XS.sec.id+'|'+it.n),r=>r.every((x,i)=>x===i)));
+  const btn=(s,i,txt)=>{const d=done.indexOf(i);return `<button type="button" class="mb${d>=0?' ok':''}${M.sel===s+i?' sel':''}" data-s="${s}${i}"${d>=0?` style="--mc:var(--mc${d%6})" data-k="${d+1}" disabled`:''}>${rich(txt)}</button>`};
+  return `<div class="mt" id="mt"><div class="mcol">${it.p.map((p,i)=>btn('L',i,p[0])).join('')}</div><div class="mcol">${R.map(i=>btn('R',i,it.p[i][1])).join('')}</div></div>`}
+function bindMatch(){const {sec,items,run}=XS,j=run.list[run.pos],it=items[j];if(run.K[j])return;const M=run.M[j];
+  document.querySelectorAll('#mt .mb:not(.ok)').forEach(b=>b.onclick=()=>{const s=b.dataset.s;
+    if(!M.sel||M.sel[0]===s[0]){M.sel=M.sel===s?null:s;FEEL.play('tick');paintMatch();return}
+    const a=M.sel,l=+(a[0]==='L'?a:s).slice(1),r=+(a[0]==='R'?a:s).slice(1);M.sel=null;
+    if(l===r){M.done.push(l);
+      if(M.done.length===it.p.length){run.A[it.n]='m'+M.miss;run.K[j]=checkItem(sec,it,run.A);FEEL.play(M.miss?'complete':'correct');if(!run.prac)sput(sec.id,XS.st);exDraw();return}
+      FEEL.play('pop');paintMatch();return}
+    M.miss++;FEEL.play('wrong');paintMatch();
+    [a,s].forEach(x=>{const e=document.querySelector(`#mt [data-s="${x}"]`);if(e){e.classList.add('no');setTimeout(()=>e.classList.remove('no'),420)}})})}
+function paintMatch(){const {items,run}=XS,j=run.list[run.pos],box=$('#mt');if(!box)return;box.outerHTML=matchHTML(items[j],j);bindMatch()}
 function exDraw(){
   VIEW='ex';const {sec,items,run}=XS,j=run.list[run.pos],it=items[j],k=run.K[j],A=run.A;
   setBar((DOC.short||'Grammatika')+' · '+sec.label,sec.title);
   const okN=run.list.filter(x=>run.K[x]&&run.K[x].ok).length;
   $('#main').innerHTML=`${crumb()}<div class="xh"><b>${esc(sec.label)}${run.prac?' · xatolar ustida ishlash':''}</b><h2>${esc(sec.title)}</h2><p>${esc(sec.instr)}</p>${enOf(sec)?`<p class="en">${esc(enOf(sec))}</p>`:''}</div>
     <div class="xp">${run.list.map((x,p)=>{const kk=run.K[x];return `<button type="button" data-p="${p}" class="${kk?(kk.ok?'ok':'bad'):''}${p===run.pos?' on':''}" aria-label="${p+1}-savol" ${kk||p===run.pos?'':'disabled'}></button>`}).join('')}</div>
+    ${secTop(sec)}
     <article class="card it"><div class="itn"><span>${run.prac?'Xato':'Savol'} ${run.pos+1} / ${run.list.length}</span><em>✓ ${okN}</em></div>
-      ${it.t==='gap'?`<p class="itx">${esc(it.x).replace(/\{\{(\d+)\}\}/g,(_,n)=>gapIn(n))}</p>`
-        :`<p class="itx">${blankQ(it.q)}</p><div class="opts">${it.o.map(([L,t])=>`<button type="button" class="opt" data-v="${esc(L)}"><i>${esc(L.toUpperCase())}</i><span>${esc(t)}</span></button>`).join('')}</div>`}
+      ${itemHTML(sec,it,j)}
       <div id="fb"></div></article>`;
-  watermark();
+  watermark();bindSay($('#main'));
+  const td=$('#main details.txd.top');if(td)td.addEventListener('toggle',()=>{XS.tx=td.open});
+  if(it.t==='scr')scrPaint();else if(it.t==='tap')bindTap();else if(it.t==='match')bindMatch();
   document.querySelectorAll('.xp button').forEach(b=>b.onclick=()=>{run.pos=+b.dataset.p;exDraw()});
   const ins=[...document.querySelectorAll('input.gap')];
   ins.forEach(i=>{const a=(sec.ans[i.dataset.n]||[''])[0];i.style.width=Math.max(5,Math.min(22,a.length+2))*.62+'em';i.value=A[i.dataset.n]||'';
@@ -389,20 +499,31 @@ function exDraw(){
   document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(run.K[j])return;A[it.n]=b.dataset.v;exCheck()});
   if(k)exShow();else{exFoot();if(ins[0]&&matchMedia('(hover:hover)').matches)ins[0].focus()}
 }
-function exCheck(){const {sec,items,run}=XS,j=run.list[run.pos],it=items[j];if(run.K[j])return;
+function exCheck(){const {sec,items,run}=XS,j=run.list[run.pos],it=items[j];if(run.K[j]||it.t==='match')return;   /* match checks itself */
   if(it.t==='gap'&&!it.ns.every(n=>norm(run.A[n]))){FEEL.play('warn');toast('Avval bo‘sh joyni to‘ldiring.');return}
+  if(it.t==='scr'){const S=run.S[j]||[];if(S.length<it.w.length){FEEL.play('warn');toast('Avval hamma so‘zlarni joylang.');return}run.A[it.n]=scrText(it,S)}
+  if(it.t==='tap'){const T=run.T[j]||[];if(!T.length){FEEL.play('warn');toast('Avval javobni belgilang.');return}run.A[it.n]=[...T].sort((a,b)=>a-b).join(',')}
   run.K[j]=checkItem(sec,it,run.A);FEEL.play(run.K[j].ok?'correct':'wrong');if(!run.prac)sput(sec.id,XS.st);exDraw()}
 function exShow(){   /* the checked item: colours, the right answer, the explanation */
   const {sec,items,run}=XS,j=run.list[run.pos],it=items[j],k=run.K[j],A=run.A;
   document.querySelectorAll('input.gap').forEach(i=>{i.disabled=true;i.classList.add(k.per[i.dataset.n]?'ok':'bad')});
   document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.dataset.v===sec.ans[it.n][0])b.classList.add('right');else if(b.dataset.v===A[it.n])b.classList.add('wrong')});
-  const right=it.t==='gap'?solved(sec,it):(()=>{const o=it.o.find(x=>x[0]===sec.ans[it.n][0]);return o?`${esc(o[0].toUpperCase())}) <b>${esc(o[1])}</b>`:''})();
-  $('#fb').innerHTML=`<div class="fb ${k.ok?'ok':'bad'}" role="status"><b>${k.ok?'✓ To‘g‘ri!':'✗ Xato'}</b>${k.ok&&it.t==='mcq'?'':`<p class="an">${k.ok?'':'To‘g‘ri javob: '}${right}</p>`}${it.note?`<div class="nt"><span>Tahlil</span>${rich(it.note)}</div>`:''}</div>`;
+  let right='',show=!k.ok;
+  if(it.t==='gap'){right=solved(sec,it);show=true}
+  else if(it.t==='mcq'){const o=it.o.find(x=>x[0]===sec.ans[it.n][0]);right=o?`${esc(o[0].toUpperCase())}) <b>${rich(o[1])}</b>`:''}
+  else if(it.t==='scr')right=`<b>${esc(cap1(sec.ans[it.n][0]))}</b>`;
+  else if(it.t==='tap')right=tapText(it,sec.ans[it.n][0],true);
+  else show=false;   /* match: every pair is on the screen already */
+  const head=k.ok?'✓ To‘g‘ri!':it.t==='match'?`✗ ${esc(String(A[it.n]||'m0').slice(1))} ta xato bilan`:'✗ Xato';
+  $('#fb').innerHTML=`<div class="fb ${k.ok?'ok':'bad'}" role="status"><b>${head}</b>${show&&right?`<p class="an">${k.ok?'':'To‘g‘ri javob: '}${right}</p>`:''}${it.say?`<p class="an">🎧 <i>${esc(String(it.say).replace(CTRL,''))}</i></p>`:''}${it.note?`<div class="nt"><span>Tahlil</span>${rich(it.note)}</div>`:''}</div>`;
   exFoot()}
 function nextOpen(){const {run}=XS;for(let p=run.pos+1;p<run.list.length;p++)if(!run.K[run.list[p]])return p;for(let p=0;p<run.pos;p++)if(!run.K[run.list[p]])return p;return -1}
 function exFoot(){const {items,run}=XS,j=run.list[run.pos],it=items[j],k=run.K[j];
   const back={t:'‹ Mavzu',cls:'alt',f:()=>go('')};
   if(!k){if(it.t==='mcq')foot([back,{t:'Javobni tanlang',dis:true,f:()=>{}}]);
+    else if(it.t==='match')foot([back,{t:'Juftliklarni toping',dis:true,f:()=>{}}]);
+    else if(it.t==='scr')foot([back,{t:'Tekshirish',dis:(run.S[j]||[]).length<it.w.length,f:exCheck}]);
+    else if(it.t==='tap')foot([back,{t:'Tekshirish',dis:!(run.T[j]||[]).length,f:exCheck}]);
     else foot([back,{t:'Tekshirish',dis:!it.ns.every(n=>norm(run.A[n])),f:exCheck}]);return}
   const nx=nextOpen();
   foot([back,nx<0?{t:run.prac?'Tugatish':'Natijani ko‘rish',cls:'ok',f:finishRun}:{t:'Keyingi savol →',f:()=>{run.pos=nx;exDraw();scrollTo(0,0)}}])}
@@ -416,14 +537,21 @@ function finishRun(){const {sec,items,st,run}=XS;
   if(items.length)sendRes({kind:'gr',doc:DID,sec:String(sec.id),aid:STEP?STEP.a:'',step:STEP?STEP.s:null,
     title:(DOC.short||'Grammatika')+' · '+(sec.label||'')+(sec.title?' · '+sec.title:''),ok,of:items.length,secs:Math.round((Date.now()-(XS.t0||OPENED))/1000),
     det:items.map((it,j)=>{const g=!!res[j];
-      if(it.t==='mcq'){const o=x=>{const f=it.o.find(y=>y[0]===x);return f?f[0].toUpperCase()+') '+f[1]:(x||'')};return [String(j+1),o(st.a[it.n]),g?1:0,o(sec.ans[it.n][0])]}
+      if(it.t==='mcq'){const o=x=>{const f=it.o.find(y=>y[0]===x);return f?f[0].toUpperCase()+') '+String(f[1]).replace(CTRL,''):(x||'')};return [String(j+1),o(st.a[it.n]),g?1:0,o(sec.ans[it.n][0])]}
+      if(it.t==='scr')return [String(j+1),st.a[it.n]||'',g?1:0,cap1(sec.ans[it.n][0])];
+      if(it.t==='tap')return [String(j+1),tapText(it,st.a[it.n]),g?1:0,tapText(it,sec.ans[it.n][0])];
+      if(it.t==='match')return [String(j+1),'Juftlash: '+String(st.a[it.n]||'m0').slice(1)+' ta xato',g?1:0,'xatosiz'];
       return [String(j+1),it.ns.map(n=>st.a[n]||'').join(' / '),g?1:0,it.ns.map(n=>(sec.ans[n]||[''])[0]).join(' / ')]})});
   exResult()}
 function mistHTML(sec,it,j){const st=XS.st,A=st.a,k=st.k[j]||{per:{}};
-  if(it.t==='gap'){const q=esc(it.x).replace(/\{\{(\d+)\}\}/g,(_,n)=>k.per[n]?`<b class="r">${esc(A[n]||'')}</b>`:`<span class="w">${esc(A[n]||'—')}</span> <b class="r">${esc((sec.ans[n]||[''])[0])}</b>`);
-    return `<div class="mi"><p class="q">${j+1}. ${q}</p>${it.note?`<p class="n">${rich(it.note)}</p>`:''}</div>`}
+  const nt=it.note?`<p class="n">${rich(it.note)}</p>`:'',said=it.say?`<p>🎧 <i>${esc(String(it.say).replace(CTRL,''))}</i></p>`:'',q=it.q?rich(it.q)+' ':'';
+  if(it.t==='gap'){const x=rich(it.x).replace(/\n/g,'<br>').replace(/\{\{(\d+)\}\}/g,(_,n)=>k.per[n]?`<b class="r">${esc(A[n]||'')}</b>`:`<span class="w">${esc(A[n]||'—')}</span> <b class="r">${esc((sec.ans[n]||[''])[0])}</b>`);
+    return `<div class="mi"><p class="q">${j+1}. ${q}${x}</p>${said}${nt}</div>`}
+  if(it.t==='scr')return `<div class="mi"><p class="q">${j+1}. ${q||'Gap tuzing.'}</p>${said}<p>Sizning gapingiz: <span class="w">${esc(A[it.n]||'—')}</span><br>To‘g‘ri: <b class="r">${esc(cap1(sec.ans[it.n][0]))}</b></p>${nt}</div>`;
+  if(it.t==='tap')return `<div class="mi"><p class="q">${j+1}. ${q}</p>${said}<p class="tapw">${tapHTML(it,true,idxs(A[it.n]),sec.ans[it.n][0])}</p>${nt}</div>`;
+  if(it.t==='match')return `<div class="mi"><p class="q">${j+1}. ${q||'Juftliklarni toping.'}<span class="w" style="text-decoration:none">${esc(String(A[it.n]||'m0').slice(1))} ta xato</span></p><ol class="mpl">${it.p.map(p=>`<li>${rich(p[0])} — <b class="r">${rich(p[1])}</b></li>`).join('')}</ol>${nt}</div>`;
   const mine=it.o.find(x=>x[0]===A[it.n]),good=it.o.find(x=>x[0]===sec.ans[it.n][0]);
-  return `<div class="mi"><p class="q">${j+1}. ${blankQ(it.q)}</p><p>Sizning javobingiz: <span class="w">${esc(mine?mine[1]:'—')}</span> · To‘g‘ri: <b class="r">${esc(good?good[1]:'')}</b></p>${it.note?`<p class="n">${rich(it.note)}</p>`:''}</div>`}
+  return `<div class="mi"><p class="q">${j+1}. ${blankQ(it.q)}</p>${said}<p>Sizning javobingiz: <span class="w">${mine?rich(mine[1]):'—'}</span> · To‘g‘ri: <b class="r">${good?rich(good[1]):''}</b></p>${nt}</div>`}
 function exResult(){
   VIEW='res';const {sec,items,st}=XS,r=st.r,pc=Math.round(r.ok/r.of*100),exs=EXS(),nx=exs[exs.indexOf(sec)+1];
   const msg=pc===100?'Mukammal! Hammasi to‘g‘ri.':pc>=80?'Juda yaxshi! Xatolarni ko‘rib chiqing.':pc>=50?'Yomon emas. Xatolar ustida ishlang.':'Qoidani yana bir bor o‘qing va qayta urinib ko‘ring.';
@@ -432,9 +560,10 @@ function exResult(){
   $('#main').innerHTML=`${crumb()}<div class="card res"><div class="ring" style="--p:${pc};--c:${pc>=80?'var(--ok)':pc>=50?'#D99A00':'var(--bad)'}"><span>${r.ok}/${r.of}</span></div>
     <h2>${esc(sec.label)} · natija</h2><p><b>${msg}</b>${st.best&&st.best.ok>r.ok?`Eng yaxshi natijangiz: ${st.best.ok}/${st.best.of}.`:''}</p>
     <div class="rbtns">${wrong.length?'<button type="button" class="pri" id="prac">Xatolar ustida ishlash</button>':''}<button type="button" id="again">Qaytadan ishlash</button>${NOTE()?'<button type="button" id="rule">Qoidani ko‘rish</button>':''}</div>
+    ${sec.text?`<details class="txd" style="text-align:left;margin-top:14px"><summary>${sec.text.listen?'🎧 Eshitgan matningiz':'📖 Matn'}</summary>${sec.text.listen?sayBtns(sec.text.say||sec.text.x):''}${paras(sec.text.x)}</details>`:''}
     ${wrong.length?`<div class="mist"><h3>Xatolar va tahlil</h3>${wrong.map(j=>mistHTML(sec,items[j],j)).join('')}</div>`:''}</div>`;
-  watermark();scrollTo(0,0);
-  const pb=$('#prac');if(pb)pb.onclick=()=>{XS.run={list:wrong,A:{},K:{},pos:0,prac:true};exDraw();scrollTo(0,0)};
+  watermark();bindSay($('#main'));scrollTo(0,0);
+  const pb=$('#prac');if(pb)pb.onclick=()=>{XS.run=newRun(wrong,{},{},0,true);exDraw();scrollTo(0,0)};
   $('#again').onclick=()=>{sput(sec.id,st.best?{best:st.best}:{});exView(sec);scrollTo(0,0)};
   const rb=$('#rule');if(rb)rb.onclick=()=>go(NOTE().id);
   const back={t:'‹ Mavzu',cls:'alt',f:()=>go('')};
@@ -444,7 +573,7 @@ function exResult(){
 }
 
 /* ================= router, keys, big-screen mode ================= */
-function route(){const x=H.x||'',note=NOTE();
+function route(){const x=H.x||'',note=NOTE();TTS.stop();
   if(note&&x===note.id)lessonView();
   else{const sec=EXS().find(s=>s.id===x);if(sec)exView(sec);else hubView()}
   scrollTo(0,0)}
@@ -453,7 +582,9 @@ document.addEventListener('keydown',e=>{if(e.defaultPrevented||e.ctrlKey||e.meta
   if(VIEW==='lesson'){if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();lessonNext()}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();lessonPrev()}return}
   if(VIEW==='ex'&&XS&&XS.run){const {items,run}=XS,j=run.list[run.pos],it=items[j];
     if(run.K[j]&&e.key==='Enter'){e.preventDefault();const b=$('#footin button:last-child');if(b&&!b.disabled)b.click()}
-    else if(!run.K[j]&&it.t==='mcq'&&/^[a-c1-3]$/i.test(e.key)){const L='abc'['abc123'.indexOf(e.key.toLowerCase())%3];if(it.o.some(o=>o[0]===L)){run.A[it.n]=L;exCheck()}}}});
+    else if(!run.K[j]&&it.t==='mcq'&&/^[a-f1-6]$/i.test(e.key)){const L='abcdef'['abcdef123456'.indexOf(e.key.toLowerCase())%6];if(it.o.some(o=>o[0]===L)){run.A[it.n]=L;exCheck()}}
+    else if(!run.K[j]&&it.t==='scr'&&e.key==='Backspace'){const S=run.S[j];if(S&&S.length){e.preventDefault();S.pop();scrPaint();exFoot()}}
+    else if(!run.K[j]&&(it.t==='scr'||it.t==='tap')&&e.key==='Enter'){e.preventDefault();exCheck()}}});
 let tx=null,ty=null;   /* swipe between lesson cards on phones */
 document.addEventListener('touchstart',e=>{if(VIEW!=='lesson'||e.touches.length!==1){tx=null;return}tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 document.addEventListener('touchend',e=>{if(VIEW!=='lesson'||tx==null)return;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;tx=null;

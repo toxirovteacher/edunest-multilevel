@@ -147,6 +147,198 @@ const FEEL=(()=>{
     _render:k=>{if(!ac())return null;return buf(k)},names:()=>Object.keys(SND)};
 })();
 
+/* ===== HL · text highlighter for tests and exercises (27.11.2026, Multi-Level test player) =====
+   Students mark words in the passage, the questions and the listening script, like the highlighter of a computer exam.
+   - Computer: press on a word and drag over the text; a double-click marks one word.
+   - Phone / tablet: hold a word about 0.4 s (a short tick), then slide the finger; lifting it marks the text.
+   - Tap or click a mark: another colour, remove it, or remove every mark of this part (asks once more).
+   The page's protection is untouched: the browser's own text selection stays off and copy / the context menu stay
+   blocked, so a phone never shows its Copy / Share menu. Marks never cover inputs, dropdowns, numbers or answer buttons.
+   Kept on this device per student, test and part (localStorage) and drawn again after every re-render (switching parts
+   in a mock, checking answers, reloading the page). A text block whose words have changed loses its marks.
+   The page calls HL.init(options) once, HL.scan() after it re-draws something that is not a direct child of the root,
+   and HL.clear() / HL.clear(prefix) when an attempt starts again. */
+const HL=(()=>{
+  const HOLD=380,NAMES=['','Sariq','Yashil','Pushti'];
+  const SKIP='.gapw,.pick,.fix,.num,.qm,select,option,input,textarea,button,sup,.nt,mark:not(.uh)>b';   // never inside a mark
+  const NOGO='input,select,textarea,button,a,label,.gapw,.pick,.fix';                                    // a press here never marks
+  const PEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 4.5 5 5L11 18H6v-5z"/><path d="M4 21h16"/></svg>';
+  const BIN='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg>';
+  const isW=c=>!!c&&/[\p{L}\p{N}'’‘-]/u.test(c);
+  const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  const lset=(k,v)=>{try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
+  const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)};
+  let O=null,K=null,D={},units=[],pen=1,pop=null,tip=null,drag=null,raf=0,eatUntil=0,shown=[];
+
+  /* ---- the text of a block: its text nodes in reading order, without inputs, dropdowns, numbers or answer chips ---- */
+  function texts(u){const out=[],w=document.createTreeWalker(u,5,{acceptNode:n=>n.nodeType===1?(n!==u&&n.matches(SKIP)?2:3):1});let n;while((n=w.nextNode()))out.push(n);return out}
+  const text=u=>texts(u).map(n=>n.data).join('');
+  // places in a block's text where the words are visually apart although the texts touch: a <br>, the edge of a block
+  // (e.g. the "Part 1" label above its instruction) or a skipped piece (gap, number badge). A word never runs over one.
+  function breaks(u){const B=new Set();let off=0,brk=false;
+    (function rec(e){for(let c=e.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){if(c.data.length){if(brk)B.add(off);brk=false;off+=c.data.length}}
+      else if(c.nodeType===1){if(c.matches(SKIP)||c.tagName==='BR'){brk=true;continue}
+        const d=getComputedStyle(c).display,b=d!=='inline'&&d!=='contents';if(b)brk=true;rec(c);if(b)brk=true}}})(u);
+    return B}
+  const cont=u=>u.closest('#scr,.qs,.paper,.instr')||u;   // one mark may run over several blocks of ONE text, never into another
+  const sortR=R=>R.sort((a,b)=>a[0]-b[0]);
+  function cut(R,s,e){const out=[];R.forEach(r=>{if(r[1]<=s||r[0]>=e){out.push(r);return}if(r[0]<s)out.push([r[0],s,r[2],r[3]]);if(r[1]>e)out.push([e,r[1],r[2],r[3]])});return out}
+
+  /* ---- drawing: <mark class="uh cN" data-g="…"> around the marked pieces of text ---- */
+  function unwrap(u){const ms=u.querySelectorAll('mark.uh');if(!ms.length)return;ms.forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m)});u.normalize()}
+  function paint(u,R){unwrap(u);
+    for(const r of R){let off=0;
+      for(const n of texts(u)){const L=n.data.length,a=Math.max(r[0],off),b=Math.min(r[1],off+L);
+        if(a<b){let x=n;if(a>off)x=x.splitText(a-off);if(b<off+L)x.splitText(b-a);
+          const m=document.createElement('mark');m.className='uh c'+r[2]+(r[4]?' pv':'');if(r[3])m.dataset.g=r[3];x.parentNode.insertBefore(m,x);m.appendChild(x)}
+        off+=L;if(off>=r[1])break}}}
+  function show(u,pv){const E=D[u.dataset.hu];let R=E?E.r.map(r=>r.slice()):[];if(pv){R=cut(R,pv[0],pv[1]);R.push([pv[0],pv[1],pen,'',1])}paint(u,sortR(R))}
+
+  /* ---- where a point falls in a block's text: an own hit test, so it works although the text cannot be selected ---- */
+  const R0=document.createRange();
+  function cbox(n,i){R0.setStart(n,i);R0.setEnd(n,i+1);for(const r of R0.getClientRects())if(r.width||r.height)return r;return null}
+  // ch=false: the caret nearest to the point (between two letters); ch=true: the letter under the point
+  // (or the next letter in reading order when the point is not on a letter)
+  function inNode(n,L,x,y,lh,ch){let lo=0,hi=L;   // binary search in reading order (line by line, then left to right)
+    while(lo<hi){const mid=(lo+hi)>>1;let k=mid,r=null;while(k<hi&&!(r=cbox(n,k)))k++;
+      if(!r){hi=mid;continue}
+      const g=lh>r.height?(lh-r.height)/2:0;   // half of the gap between two lines belongs to each line
+      const v=r.bottom+g<=y?-1:r.top-g>y?1:r.right<=x?-1:r.left>x?1:0;
+      if(v<0)lo=k+1;else if(v>0)hi=mid;else return !ch&&x>(r.left+r.right)/2?k+1:k}
+    return lo}
+  function hit(u,x,y,ch){let off=0;
+    for(const n of texts(u)){const L=n.data.length;if(!L)continue;R0.selectNodeContents(n);if(!R0.getClientRects().length){off+=L;continue}
+      const i=inNode(n,L,x,y,parseFloat(getComputedStyle(n.parentElement).lineHeight)||0,ch);if(i<L)return off+i;off+=L}
+    return off}
+  function unitFrom(t){if(t&&t.nodeType!==1)t=t.parentElement;if(!t||!t.closest||t.closest(NOGO))return null;const u=t.closest('[data-hu]');return u&&units.includes(u)?u:null}
+  const unitAt=(x,y)=>unitFrom(document.elementFromPoint(x,y));
+
+  /* ---- what a gesture covers: whole words, in one text ---- */
+  // the word around letter p (a letter right after a word, like its comma, gives that word)
+  function wordAt(t,p,B){if(!isW(t[p])){if(p>0&&isW(t[p-1])&&!B.has(p))p--;else return null}
+    let a=p,b=p+1;while(a>0&&isW(t[a-1])&&!B.has(a))a--;while(b<t.length&&isW(t[b])&&!B.has(b))b++;return [a,b]}
+  // from letter sc of block ua (where the gesture started; it is always inside the mark) to caret ec of block ub (where it is now)
+  function segs(ua,sc,ub,ec){let ia=units.indexOf(ua),ib=units.indexOf(ub);if(ia<0||ib<0)return [];
+    if(ia===ib&&(ec===sc||ec===sc+1)){const w=wordAt(text(ua),sc,breaks(ua));return w?[[ua,w[0],w[1]]]:[]}   // still on the first letter: its word
+    let oa,ob;if(ia<ib||(ia===ib&&ec>sc)){oa=sc;ob=ec}else{[ua,ub,ia,ib]=[ub,ua,ib,ia];oa=ec;ob=sc+1}
+    const C=cont(ua),out=[];
+    for(let i=ia;i<=ib;i++){const u=units[i];if(cont(u)!==C)continue;const t=text(u);let s=i===ia?oa:0,e=i===ib?Math.min(ob,t.length):t.length;
+      if(i===ia||i===ib){const B=breaks(u);   // whole words only
+        if(i===ia)while(s>0&&isW(t[s])&&isW(t[s-1])&&!B.has(s))s--;
+        if(i===ib)while(e>0&&e<t.length&&isW(t[e-1])&&isW(t[e])&&!B.has(e))e++}
+      while(s<e&&/\s/.test(t[s]))s++;while(e>s&&/\s/.test(t[e-1]))e--;
+      if(e>s)out.push([u,s,e])}
+    return out}
+
+  /* ---- saved marks: {v:1,u:{<block id>:{h:<hash of its text>,r:[[start,end,colour,group],…]}}} ---- */
+  function load(){D={};if(!K)return;try{const o=JSON.parse(ls(K)||'null');if(o&&o.u&&typeof o.u==='object')D=o.u}catch(e){}}
+  function save(){if(!K)return;const u={};let n=0;for(const id in D)if(D[id].r.length){u[id]=D[id];n++}lset(K,n?JSON.stringify({v:1,u}):null)}
+  const groups=()=>new Set(Object.values(D).flatMap(E=>E.r.map(r=>r[3]))).size;
+  function repaint(ids){units.forEach(u=>{if(ids.includes(u.dataset.hu))show(u)})}
+  function commit(S){if(!S.length)return;const g=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    S.forEach(([u,s,e])=>{const id=u.dataset.hu,h=hash(text(u));let E=D[id];if(!E||E.h!==h)E=D[id]={h,r:[]};E.r=sortR(cut(E.r,s,e).concat([[s,e,pen,g]]))});
+    save();S.forEach(([u])=>show(u));tipDone()}
+  function drop(g){const ids=[];for(const id in D){const E=D[id],n=E.r.length;E.r=E.r.filter(r=>r[3]!==g);if(E.r.length!==n)ids.push(id);if(!E.r.length)delete D[id]}save();repaint(ids)}
+  function recolor(g,c){pen=c;lset(O.ns+'hlc',String(c));const ids=[];for(const id in D)D[id].r.forEach(r=>{if(r[3]===g){r[2]=c;if(!ids.includes(id))ids.push(id)}});save();repaint(ids)}
+  function dropAll(){const ids=Object.keys(D);D={};save();repaint(ids)}
+
+  /* ---- find the blocks of the page and draw their saved marks (after every re-render) ---- */
+  function scan(){if(!O||O.off)return;closePop();if(drag)cancel();
+    const k=O.key()||null;if(k!==K){K=k;load()}
+    units=[];shown=[];const root=document.querySelector(O.root);
+    if(K&&root){
+      const c=[...root.querySelectorAll(O.units)].filter(u=>!u.closest(O.out)),set=new Set(c);
+      units=c.filter(u=>{for(let p=u.parentElement;p&&p!==root;p=p.parentElement)if(set.has(p))return false;return text(u).trim()!==''});
+      units.forEach((u,i)=>u.dataset.hu='m'+i);
+      for(const z in O.sub||{})root.querySelectorAll(O.sub[z]).forEach((u,i)=>{u.dataset.hu=z+i;units.push(u)});
+      let gone=false;
+      units.forEach(u=>{const E=D[u.dataset.hu];if(!E){unwrap(u);return}const t=text(u);
+        if(E.h!==hash(t)||!Array.isArray(E.r)||E.r.some(r=>!(r[0]>=0&&r[0]<r[1]&&r[1]<=t.length))){delete D[u.dataset.hu];unwrap(u);gone=true;return}
+        show(u)});
+      if(gone)save()}
+    tipSync()}
+
+  /* ---- gestures ---- */
+  function begin(){drag.on=true;drag.oa=hit(drag.u0,drag.x0,drag.y0,true);drag.ub=drag.u0;drag.ob=hit(drag.u0,drag.x0,drag.y0);closePop();document.body.classList.add('uh-on')}
+  function step(){raf=0;if(!drag||!drag.on)return;const u=unitAt(drag.x,drag.y);
+    if(u&&cont(u)===cont(drag.u0)){drag.ub=u;drag.ob=hit(u,drag.x,drag.y)}
+    const S=segs(drag.u0,drag.oa,drag.ub,drag.ob),now=new Set(S.map(s=>s[0]));
+    shown.forEach(u=>{if(!now.has(u))show(u)});S.forEach(([u,s,e])=>show(u,[s,e]));shown=[...now];drag.S=S}
+  const later=()=>{if(!raf)raf=requestAnimationFrame(step)};
+  // the mark that stays is exactly the preview the student saw (worked out again only if the last move is not drawn yet)
+  function finish(){if(raf){cancelAnimationFrame(raf);raf=0;step()}else if(!drag.S)step();const S=drag.S||[];shown=[];drag=null;document.body.classList.remove('uh-on');commit(S)}
+  function cancel(){if(raf){cancelAnimationFrame(raf);raf=0}if(drag)clearTimeout(drag.tm);const s=shown;shown=[];drag=null;s.forEach(u=>show(u));document.body.classList.remove('uh-on')}
+  // mouse: press and drag (from 6 px on); a plain click changes nothing
+  function mDown(e){if(e.pointerType!=='mouse'||e.button!==0||!K)return;if(drag)cancel();const u=unitFrom(e.target);if(!u)return;
+    drag={u0:u,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY,on:false};
+    addEventListener('pointermove',mMove,true);addEventListener('pointerup',mUp,true);addEventListener('pointercancel',mUp,true)}
+  function mMove(e){if(!drag||drag.touch)return;drag.x=e.clientX;drag.y=e.clientY;if(!drag.on){if(Math.hypot(drag.x-drag.x0,drag.y-drag.y0)<6)return;begin()}later()}
+  function mUp(e){removeEventListener('pointermove',mMove,true);removeEventListener('pointerup',mUp,true);removeEventListener('pointercancel',mUp,true);
+    if(!drag||drag.touch)return;if(drag.on&&e.type==='pointerup'){drag.x=e.clientX;drag.y=e.clientY;finish();eatUntil=performance.now()+500}else cancel()}
+  // touch: hold still for HOLD ms, then the finger marks instead of scrolling; a moving finger scrolls as always
+  function tStart(e){if(!K)return;if(drag)cancel();if(e.touches.length!==1)return;const u=unitFrom(e.target);if(!u)return;const t=e.touches[0];
+    drag={touch:true,u0:u,x0:t.clientX,y0:t.clientY,x:t.clientX,y:t.clientY,on:false};
+    drag.tm=setTimeout(()=>{if(!drag||!drag.touch||drag.on)return;begin();step();if(typeof FEEL!=='undefined')try{FEEL.play('tick')}catch(x){}},HOLD)}
+  function tMove(e){if(!drag||!drag.touch)return;const t=e.touches[0];if(!t)return;
+    if(!drag.on){if(Math.hypot(t.clientX-drag.x0,t.clientY-drag.y0)>9){clearTimeout(drag.tm);drag=null}return}
+    if(e.cancelable)e.preventDefault();drag.x=t.clientX;drag.y=t.clientY;later()}
+  function tEnd(e){if(!drag||!drag.touch)return;clearTimeout(drag.tm);if(!drag.on){drag=null;return}if(e.cancelable)e.preventDefault();finish();eatUntil=performance.now()+600}
+  function tCancel(){if(drag&&drag.touch)cancel()}
+  function onClick(e){if(performance.now()<eatUntil){eatUntil=0;e.preventDefault();e.stopPropagation();return}   // the click that ends a drag
+    if(!K)return;const m=e.target.closest&&e.target.closest('mark.uh');if(m&&m.dataset.g&&!e.target.closest(NOGO))openPop(m)}
+  function onDbl(e){if(!K||(e.target.closest&&e.target.closest('mark.uh')))return;const u=unitFrom(e.target);if(!u)return;const c=hit(u,e.clientX,e.clientY,true);commit(segs(u,c,u,c))}
+
+  /* ---- the small menu on a mark: colour · remove · remove all ---- */
+  function openPop(m){closePop();const g=m.dataset.g,c=+((/\bc(\d)\b/.exec(m.className)||[])[1]||1),n=groups();
+    pop=document.createElement('div');pop.className='uhpop';pop.setAttribute('role','dialog');pop.setAttribute('aria-label','Belgilangan matn');
+    pop.innerHTML=`<div class="uhr">${[1,2,3].map(k=>`<button type="button" class="uhc c${k}${k===c?' on':''}" data-c="${k}" aria-label="${NAMES[k]}" title="${NAMES[k]}" aria-pressed="${k===c}"></button>`).join('')}<button type="button" class="uhd" data-x="1">${BIN}O‘chirish</button></div>${n>1?`<button type="button" class="uha" data-a="1">Hammasini o‘chirish (${n})</button>`:''}`;
+    document.body.appendChild(pop);
+    const r=m.getClientRects()[0]||m.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,lim=(O.top?O.top():0)+8;
+    let top=r.top-ph-10;if(top<lim)top=r.bottom+10;
+    pop.style.left=Math.round(Math.max(8,Math.min(innerWidth-pw-8,r.left+r.width/2-pw/2)))+'px';pop.style.top=Math.round(Math.max(8,Math.min(innerHeight-ph-8,top)))+'px';
+    pop._m=m;pop._y=r.top;
+    pop.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.c){recolor(g,+b.dataset.c);closePop()}
+      else if(b.dataset.x){drop(g);closePop()}
+      else if(b.dataset.a){if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent=`Tasdiqlang: ${n} ta belgi o‘chadi`;return}dropAll();closePop()}})}
+  function closePop(){if(pop){pop.remove();pop=null}}
+
+  /* ---- one-time hint above the text (until "Tushunarli" or the first mark) ---- */
+  function tipSync(){const root=document.querySelector(O.root),want=!!(root&&K&&units.length&&!ls(O.ns+'hltip'));
+    if(!want){if(tip){tip.remove();tip=null;if(O.layout)O.layout()}return}
+    if(tip&&tip.parentNode===root)return;
+    if(!tip){tip=document.createElement('div');tip.className='uhtip';tip.setAttribute('role','note');
+      const touch=matchMedia('(pointer:coarse)').matches;
+      tip.innerHTML=`<span class="uhti" aria-hidden="true">${PEN}</span><div><b>Matnni belgilash (highlight)</b><p>${touch?'So‘zni bosib turing, keyin barmog‘ingizni suring.':'Sichqonchani bosib, kerakli so‘zlar ustidan suring.'} Belgini o‘chirish yoki rangini almashtirish uchun ustiga bosing.</p></div><button type="button">Tushunarli</button>`;
+      tip.querySelector('button').addEventListener('click',tipDone)}
+    root.prepend(tip);if(O.layout)O.layout()}
+  function tipDone(){if(!O)return;lset(O.ns+'hltip','1');if(tip){tip.remove();tip=null;if(O.layout)O.layout()}}
+
+  function clear(p){if(!O||O.off)return;
+    if(p==null){if(K){const ids=Object.keys(D);D={};lset(K,null);repaint(ids)}return}
+    try{const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(p)===0)ks.push(k)}ks.forEach(k=>localStorage.removeItem(k))}catch(e){}
+    if(K&&K.indexOf(p)===0){const ids=Object.keys(D);D={};repaint(ids)}}
+
+  /* o: {ns, root, key()→storage key or null (null = no marking here), units (selector), sub {zone: selector},
+         out (selector: blocks inside these are not marked), top()→lowest y the menu may use, layout() after the hint
+         appears or goes, off (true = engine not used on this page)} */
+  function init(o){O=o;pen=+ls(o.ns+'hlc')||1;if(!(pen>=1&&pen<=3))pen=1;if(o.off)return;
+    const root=document.querySelector(o.root);if(!root)return;
+    new MutationObserver(rs=>{if(rs.every(r=>[...r.addedNodes,...r.removedNodes].every(n=>n.nodeType===1&&n.classList.contains('uhtip'))))return;scan()}).observe(root,{childList:true});
+    root.addEventListener('pointerdown',mDown);
+    root.addEventListener('touchstart',tStart,{passive:true});root.addEventListener('touchmove',tMove,{passive:false});
+    root.addEventListener('touchend',tEnd,{passive:false});root.addEventListener('touchcancel',tCancel);
+    root.addEventListener('click',onClick,true);root.addEventListener('dblclick',onDbl);
+    addEventListener('pointerdown',e=>{if(pop&&!pop.contains(e.target))closePop()},true);
+    addEventListener('keydown',e=>{if(e.key==='Escape'){closePop();if(drag)cancel()}});
+    addEventListener('scroll',()=>{if(pop&&(!pop._m.isConnected||Math.abs(pop._m.getBoundingClientRect().top-pop._y)>6))closePop()},{capture:true,passive:true});
+    addEventListener('resize',()=>closePop());
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&drag)cancel()});
+    scan()}
+  return {on:true,init,scan,clear};
+})();
+
 const ST='edunest_mlb:';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -275,7 +467,7 @@ function foot(){
   }else{
     const canDone=H.a&&H.s!=null;
     f.innerHTML=`<button class="alt" id="again">Qayta ishlash</button>${canDone?`<button id="dn">Bajardim</button>`:`<button id="dn">Xaritaga qaytish</button>`}`;
-    $('#again').onclick=()=>{DONE=null;ANS={};armed=false;T0=Date.now();save();render();scrollTo(0,0)};
+    $('#again').onclick=()=>{HL.clear();DONE=null;ANS={};armed=false;T0=Date.now();save();render();scrollTo(0,0)};
     $('#dn').onclick=()=>{location.href=canDone?'./#/me/a/'+encodeURIComponent(H.a)+'/done/'+(+H.s):'./#/me'};
   }
 }
@@ -801,9 +993,9 @@ function examIntro(){
   EX.view='intro';$('#ttl').textContent=DOC.short;$('#sub').textContent=DOC.title;document.title='EDUNEST · '+DOC.title;$('#foot').hidden=true;$('#jump').hidden=true;examBar();
   $('#main').innerHTML=`<div class="xin"><h2>${esc(DOC.title)}</h2><p class="sub">Haqiqiy imtihon formatida</p>
     <div class="facts"><div><b>${allNums().length}</b><span>savol</span></div><div><b>${DOC.sections.length}</b><span>qism</span></div><div><b>${EX.cfg.mins}</b><span>daqiqa</span></div></div>
-    <ul><li>Barcha qismlar <b>bitta testda</b>: qismlar orasida xohlagancha o‘tishingiz mumkin.</li><li>Vaqt boshlangach <b>to‘xtamaydi</b>. Sahifani yopsangiz ham vaqt ketaveradi.</li><li>Javoblar faqat <b>oxirida</b> tekshiriladi: to‘g‘ri javoblar soni, ball va daraja chiqadi.</li><li>Tugatgach xaritada <b>sertifikat</b> ochiladi.</li></ul>
+    <ul><li>Barcha qismlar <b>bitta testda</b>: qismlar orasida xohlagancha o‘tishingiz mumkin.</li>${HL.on?'<li>Matndagi so‘zlarni <b>belgilash</b> (highlight) mumkin: kompyuterda sichqoncha bilan bosib suring, telefonda so‘zni bosib turing va suring.</li>':''}<li>Vaqt boshlangach <b>to‘xtamaydi</b>. Sahifani yopsangiz ham vaqt ketaveradi.</li><li>Javoblar faqat <b>oxirida</b> tekshiriladi: to‘g‘ri javoblar soni, ball va daraja chiqadi.</li><li>Tugatgach xaritada <b>sertifikat</b> ochiladi.</li></ul>
     <button class="xbtn" id="xgo">Testni boshlash</button></div>`;
-  $('#xgo').onclick=()=>{EX.t0=Date.now();ANS={};save();examGo(0);scrollTo(0,0)};
+  $('#xgo').onclick=()=>{HL.clear(ST+'hl:'+UID+':'+H.d+':x:');EX.t0=Date.now();ANS={};save();examGo(0);scrollTo(0,0)};
 }
 function examBar(){
   let t=$('#xtabs');if(!t){t=document.createElement('div');t.id='xtabs';t.className='xtabs';$('.bar').after(t)}
@@ -862,13 +1054,13 @@ function examResult(){
     <button class="xbtn alt" id="xrev">Javoblarni ko‘rib chiqish</button>
     <button class="xbtn txt" id="xre">Qayta topshirish</button></div>`;
   $('#dn').onclick=goDone;$('#xrev').onclick=()=>{examGo(0);scrollTo(0,0)};
-  $('#xre').onclick=()=>ask('Qayta topshirasizmi?','Hozirgi javoblaringiz va natijangiz o‘chadi, vaqt boshidan boshlanadi.','Bekor qilish','Qayta boshlash',()=>{ANS={};DONE=null;EX.t0=0;EX.part=0;EX.r=null;save();examIntro();scrollTo(0,0)});
+  $('#xre').onclick=()=>ask('Qayta topshirasizmi?','Hozirgi javoblaringiz va natijangiz o‘chadi, vaqt boshidan boshlanadi.','Bekor qilish','Qayta boshlash',()=>{HL.clear(ST+'hl:'+UID+':'+H.d+':x:');ANS={};DONE=null;EX.t0=0;EX.part=0;EX.r=null;save();examIntro();scrollTo(0,0)});
 }
 function script(){
   let html=SEC.script.map(p=>esc(p)).join('</p><p>');
-  if(SEC.marks){html=html.replace(/\[(\d{1,2})\]/g,'<mark class="qm"><b>$1</b></mark>');$('#scr').innerHTML=`<div class="script"><h2>Script</h2><p class="hint">Raqamli belgilar — javob aytilgan joy.</p><p>${html}</p></div>`;return}
+  if(SEC.marks){html=html.replace(/\[(\d{1,2})\]/g,'<mark class="qm"><b>$1</b></mark>');$('#scr').innerHTML=`<div class="script"><h2>Script</h2><p class="hint">Raqamli belgilar — javob aytilgan joy.</p><p>${html}</p></div>`;HL.scan();return}
   (SEC.hl||[]).forEach((h,i)=>{const e=esc(h);const at=html.indexOf(e);if(at>=0)html=html.slice(0,at)+`<mark><b>${9+i}</b>${e}</mark>`+html.slice(at+e.length)});
-  $('#scr').innerHTML=`<div class="script"><h2>Script</h2><p>${html}</p></div>`;
+  $('#scr').innerHTML=`<div class="script"><h2>Script</h2><p>${html}</p></div>`;HL.scan();
 }
 
 /* ---------- audio ---------- */
@@ -925,4 +1117,13 @@ addEventListener('hashchange',()=>location.reload());
    behaviour: no feedback on those pages (writing tasks switch it off in render()). Sounds wait while the listening audio plays and
    during a mock exam until its result (vibration still works). */
 FEEL.init({ns:ST,off:('speak' in H)||('ai' in H),quiet:()=>!!(window.AU&&!window.AU.paused)||!!(EX&&EX.view!=='result')});
+/* text highlighter (HL, top of this script; 27.11.2026): the passages, questions, instructions and listening script of every
+   test and exercise. Not on vocabulary cards, writing tasks (they hold the AI Writing checker), AI Writing or AI Speaking.
+   Marks are kept per student, test and part; "Qayta ishlash" and a new mock attempt start with a clean text. */
+HL.init({ns:ST,root:'#main',off:('speak' in H)||('ai' in H),
+  key:()=>SEC&&H.d&&SEC.kind!=='study'&&SEC.kind!=='write'&&(!EX||EX.view==='part'||EX.view==='review')?ST+'hl:'+UID+':'+H.d+':'+(EX?'x:':'')+SEC.id:null,
+  units:'.instr,.paper h2,.paper>p,.paper .row,.paper h3.sub,.box .boxh>strong,.box>div:not([class]),.side h3,.side li>span,.qs .note,.qs .qh>div',
+  sub:{s:'#scr .script>p:not(.hint)'},out:'#scr,#res,#aft,#pl,.nt',
+  top:()=>{let b=0;for(const s of ['.bar','#xtabs']){const e=document.querySelector(s);if(e&&!e.hidden)b=Math.max(b,e.getBoundingClientRect().bottom)}return b},
+  layout:()=>{if(EX)examFit()}});
 boot();

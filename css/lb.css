@@ -318,6 +318,41 @@ td .rpl{display:block;color:var(--ok);margin-top:2px}
 .stage .sg-top b{overflow:hidden;text-overflow:ellipsis}
 .nl+.nl{margin-top:4px}
 @media(max-width:560px){.nl{font-size:16px;line-height:1.95}.nl+.nl{margin-top:10px}.gin{height:32px;width:7em}.ntab{grid-template-columns:1fr;gap:0 0;line-height:1.9}.ntab .lab{margin-top:8px}.p2f .nl{font-size:17px}}
+/* ===== Listening Part 3 Booster (doc kind lb3): four speakers, six options, one row of letters per speaker ===== */
+.p3p{margin-top:12px}
+.p3in{font-size:14.5px;line-height:1.5;color:var(--slate);margin:6px 0 14px}
+.p3o{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
+.p3o li{display:flex;gap:12px;align-items:center;font-size:16px;line-height:1.4;padding:9px 12px;border-radius:14px;background:var(--mist);transition:opacity .25s}
+.p3o li i{font-style:normal;flex:none;width:28px;height:28px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13.5px}
+.p3o li.used{opacity:.5}
+.p3g{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.p3r{display:flex;align-items:center;gap:12px}
+.p3r>b{flex:none;width:92px;font-size:15px;transition:color .25s}
+.p3r.now>b{color:var(--vio)}
+.p3l{display:flex;gap:6px;flex:1;min-width:0}
+.p3b{flex:1;min-width:0;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-weight:800;font-size:15px;color:var(--ink);padding:0;transition:background .2s,border-color .2s,color .2s,opacity .2s}
+.p3b.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+.p3b.dup:not(.sel){opacity:.4}
+.p3b.sel.dup{background:var(--amber);border-color:var(--amber)}   /* the same letter given to two speakers */
+.p3t{align-items:flex-start;gap:10px}
+.p3t .trk small{text-align:center;font-size:12.5px;font-weight:800}
+.stage[data-sp="1"] #tk1 small,.stage[data-sp="2"] #tk2 small,.stage[data-sp="3"] #tk3 small,.stage[data-sp="4"] #tk4 small{opacity:1}
+.p3ans{display:flex;align-items:center;gap:10px;margin-top:12px;background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:var(--sh);font-size:15px;line-height:1.4}
+.p3ans i{font-style:normal;flex:none;width:30px;height:30px;border-radius:10px;background:var(--ok);color:#fff;display:grid;place-items:center;font-weight:800}
+.p3ans small{display:block;color:var(--slate);font-size:12.5px}
+#fb{scroll-margin-bottom:calc(var(--dock) + 22px);scroll-margin-top:calc(var(--bar) + 12px)}
+.q3{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.q3 li{background:rgba(255,255,255,.7);border-radius:12px;padding:9px 11px;font-size:14.5px;line-height:1.45;color:var(--ink2)}
+.q3 li b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.q3 li.ok b{color:var(--ok)}.q3 li.tr b{color:var(--amber)}.q3 li.dt b{color:var(--slate)}
+.q3 li q{quotes:"“" "”";color:var(--ink);font-weight:600}
+.xo{display:grid;gap:8px;margin-top:8px}
+.xo div{font-size:14.5px;line-height:1.45;color:var(--ink2);background:var(--mist);border-radius:14px;padding:10px 12px}
+.xo div b{color:var(--ink)}
+.scr h4{margin:14px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--vio)}
+.scr h4 span{color:var(--ok);margin-left:8px;text-transform:none;letter-spacing:0;font-size:14px}
+td.wr{color:var(--bad);font-weight:800}td.rt{color:var(--ok);font-weight:800}
+@media(max-width:560px){.p3r{flex-wrap:wrap;gap:6px}.p3r>b{width:100%}.p3o li{font-size:15.5px}.p3b{height:46px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}}
 /* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
 /* no grey tap flash (the press animation is the feedback), no double-tap zoom delay */

@@ -481,6 +481,7 @@ function clearTimers(){TM.forEach(clearTimeout);TM=[]}
 let LEAVE=null;   /* {h,p} while a timed stage runs: going back asks first (the stage itself is saved and continues later) */
 function setDock(html){dock.hidden=!html;dockin.className='in';dockin.innerHTML=html||''}
 let HLK=null;   /* the highlighter's place: '<test>:<stage>' while a view with highlightable text is shown (the paper's notes in a Part 2 test), else null */
+const HLU=['.p2in','.notes h3','.notes .nl','.notes .ntab>div'];   /* the text that can be highlighted; an engine adds the parts of its own question paper */
 function view(html,dk,hk){stopAu();clearTimers();closeModal();const ts=$('#toast');if(ts)ts.classList.remove('on');HLK=hk||null;main.innerHTML='<div class="vin">'+html+'</div>';setDock(dk);scrollTo(0,0)}
 function pane(html){clearTimers();const p=$('#pane');p.classList.remove('pin');p.innerHTML=html;void p.offsetWidth;p.classList.add('pin');if(scrollY>8)scrollTo({top:0,behavior:'smooth'})}
 function closeModal(){const m=$('#mbg');if(m)m.remove()}
@@ -1025,12 +1026,213 @@ function p2report(t,fresh){const d=sget(t.id),a=d.a,e=d.e,ca=p2cnt(a.cat),ce=p2c
   $('#again').onclick=()=>modal('Qayta ishlaysizmi?','Bu testning natijalari shu qurilmada o‘chadi va A bosqichdan boshlanadi.',[{t:'Bekor qilish'},{t:'Qayta ishlash',cls:'pri',f:()=>{sput(t.id,{n:(d.n||1)+1});openTest(t)}}]);
   const dn=$('#dn');if(dn)dn.onclick=goDone;
   const b=$('#nt');if(b)b.onclick=()=>go(nx.id);const h=$('#hm');if(h)h.onclick=()=>go('')}
+/* ======================================================================================================================
+   LISTENING PART 3 BOOSTER (doc kind lb3): four speakers, six options (two are extra)
+   A Test (time to read, the four speakers twice, one attempt) -> B Variantlar -> C Dalil yoki tuzoq -> D Eshitib yozing -> E Tezkor raund
+   One audio file per test (audio/lb3-<src>.mp3) with the four speakers; a speaker is a part of it (a .. b).
+   Uses tm, canon and playSpan of the Part 2 engine (lb2.part.js comes first in the page).
+   ====================================================================================================================== */
+const P3STG=[['A','Test','head'],['B','Variantlar','msg'],['C','Dalil yoki tuzoq','target'],['D','Eshitib yozing','pen'],['E','Tezkor raund','bolt']];
+HLU.push('.p3in','.p3o li>span');   /* the highlighter: the instruction and the options of the question paper */
+const p3txt=(t,L)=>{const o=t.opts.find(x=>x[0]===L);return o?o[1]:''};
+const p3lab=(t,L)=>L?L+') '+p3txt(t,L):'';
+const p3ex=s=>{let h=esc(s.ex);s.hl.forEach(x=>{h=h.replace(esc(x),'<mark>'+esc(x)+'</mark>')});return h};
+function p3state(t){const d=sget(t.id);
+  if(d.done)return{k:'done',st:`Bajarilgan · Test ${d.a.ok}/4 → Tezkor raund ${d.e.ok}/4`,go:'Hisobot',n:5};
+  if(d.a){const n=d.d?4:d.c?3:d.b?2:1;return{k:'run',st:`Davom etmoqda: Test ${d.a.ok}/4 bajarildi, ${d.d?'E bosqich qoldi':d.c?'D bosqichdan davom eting':d.b?'C bosqichdan davom eting':'B bosqichdan davom eting'}`,go:'Davom ettirish',n}}
+  return{k:'new',st:'Yangi · 4 ta so‘zlovchi · taxminan 20 daqiqa',go:'Boshlash',n:0}}
+ENG.lb3={stg:P3STG,of:4,keys:t=>[t.src],state:p3state,
+  intro:'To‘rt kishini tinglab, har biriga mos variantni tanlaysiz. Bu shunchaki mashq emas: testdan keyin har bir javobning dalilini audio matnida ko‘rasiz va shu nutqlar ustida yana to‘rt xil usulda ishlaysiz.',
+  how:['Imtihondagidek: variantlarni o‘qish uchun vaqt, to‘rt so‘zlovchi ikki marta tinglanadi, bitta urinish. Keyin har bir javob tahlili: dalil, tarjima va tuzoqlar.',
+    'Har bir variant audioda qanday aytilishi mumkin? Variantlarni sodda ifodasi bilan juftlaysiz: tinglashdan oldin nimani kutishni bilasiz.',
+    'So‘zlovchini qayta tinglab, uchta gapdan qaysi biri javobni isbotlashini topasiz. Qolgan ikkitasi tuzoq yoki shunchaki tafsilot.',
+    'Nutqlardan parchalarni tinglab, tushib qolgan so‘zni yozasiz. Quloq aniq eshitishga o‘rganadi.',
+    'O‘sha to‘rt so‘zlovchi, lekin tartibi aralash, bir marta tinglanadi, variantlar ham aralashgan, 8 soniya vaqt. A bosqich bilan solishtirasiz.'],
+  open(t){const d=sget(t.id);if(d.done)p3report(t,false);else if(!d.a)p3A(t);else if(!d.b)p3resA(t);else if(!d.c)p3C(t);else if(!d.d)p3D(t);else if(!d.e)p3E(t);else p3report(t,false)}};
+
+/* ----- A · the test, like the exam ----- */
+function p3A(t){LEAVE=null;
+  view(`${stepper('A')}<section class="card cover"><span class="eb">Test ${t.n} · 4 ta so‘zlovchi · taxminan ${Math.round((t.dur*2+70)/60)} daqiqa</span><h2>${esc(t.mock)} · Part 3</h2>
+    <p class="q">${esc(t.instr)}</p>
+    <ul class="rules"><li><span class="ri">${ic('clock')}</span><span>Avval variantlarni o‘qish uchun <b>30 soniya</b> beriladi</span></li>
+      <li><span class="ri">${ic('rep')}</span><span>To‘rt so‘zlovchi <b>ikki marta</b> tinglanadi, xuddi imtihondagidek</span></li>
+      <li><span class="ri">${ic('ban')}</span><span>Audioni to‘xtatib yoki qayta qo‘yib bo‘lmaydi</span></li>
+      <li><span class="ri">${ic('list')}</span><span>Oltita variantdan <b>ikkitasi ortiqcha</b>: ular hech kimga mos kelmaydi</span></li>
+      <li><span class="ri">${ic('hl')}</span><span>Matnni <b>belgilash</b> (highlight) mumkin: so‘zlarni belgilang va «Highlight»ni bosing (telefonda so‘zni bosib turing, keyin suring).</span></li>
+      <li><span class="ri">${ic('flag')}</span><span>Bitta urinish: oxirida javoblar va tahlilni ko‘rasiz</span></li></ul>
+    <div class="sndchk"><button type="button" class="btn sm" id="chk">${ic('vol')} Ovozni tekshirish</button><span>Ovoz eshitilmasa, qurilma ovozini balandlating.</span></div></section>`,
+    `<div class="dk-l" id="ld">Audio yuklanmoqda…</div><button type="button" class="btn pri" id="go" disabled>Boshlash ${ic('arr')}</button>`);
+  $('#chk').onclick=chime;
+  const ready=()=>{$('#ld').innerHTML='<b>4</b> ta so‘zlovchi · audio tayyor'};
+  $('#go').onclick=()=>{const b=$('#go');if(b._retry){b._retry=false;b.innerHTML='Boshlash '+ic('arr');prep(t,ready);return}p3runA(t)};
+  prep(t,ready)}
+function p3card(t){return `<section class="stage" id="stage" data-ph="0" data-sp="0" aria-label="Audio">
+  <div class="sg-top"><b id="spn">4 ta so‘zlovchi</b><span class="segs"></span><span class="tt" id="tt">0:00 / ${tm(t.dur)}</span></div>
+  <div class="trks p3t">${t.sp.map((s,i)=>`<div class="trk" id="tk${i+1}"><div class="wv">${bars(s.pk,16)}</div><small>${i+1}</small></div>`).join('')}</div>
+  <div class="sg-foot"><span class="live"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="sgt" aria-live="polite"></span></span>
+    <span class="cd" id="cd" hidden><svg viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="19"/><circle cx="23" cy="23" r="19" class="cdr" id="cdr"/></svg><b id="cdn"></b></span></div>
+  <button type="button" class="tapplay" id="tap" hidden>${ic('play')} Tinglash uchun bosing</button>
+</section>`}
+/* the question paper: the options (text that can be highlighted) and one row of letters for each speaker */
+function p3paper(t){return `<section class="card p3p"><span class="eb">${esc(t.mock)} · Part 3</span><p class="p3in">${esc(t.instr)}</p>
+  <ol class="p3o">${t.opts.map(([L,x])=>`<li data-v="${L}"><i class="num">${L}</i><span>${esc(x)}</span></li>`).join('')}</ol>
+  <div class="p3g">${t.sp.map((s,i)=>`<div class="p3r" data-s="${i}"><b>Speaker ${i+1}</b><div class="p3l" role="group" aria-label="Speaker ${i+1}">${t.opts.map(([L])=>`<button type="button" class="p3b" data-s="${i}" data-v="${L}" aria-pressed="false">${L}</button>`).join('')}</div></div>`).join('')}</div></section>`}
+function p3runA(t){const d0=sget(t.id),ex=d0.run&&d0.run.s==='A'?(d0.run.ex||0)+1:0;d0.run={s:'A',ex};sput(t.id,d0);
+  const t0=Date.now(),ans=['','','',''];let ph='read',ended=false;
+  LEAVE={h:'Test tugamagan',p:'Chiqsangiz, test boshidan boshlanadi.'};
+  HL.clear(ST+'hl:'+UID+':'+DID+':'+t.id+':');   /* a new attempt starts with a clean paper */
+  view(`${stepper('A')}${p3card(t)}${p3paper(t)}`,
+    `<div class="dk-l"><b id="dkn">0</b> / 4 javob</div><button type="button" class="btn pri" id="fin">Tinglashni boshlash ${ic('arr')}</button>`,t.id+':a');
+  const sg=$('#stage'),fin=$('#fin');
+  const sync=()=>{$$('.p3b').forEach(b=>{const s=+b.dataset.s,v=b.dataset.v,on=ans[s]===v;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',String(on));b.classList.toggle('dup',ans.some((a,j)=>j!==s&&a===v))});
+    $$('.p3o li').forEach(li=>li.classList.toggle('used',ans.includes(li.dataset.v)));$('#dkn').textContent=ans.filter(Boolean).length};
+  $$('.p3b').forEach(b=>b.onclick=()=>{const s=+b.dataset.s,v=b.dataset.v;ans[s]=ans[s]===v?'':v;sync()});
+  const edge=t.sp.map((s,i)=>i?(t.sp[i-1].b+s.a)/2:0);   /* from here on speaker i is "now" (its announcement comes just before its first word) */
+  const who=c=>{let k=1;edge.forEach((e,i)=>{if(c>=e)k=i+1});return k};
+  const mark=w=>{if(sg.dataset.sp===String(w))return;sg.dataset.sp=String(w);$('#spn').innerHTML=w?`Speaker ${w} <em>/ 4</em>`:'4 ta so‘zlovchi';$$('.p3r').forEach(r=>r.classList.toggle('now',+r.dataset.s===w-1))};
+  const play=k=>{ph='p'+k;clearTimers();$('#cd').hidden=true;fin.disabled=true;fin.innerHTML='Testni tugatish';sg.classList.add('play');sg.dataset.ph=String(k);t.sp.forEach((s,i)=>paint('tk'+(i+1),0));$('#sgt').textContent='Tinglang · '+k+'-marta';
+    playAu(t.src,{len:t.dur,tick:c=>{if(!sg.isConnected)return;mark(who(c));t.sp.forEach((s,i)=>paint('tk'+(i+1),(c-s.a)/(s.b-s.a)));const x=$('#tt'),z=tm(c)+' / '+tm(t.dur);if(x.textContent!==z)x.textContent=z},
+      end:()=>{if(!sg.isConnected)return;sg.classList.remove('play');t.sp.forEach((s,i)=>paint('tk'+(i+1),1));mark(0);
+        if(k===1){ph='gap';countdown(8,()=>play(2),'Pauza. Hozir ikkinchi marta tinglaysiz')}
+        else{ph='chk';fin.disabled=false;countdown(20,finish,'Javoblarni tekshiring')}},
+      blocked:()=>{if(!sg.isConnected)return;sg.classList.remove('play');const tp=$('#tap');tp.hidden=false;tp.onclick=()=>{tp.hidden=true;play(k)}}})};
+  fin.onclick=()=>{if(ph==='read')play(1);else if(ph==='chk')finish()};
+  function finish(){if(ended)return;ended=true;LEAVE=null;clearTimers();stopAu();
+    const ok=ans.filter((a,i)=>a===t.key[i]).length,d=sget(t.id);delete d.run;d.n=d.n||1;d.a={ans:ans.slice(),ok,secs:Math.max(1,Math.round((Date.now()-t0)/1000)),ex,at:Date.now()};sput(t.id,d);
+    sendRes({kind:'ex',doc:DID,sec:t.id,aid:isStep(t.id)?STEP.a:'',step:isStep(t.id)?STEP.s:null,title:DOC.title+' · Test '+t.n+(d.n>1?' · '+d.n+'-urinish':''),ok,of:4,secs:d.a.secs,
+      det:t.sp.map((s,i)=>[String(15+i),p3lab(t,ans[i]),ans[i]===t.key[i]?1:0,p3lab(t,t.key[i])])});
+    p3resA(t,true)}
+  countdown(30,()=>play(1),'Variantlarni o‘qing')}
+function p3tips(t,r){const wrong=r.ans.filter((a,i)=>a&&a!==t.key[i]).length,blank=r.ans.filter(a=>!a).length,dup=r.ans.some((a,i)=>a&&r.ans.indexOf(a)!==i),f=[];
+  f.push(r.ok===4?['trophy','A’lo! Hamma javob to‘g‘ri.']:r.ok===3?['check','Yaxshi! Xato javobni pastda dalil bilan solishtiring.']:['pin','Bu test qiyin bo‘ldi. Pastda har bir so‘zlovchining dalilini o‘qing va qayta tinglang.']);
+  if(wrong)f.push(['warn','Tuzoq: so‘zlovchi boshqa variantlardagi so‘zlarni ham tilga oladi. Bitta so‘zga emas, asosiy fikrga qarang.']);
+  if(dup)f.push(['q','Har bir variant faqat bir marta ishlatiladi: bir harfni ikki so‘zlovchiga qo‘ymang.']);
+  if(r.ok<4)f.push(['comp','Ikkita variant ortiqcha. Birinchi tinglashda taxmin qiling, ikkinchisida tekshiring.']);
+  if(blank)f.push(['flag','Hech qachon javobsiz qoldirmang: taxmin ham to‘g‘ri chiqishi mumkin.']);
+  return f}
+function p3resA(t,fresh,back){const r=sget(t.id).a,wrong=r.ans.filter((a,i)=>a&&a!==t.key[i]).length,blank=r.ans.filter(a=>!a).length;LEAVE=null;
+  view(`${back?'':stepper('A')}<section class="card"><div class="res"><div class="ring">${ring(r.ok,4,col(r.ok,4))}<div><b>${r.ok}/4</b><small>to‘g‘ri</small></div></div>
+      <div><div class="mini"><div><b>${Math.round(r.ok/4*100)}%</b><span>aniqlik</span></div><div><b>${wrong}</b><span>tuzoqqa tushish</span></div><div><b>${blank}</b><span>javobsiz</span></div></div></div></div>
+      <ul class="tips">${p3tips(t,r).map(f=>`<li><span class="hi">${ic(f[0])}</span><span>${f[1]}</span></li>`).join('')}</ul></section>
+    <h2 class="sech">Javoblar va tahlil<button type="button" class="tgl" id="tgl">Hammasini ochish</button></h2>
+    <div>${t.sp.map((s,i)=>{const a=r.ans[i],k=t.key[i],good=a===k;return `<div class="rv ${good?'good':'open'}"><button type="button" class="rvh" aria-expanded="${good?'false':'true'}"><span class="rvn">${good?ic('check'):i+1}</span><b>Speaker ${i+1} → ${esc(p3lab(t,k))}</b><span class="ch">${ic('chev')}</span></button>
+      <div class="rvb"><div><div class="rvi">${good?'':`<div class="you">${a?`<span>Siz tanladingiz:</span><s>${esc(p3lab(t,a))}</s><span class="tg you">Tuzoq</span>`:'<span class="tg you">Javob bermadingiz</span>'}</div>`}
+        <div class="rvl"><button type="button" class="lsn" data-p="${i}" aria-label="Tinglash">${ic('vol')}</button><div class="exc">${p3ex(s)}</div></div>
+        <span class="uz">${esc(s.uz)}</span>
+        <div class="why"><b>Nega ${k}?</b> ${esc(s.why)}${a&&!good?' <b style="color:var(--bad)">Siz tanlagan '+a+':</b> '+esc(s.traps[a]||'so‘zlovchi bu haqda gapirmaydi.'):''}</div></div></div></div></div>`}).join('')}</div>
+    <section class="card"><h3>Ortiqcha variantlar</h3><p class="sub">Bu ikki variant hech bir so‘zlovchiga mos kelmaydi.</p>
+      <div class="xo">${Object.keys(t.extra).map(L=>`<div><b>${esc(p3lab(t,L))}</b><br>${esc(t.extra[L])}</div>`).join('')}</div></section>`,
+    back?`<div class="dk-l"></div><button type="button" class="btn pri" id="nb">Hisobotga qaytish</button>`:`<div class="dk-l">Keyingi bosqich: variantlar tahlili</div><button type="button" class="btn pri" id="nb">B · Variantlar ${ic('arr')}</button>`);
+  anim();if(fresh)FEEL.play(r.ok>=3?'success':'complete');
+  const sync=()=>{const all=$$('.rv').every(x=>x.classList.contains('open'));$('#tgl').textContent=all?'Hammasini yopish':'Hammasini ochish'};
+  $$('.rvh').forEach(h=>h.onclick=()=>{const v=h.parentElement,on=v.classList.toggle('open');h.setAttribute('aria-expanded',String(on));sync()});
+  $('#tgl').onclick=()=>{const all=$$('.rv').every(x=>x.classList.contains('open'));$$('.rv').forEach(x=>{x.classList.toggle('open',!all);x.firstElementChild.setAttribute('aria-expanded',String(!all))});sync()};sync();
+  const listen=i=>{const s=t.sp[i];playAu(t.src,{from:s.ea,until:s.eb})};   /* the evidence only; the whole speaker comes again in stage C */
+  $$('[data-p]').forEach(b=>b.onclick=()=>{const i=+b.dataset.p;if(AUP){stopAu();return}if(AUD.has(t.src))listen(i);else ensureAudio(t).then(()=>listen(i),()=>toast('Audio yuklanmadi. Internetni tekshiring.'))});
+  ensureAudio(t).catch(()=>{});
+  $('#nb').onclick=()=>back?p3report(t,false):p3B(t)}
+
+/* ----- B · the options: how each one may sound ----- */
+function p3B(t){matchStage(t,{step:'B',rows:t.opts.map(([L,x])=>[x,t.para[L]]),bank:'Boshqacha aytilishi',pick:'Iborani bosing, keyin katakni',
+  help:help('msg','<b>Audioda variantdagi so‘zlar aytilmaydi: fikr boshqa so‘zlar bilan beriladi.</b> Har bir variantga uning sodda ifodasini bankdan tanlab qo‘ying. Ikkita ortiqcha variantning ifodasi ham bor.','Match each option with another way of saying it.'),
+  done:(first,of)=>{const d=sget(t.id);d.b={first,of,at:Date.now()};sput(t.id,d)},nextLabel:'C · Dalil yoki tuzoq',next:()=>p3C(t)})}
+
+/* ----- C · which sentence proves the answer? (the other two: a trap that looks like another option, or just a detail) ----- */
+function p3C(t){let i=0,ok=0;LEAVE=null;
+  view(`${stepper('C')}${help('target','<b>Javobni bilasiz. Endi dalilni toping:</b> so‘zlovchining qaysi gapi shu variantni isbotlaydi? Qolgan gaplar boshqa variantga o‘xshab ko‘rinadigan tuzoq yoki shunchaki tafsilot.','Which sentence proves the answer?')}<div id="pane"></div>`,
+    `<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div><button type="button" class="btn pri" id="nx" disabled></button>`);
+  const nx=$('#nx');
+  const draw=()=>{const s=t.sp[i],ops=shuf(s.quotes),k=t.key[i];let did=false,heard=0;
+    pane(stageCard({n:i+1,of:4,it:{pk:[s.pk]},replay:true,lab:'Speaker'})+`<div class="p3ans"><i>${k}</i><div><small>To‘g‘ri javob</small>${esc(p3txt(t,k))}</div></div>`+optsHTML(ops.map((q,j)=>[String(j),String(j+1),'“'+q[0]+'”']))+`<div class="fbk" id="fb"><div></div></div>`);
+    nx.disabled=true;nx.innerHTML=(i<3?'Keyingi so‘zlovchi':'D · Eshitib yozing')+' '+ic('arr');
+    const pl=()=>{heard++;playSpan(t.src,s.a,s.b,{txt:heard+' marta tingladingiz'})};$('#rp').onclick=pl;
+    $$('.opt').forEach(b=>b.onclick=()=>{if(did)return;did=true;const good=ops[+b.dataset.v][1]==='ok';if(good)ok++;stopAu();$('#stage').classList.remove('play');FEEL.play(good?'correct':'wrong');
+      $$('.opt').forEach((x,j)=>{x.disabled=true;if(ops[j][1]==='ok')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+      $('#fb').firstElementChild.innerHTML=`<div class="cfb ${good?'ok':'no'}" role="status"><div class="hd">${ic(good?'check':'x')}<span>${good?'To‘g‘ri! Dalil shu gap.':'Dalil boshqa gapda'}</span></div>
+        <ul class="q3">${ops.map(q=>`<li class="${q[1]==='ok'?'ok':q[1]==='-'?'dt':'tr'}"><b>${q[1]==='ok'?'Dalil':q[1]==='-'?'Shunchaki tafsilot':'Tuzoq: '+q[1]+' variantiga o‘xshaydi'}</b><q>${esc(q[0])}</q> ${esc(q[2])}</li>`).join('')}</ul></div>`;
+      $('#fb').classList.add('on');$('#dkn').textContent=ok;nx.disabled=false;
+      later(()=>{const f=$('#fb');if(f)f.scrollIntoView({behavior:'smooth',block:'nearest'})},430)});   /* the notes open below the three sentences: bring them into view */
+    nx.onclick=()=>{if(i<3){i++;draw()}else{const d=sget(t.id);d.c={ok,of:4,at:Date.now()};sput(t.id,d);p3D(t)}};
+    pl()};
+  ensureAudio(t).then(draw,()=>{toast('Audio yuklanmadi. Internetni tekshiring.');go('')})}
+
+/* ----- D · listen to a piece of a speaker and write the missing word ----- */
+function p3D(t){let i=0,ok=0,listens=0;const n=t.dict.length;LEAVE=null;
+  view(`${stepper('D')}${help('pen','<b>Nutqdan parchani tinglang va tushib qolgan so‘zni yozing.</b> Kerak bo‘lsa, qayta tinglang. Bu so‘zlar javobni topishda muhim bo‘lgan.','Listen and type the missing word.')}<div id="pane"></div>`,
+    `<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div><button type="button" class="btn pri" id="ck">Tekshirish</button>`);
+  const ck=$('#ck');
+  const draw=()=>{const it=t.dict[i];let did=false,heard=0;
+    pane(stageCard({n:i+1,of:n,it:{pk:[it.pk]},replay:true,lab:'Parcha'})+`<section class="card sentc"><p class="sent">${esc(it.gs).replace('___','<input class="gap" id="g" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Tushib qolgan so‘z">')}</p><div class="fbk" id="fb"><div></div></div></section>`);
+    ck.innerHTML='Tekshirish';
+    const fine=matchMedia('(hover:hover) and (pointer:fine)').matches,g=$('#g');
+    const pl=()=>{heard++;listens++;playSpan(t.src,it.a,it.b,{txt:heard+' marta tingladingiz'})};
+    $('#rp').onclick=()=>{pl();if(!did&&fine)g.focus()};
+    g.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();ck.click()}};
+    if(fine)g.focus();
+    ck.onclick=()=>{if(did){if(i<n-1){i++;draw()}else{const d=sget(t.id);d.d={ok,of:n,listens,at:Date.now()};sput(t.id,d);p3E(t)}return}
+      if(!canon(g.value)){FEEL.play('warn');toast('Avval so‘zni yozing');g.focus();return}
+      did=true;const good=it.gap.map(canon).includes(canon(g.value));if(good)ok++;stopAu();$('#stage').classList.remove('play');FEEL.play(good?'correct':'wrong');
+      g.readOnly=true;g.classList.add(good?'ok':'no');g.blur();
+      $('#fb').firstElementChild.innerHTML=`<div class="cfb ${good?'ok':'no'}" role="status"><div class="hd">${ic(good?'check':'x')}<span>${good?'To‘g‘ri!':'To‘g‘ri javob: '+esc(it.gap[0])}</span></div><span class="en">${esc(it.s)}</span><span class="uz">${esc(it.uz)}</span></div>`;
+      $('#fb').classList.add('on');$('#dkn').textContent=ok;ck.innerHTML=(i<n-1?'Keyingi parcha':'E · Tezkor raund')+' '+ic('arr')};
+    pl()};
+  ensureAudio(t).then(draw,()=>{toast('Audio yuklanmadi. Internetni tekshiring.');go('')})}
+
+/* ----- E · speed round: the four speakers in another order, one listen, shuffled options, 8 seconds ----- */
+function p3E(t){LEAVE=null;
+  view(`${stepper('E')}<section class="card cover"><span class="eb">Tezkor raund · 4 ta so‘zlovchi</span><h2>O‘sha so‘zlovchilar, lekin endi tezroq</h2>
+    <ul class="rules"><li><span class="ri">${ic('head')}</span><span>Har bir so‘zlovchi <b>bir marta</b> tinglanadi</span></li>
+      <li><span class="ri">${ic('shuf')}</span><span>So‘zlovchilar va variantlar tartibi <b>aralashtirilgan</b></span></li>
+      <li><span class="ri">${ic('clock')}</span><span>Nutq tugagach javob uchun <b>8 soniya</b></span></li>
+      <li><span class="ri">${ic('up')}</span><span>Natija A bosqichdagi testingiz bilan solishtiriladi</span></li></ul></section>`,
+    `<div class="dk-l" id="ld">Audio yuklanmoqda…</div><button type="button" class="btn pri" id="go" disabled>Boshlash ${ic('arr')}</button>`);
+  const ready=()=>{$('#ld').innerHTML='<b>4</b> ta so‘zlovchi · audio tayyor'};
+  $('#go').onclick=()=>{const b=$('#go');if(b._retry){b._retry=false;b.innerHTML='Boshlash '+ic('arr');prep(t,ready);return}p3runE(t)};
+  prep(t,ready)}
+function p3runE(t){const order=shuf([0,1,2,3]),ans=['','','',''];let p=0;
+  const score=()=>ans.filter((a,i)=>a===t.key[i]).length;
+  LEAVE={h:'Tezkor raund tugamagan',p:'Chiqsangiz, tezkor raund boshidan boshlanadi.'};
+  view(`${stepper('E')}<div id="pane"></div>`,`<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div>`);
+  const next=()=>{p++;if(p>=4){LEAVE=null;const d=sget(t.id);d.e={ans:ans.slice(),ok:score(),at:Date.now()};d.done=true;d.at=Date.now();
+      d.r={ok:d.a.ok,of:4,inf:`A ${d.a.ok}/4 · B ${d.b.first}/${d.b.of} · C ${d.c.ok}/4 · D ${d.d.ok}/${d.d.of} · E ${d.e.ok}/4`};sput(t.id,d);p3report(t,true);return}draw()};
+  function draw(){const i=order[p],s=t.sp[i],k=t.key[i],ops=shuf(t.opts);let did=false;
+    pane(stageCard({n:p+1,of:4,it:{pk:[s.pk]},lab:'So‘zlovchi'})+optsHTML(ops.map(([L,x],j)=>[String(j),String(j+1),x])));   /* numbers, not the letters of the paper */
+    const pick=v=>{if(did)return;did=true;clearTimers();stopAu();const sg=$('#stage');if(sg)sg.classList.remove('play');ans[i]=v;const good=v===k;
+      $$('.opt').forEach((x,j)=>{x.disabled=true;const L=ops[j][0];if(L===k)x.classList.add('ok');else if(L===v)x.classList.add('no');else x.classList.add('dim')});
+      $('#dkn').textContent=score();FEEL.play(good?'correct':'wrong');later(next,good?800:1700)};
+    $$('.opt').forEach((b,j)=>b.onclick=()=>pick(ops[j][0]));
+    playSpan(t.src,s.a,s.b,{txt:'Tinglang',end:()=>{if(!did)countdown(8,()=>pick(''),'Javobni tanlang')}})}
+  draw()}
+
+/* ----- the report of one test ----- */
+function p3report(t,fresh){const d=sget(t.id),a=d.a,e=d.e,nx=DOC.tests[DOC.tests.indexOf(t)+1],up=e.ok-a.ok,st=isStep(t.id);LEAVE=null;
+  const sb=[['A','Test',a.ok,4],['B','Variantlar',d.b.first,d.b.of],['C','Dalil yoki tuzoq',d.c.ok,4],['D','Eshitib yozing',d.d.ok,d.d.of],['E','Tezkor raund',e.ok,4]];
+  const cell=(v,k)=>`<td class="c ${v===k?'rt':'wr'}">${v||'—'}</td>`;
+  view(`<section class="win"><span class="eb">Test ${t.n} · ${esc(t.mock)}</span><h1>${fresh?'Test yakunlandi!':'Bu test bajarilgan'}</h1>
+      <div class="cmp"><div class="cb"><small>Test</small><b>${a.ok}<em>/4</em></b></div>${ic('arr')}<div class="cb"><small>Tezkor raund</small><b>${e.ok}<em>/4</em></b></div></div>
+      ${up>0?`<span class="upb">${ic('up')} +${up} o‘sish</span>`:up===0&&e.ok===4?`<span class="upb">${ic('check')} barqaror a’lo</span>`:''}</section>
+    <section class="card"><h3>Bosqichlar natijasi</h3><div class="sbars">${sb.map(([k,l,v,m])=>`<div class="sb"><div class="col"><i data-h="${Math.max(7,Math.round(v/m*100))}%"></i></div><b>${v}/${m}</b><small>${k} · ${l}</small></div>`).join('')}</div>
+      <p class="sub" style="margin:12px 0 0">B bosqich: birinchi urinishdagi natija. D bosqichda ${d.d.listens} marta tingladingiz.</p></section>
+    <section class="card"><h3>Mening javoblarim</h3><div class="tw"><table><thead><tr><th>So‘zlovchi</th><th>To‘g‘ri javob</th><th class="c">A · Test</th><th class="c">E · Tezkor raund</th></tr></thead><tbody>${t.sp.map((s,i)=>`<tr><td><b>Speaker ${i+1}</b></td><td>${esc(p3lab(t,t.key[i]))}</td>${cell(a.ans[i],t.key[i])}${cell(e.ans[i],t.key[i])}</tr>`).join('')}</tbody></table></div></section>
+    <section class="card"><h3>Mening kalit so‘zlar jadvalim</h3><p class="sub">Bu jadvalni lug‘at daftaringizga ko‘chiring.</p>
+      <div class="tw"><table><thead><tr><th>#</th><th>Variant</th><th>Boshqacha aytilishi</th></tr></thead><tbody>${t.opts.map(([L,x])=>`<tr><td class="n">${L}</td><td><b>${esc(x)}</b></td><td class="u">${esc(t.para[L])}</td></tr>`).join('')}</tbody></table></div></section>
+    <section class="card scr"><h3>Audio matni</h3><p class="sub">Har bir javobning dalili sariq rangda. <button type="button" class="btn sm" id="pa" style="margin-left:6px">${ic('vol')} Nutqni tinglash</button></p>
+      ${t.sp.map((s,i)=>{let h=esc(s.script.join(' '));s.hl.forEach(x=>{h=h.replace(esc(x),'<mark>'+esc(x)+'</mark>')});return `<h4>Speaker ${i+1}<span>→ ${esc(p3lab(t,t.key[i]))}</span></h4><p>${h}</p>`}).join('')}</section>`,
+    `<button type="button" class="btn" id="ra">${ic('list')}<span>Tahlil</span></button><button type="button" class="btn" id="again">${ic('redo')}<span>Qayta<span class="lg"> ishlash</span></span></button>`+
+    (st?`<button type="button" class="btn pri" id="dn">Bajardim ${ic('check')}</button>`:nx?`<button type="button" class="btn pri" id="nt">Test ${nx.n} ${ic('arr')}</button>`:`<button type="button" class="btn pri" id="hm">Testlar</button>`));
+  dockin.classList.add('three');anim();
+  if(fresh){FEEL.play('celebrate');confetti()}
+  $('#pa').onclick=()=>{if(AUP){stopAu();return}ensureAudio(t).then(()=>playAu(t.src,{len:t.dur}),()=>toast('Audio yuklanmadi. Internetni tekshiring.'))};
+  $('#ra').onclick=()=>p3resA(t,false,true);
+  $('#again').onclick=()=>modal('Qayta ishlaysizmi?','Bu testning natijalari shu qurilmada o‘chadi va A bosqichdan boshlanadi.',[{t:'Bekor qilish'},{t:'Qayta ishlash',cls:'pri',f:()=>{sput(t.id,{n:(d.n||1)+1});openTest(t)}}]);
+  const dn=$('#dn');if(dn)dn.onclick=goDone;
+  const b=$('#nt');if(b)b.onclick=()=>go(nx.id);const h=$('#hm');if(h)h.onclick=()=>go('')}
 /* ================= router, keys, start ================= */
 function route(){const t=DOC.tests.find(x=>x.id===(H.x||''));if(t)openTest(t);else hub()}
 addEventListener('hashchange',()=>{const h=hp();if(!PREVIEW&&h.d!==DID){location.reload();return}H=h;if(DOC)route()});
 document.addEventListener('keydown',e=>{if(e.defaultPrevented||e.ctrlKey||e.metaKey||e.altKey||own(document.activeElement)||$('#mbg'))return;
   const os=$$('#opts .opt:not(:disabled)');
-  if(os.length&&/^[a-c1-3]$/i.test(e.key)){const k=e.key.toLowerCase(),b=os.find(x=>x.dataset.v.toLowerCase()===k||x.firstElementChild.textContent.toLowerCase()===k);if(b){e.preventDefault();b.click()}return}
+  if(os.length&&/^[a-c1-6]$/i.test(e.key)){const k=e.key.toLowerCase(),b=os.find(x=>x.dataset.v.toLowerCase()===k||x.firstElementChild.textContent.toLowerCase()===k);if(b){e.preventDefault();b.click()}return}
   if(e.key==='Enter'){const b=dockin.querySelector('.btn.pri:not(:disabled)');if(b){e.preventDefault();b.click()}}});
 async function boot(){
   if(PREVIEW){DOC=PREVIEW.doc;Object.keys(PREVIEW.aud).forEach(k=>AUD.set(k,PREVIEW.aud[k]));$('#tag').hidden=false;route();return}
@@ -1044,9 +1246,9 @@ async function boot(){
 }
 FEEL.init({ns:ST,quiet:()=>AUP});   /* sound, vibration and press feedback (FEEL, top of this script); the page's own sounds wait while a sentence plays */
 /* text highlighter (HL, top of this script; the same engine as the test player: select words → "Highlight", a highlight → "Clear"):
-   on the question paper of a test (the notes of a Part 2 test). Kept per student, booster and test; "Qayta ishlash" clears it. */
+   on the question paper of a test (the notes of a Part 2 test, the instruction and options of a Part 3 test). Kept per student, booster and test; "Qayta ishlash" clears it. */
 HL.init({ns:ST,root:'#main',key:()=>HLK?ST+'hl:'+UID+':'+DID+':'+HLK:null,
-  units:'.p2in,.notes h3,.notes .nl,.notes .ntab>div',out:'.rv,.scr,.p2f',
+  units:HLU.join(','),out:'.rv,.scr,.p2f',
   top:()=>{const b=$('.bar');return b?b.getBoundingClientRect().bottom:0},
   bottom:()=>dock.hidden?0:Math.max(0,innerHeight-dock.getBoundingClientRect().top)});
 boot();

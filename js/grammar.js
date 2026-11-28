@@ -297,7 +297,7 @@ function hubView(){
   const total=(note?1:0)+exs.length,dAll=(ln.v?1:0)+dEx,pc=total?Math.round(dAll/total*100):0;
   $('#main').innerHTML=`<section class="hero"><span class="eb">${esc(DOC.short||'Grammatika')}</span><h1>${esc(DOC.title)}</h1>
       <p>${DOC.hub?esc(DOC.hub):(note?'Avval darsni o‘qing, keyin mashqlarni bajaring. ':'')+'Har bir javob darhol tekshiriladi va o‘zbekcha tushuntiriladi.'}</p>
-      <div class="hstats"><div><b>${note?(ln.v?'✓':cards.length):'–'}</b><span>${note?(ln.v?'dars o‘qildi':'dars qismi'):'dars yo‘q'}</span></div>${exs.length?`<div><b>${dEx}/${exs.length}</b><span>mashq bajarildi</span></div>`:''}<div><b>${pc}%</b><span>umumiy</span></div></div>
+      <div class="hstats">${note?`<div><b>${ln.v?'✓':cards.length}</b><span>${ln.v?'dars o‘qildi':'dars qismi'}</span></div>`:''}${exs.length?`<div><b>${dEx}/${exs.length}</b><span>mashq bajarildi</span></div>`:''}<div><b>${pc}%</b><span>umumiy</span></div></div>
       <div class="hbar"><b style="width:${pc}%"></b></div></section>
     ${note?`<h2 class="sech">Dars</h2><a class="lcard" href="${link(note.id)}"><span class="lic">${BOOK}</span><span class="ltx"><b>${esc(DOC.title)}</b><small>${cards.length} qism: ${cards.some(c=>(c.chk||[]).length)?'qoida, formula, misollar va mini-testlar':'qoida, formula va misollar'}</small></span><span class="st ${ln.v?'g':ln.c?'b':''}">${ln.v?'O‘qildi ✓':ln.c?'Davom etmoqda':'Yangi'}</span></a>`:''}
     ${xs.map((x,i)=>{const g=x.s.grp||'Mashqlar',newG=!i||g!==(xs[i-1].s.grp||'Mashqlar');   /* grp: "Student’s Book", "Workbook"… (one heading "Mashqlar" when none) */

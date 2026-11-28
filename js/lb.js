@@ -148,6 +148,243 @@ const FEEL=(()=>{
     _render:k=>{if(!ac())return null;return buf(k)},names:()=>Object.keys(SND)};
 })();
 
+/* ===== HL · text highlighter for tests and exercises (Multi-Level test player) =====
+   v2 (27.11.2026 evening): works like the highlighter of the computer-delivered IELTS test, ONE colour (yellow). It replaces the
+   first version (live 27.11.2026 16:51 UTC: three colours, a hint banner); highlights saved by that one are kept and turn yellow.
+   - Computer: drag over the words (or double-click a word): they turn blue (selected) and a small menu with "Highlight"
+     appears; a right-click on the selection opens it too. Click or right-click a highlight: "Clear" (this one) or "Clear all".
+   - Phone / tablet: hold a word about 0.4 s (a short tick), slide the finger and lift it: the same menu. Tap a highlight:
+     "Clear" / "Clear all". A finger that moves at once scrolls the page as always.
+   - Whole words only. Dragging into the top or bottom edge scrolls the text. A highlight that touches or overlaps another
+     joins it. A press anywhere else closes the menu and drops the selection (that press does nothing else).
+   The page's protection is untouched: the browser's own text selection stays off and copy / the context menu stay blocked,
+   so a phone never shows its Copy / Share menu. Never on inputs, dropdowns, numbers or answer buttons.
+   Kept on this device per student, test and part (localStorage) and drawn again after every re-render (switching parts in a
+   mock, checking answers, reloading the page). A text block whose words have changed loses its highlights.
+   The page calls HL.init(options) once, HL.scan() after it re-draws something that is not a direct child of the root,
+   and HL.clear() / HL.clear(prefix) when an attempt starts again. */
+const HL=(()=>{
+  const HOLD=380,EDGE=44;
+  const SKIP='.gapw,.pick,.fix,.num,.qm,select,option,input,textarea,button,sup,.nt,mark:not(.uh)>b';   // never inside a highlight
+  const NOGO='input,select,textarea,button,a,label,.gapw,.pick,.fix';                                    // a press here never selects
+  const isW=c=>!!c&&/[\p{L}\p{N}'’‘-]/u.test(c);
+  const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  const lset=(k,v)=>{try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
+  const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)};
+  let O=null,K=null,D={},units=[],shown=[],drag=null,sel=null,menu=null,raf=0,ar=0,mr=0,eat=false,lastPT='mouse',W=0;
+
+  /* ---- the text of a block: its text nodes in reading order, without inputs, dropdowns, numbers or answer chips ---- */
+  function texts(u){const out=[],w=document.createTreeWalker(u,5,{acceptNode:n=>n.nodeType===1?(n!==u&&n.matches(SKIP)?2:3):1});let n;while((n=w.nextNode()))out.push(n);return out}
+  const text=u=>texts(u).map(n=>n.data).join('');
+  // places in a block's text where the words are visually apart although the texts touch: a <br>, the edge of a block
+  // (e.g. the "Part 1" label above its instruction) or a skipped piece (gap, number badge). A word never runs over one.
+  function breaks(u){const B=new Set();let off=0,brk=false;
+    (function rec(e){for(let c=e.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){if(c.data.length){if(brk)B.add(off);brk=false;off+=c.data.length}}
+      else if(c.nodeType===1){if(c.matches(SKIP)||c.tagName==='BR'){brk=true;continue}
+        const d=getComputedStyle(c).display,b=d!=='inline'&&d!=='contents';if(b)brk=true;rec(c);if(b)brk=true}}})(u);
+    return B}
+  const cont=u=>u.closest('#scr,.qs,.paper,.instr')||u;   // one selection may run over several blocks of ONE text, never into another
+  const sortR=R=>R.sort((a,b)=>a[0]-b[0]);
+  function cut(R,s,e){const out=[];R.forEach(r=>{if(r[1]<=s||r[0]>=e){out.push(r);return}if(r[0]<s)out.push([r[0],s,r[2]]);if(r[1]>e)out.push([e,r[1],r[2]])});return out}
+  // pieces of one block that overlap or touch become one piece (they belong to one highlight by then)
+  function merge(R){sortR(R);const out=[];for(const r of R){const l=out[out.length-1];if(l&&r[0]<=l[1]){if(r[1]>l[1])l[1]=r[1]}else out.push(r.slice())}return out}
+
+  /* ---- drawing: <mark class="uh" data-g="…"> = a highlight, <mark class="uh sel"> = the selection ---- */
+  function unwrap(u){const ms=u.querySelectorAll('mark.uh');if(!ms.length)return;ms.forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m)});u.normalize()}
+  function paint(u,R){unwrap(u);
+    for(const r of R){let off=0;
+      for(const n of texts(u)){const L=n.data.length,a=Math.max(r[0],off),b=Math.min(r[1],off+L);
+        if(a<b){let x=n;if(a>off)x=x.splitText(a-off);if(b<off+L)x.splitText(b-a);
+          const m=document.createElement('mark');m.className=r[3]?'uh sel':'uh';if(r[2])m.dataset.g=r[2];x.parentNode.insertBefore(m,x);m.appendChild(x)}
+        off+=L;if(off>=r[1])break}}}
+  // a block with its highlights, and the selection on top of them while there is one
+  function show(u,pv){const E=D[u.dataset.hu];let R=E?E.r.map(r=>r.slice()):[];if(pv){R=cut(R,pv[0],pv[1]);R.push([pv[0],pv[1],'',1])}paint(u,sortR(R))}
+
+  /* ---- where a point falls in a block's text: an own hit test, so it works although the text cannot be selected ---- */
+  const R0=document.createRange();
+  function cbox(n,i){R0.setStart(n,i);R0.setEnd(n,i+1);for(const r of R0.getClientRects())if(r.width||r.height)return r;return null}
+  // ch=false: the caret nearest to the point (between two letters); ch=true: the letter under the point
+  // (or the next letter in reading order when the point is not on a letter)
+  function inNode(n,L,x,y,lh,ch){let lo=0,hi=L;   // binary search in reading order (line by line, then left to right)
+    while(lo<hi){const mid=(lo+hi)>>1;let k=mid,r=null;while(k<hi&&!(r=cbox(n,k)))k++;
+      if(!r){hi=mid;continue}
+      const g=lh>r.height?(lh-r.height)/2:0;   // half of the gap between two lines belongs to each line
+      const v=r.bottom+g<=y?-1:r.top-g>y?1:r.right<=x?-1:r.left>x?1:0;
+      if(v<0)lo=k+1;else if(v>0)hi=mid;else return !ch&&x>(r.left+r.right)/2?k+1:k}
+    return lo}
+  function hit(u,x,y,ch){let off=0;
+    for(const n of texts(u)){const L=n.data.length;if(!L)continue;R0.selectNodeContents(n);if(!R0.getClientRects().length){off+=L;continue}
+      const i=inNode(n,L,x,y,parseFloat(getComputedStyle(n.parentElement).lineHeight)||0,ch);if(i<L)return off+i;off+=L}
+    return off}
+  function unitFrom(t){if(t&&t.nodeType!==1)t=t.parentElement;if(!t||!t.closest||t.closest(NOGO))return null;const u=t.closest('[data-hu]');return u&&units.includes(u)?u:null}
+  const unitAt=(x,y)=>unitFrom(document.elementFromPoint(x,y));
+
+  /* ---- what a gesture covers: whole words, in one text ---- */
+  // the word around letter p (a letter right after a word, like its comma, gives that word)
+  function wordAt(t,p,B){if(!isW(t[p])){if(p>0&&isW(t[p-1])&&!B.has(p))p--;else return null}
+    let a=p,b=p+1;while(a>0&&isW(t[a-1])&&!B.has(a))a--;while(b<t.length&&isW(t[b])&&!B.has(b))b++;return [a,b]}
+  // from letter sc of block ua (where the gesture started; it is always inside the selection) to caret ec of block ub (where it is now)
+  function segs(ua,sc,ub,ec){let ia=units.indexOf(ua),ib=units.indexOf(ub);if(ia<0||ib<0)return [];
+    if(ia===ib&&(ec===sc||ec===sc+1)){const w=wordAt(text(ua),sc,breaks(ua));return w?[[ua,w[0],w[1]]]:[]}   // still on the first letter: its word
+    let oa,ob;if(ia<ib||(ia===ib&&ec>sc)){oa=sc;ob=ec}else{[ua,ub,ia,ib]=[ub,ua,ib,ia];oa=ec;ob=sc+1}
+    const C=cont(ua),out=[];
+    for(let i=ia;i<=ib;i++){const u=units[i];if(cont(u)!==C)continue;const t=text(u);let s=i===ia?oa:0,e=i===ib?Math.min(ob,t.length):t.length;
+      if(i===ia||i===ib){const B=breaks(u);   // whole words only
+        if(i===ia)while(s>0&&isW(t[s])&&isW(t[s-1])&&!B.has(s))s--;
+        if(i===ib)while(e>0&&e<t.length&&isW(t[e-1])&&isW(t[e])&&!B.has(e))e++}
+      while(s<e&&/\s/.test(t[s]))s++;while(e>s&&/\s/.test(t[e-1]))e--;
+      if(e>s)out.push([u,s,e])}
+    return out}
+
+  /* ---- saved highlights: {v:2,u:{<block id>:{h:<hash of its text>,r:[[start,end,highlight id],…]}}}
+          (the first version saved {v:1,…,r:[[start,end,colour,highlight id],…]}: read as yellow, written as v:2 at the next change) ---- */
+  function load(){D={};if(!K)return;try{const o=JSON.parse(ls(K)||'null');if(!o||!o.u||typeof o.u!=='object')return;
+    if(o.v===2)D=o.u;
+    else if(o.v===1){   // pieces of two marks of the first version could touch (they had colours); all yellow they look like one, so they join
+      const P=Object.create(null),f=g=>{while(P[g]!==g)g=P[g]=P[P[g]];return g};
+      for(const id in o.u){const E=o.u[id];if(!E||!Array.isArray(E.r))continue;
+        const R=sortR(E.r.filter(r=>Array.isArray(r)).map(r=>[r[0],r[1],String(r[3]||'v1')]));let l=null;
+        for(const r of R){if(!(r[2] in P))P[r[2]]=r[2];if(l&&r[0]<=l[1]){const a=f(l[2]),b=f(r[2]);if(a!==b)P[b]=a;if(r[1]>l[1])l=[l[0],r[1],l[2]]}else l=r}
+        D[id]={h:E.h,r:R}}
+      for(const id in D){D[id].r.forEach(r=>{r[2]=f(r[2])});D[id].r=merge(D[id].r)}}}catch(e){}}
+  function save(){if(!K)return;const u={};let n=0;for(const id in D)if(D[id].r.length){u[id]=D[id];n++}lset(K,n?JSON.stringify({v:2,u}):null)}
+  function repaint(ids){units.forEach(u=>{if(ids.includes(u.dataset.hu))show(u)})}
+  // "Highlight": the selection turns yellow; old highlights it touches or overlaps join it (so "Clear" removes all of it)
+  function commit(S){if(!S.length)return;const g=Date.now().toString(36)+Math.random().toString(36).slice(2,6),join=new Set(),ids=new Set();
+    S.forEach(([u,s,e])=>{const E=D[u.dataset.hu];if(E&&E.h===hash(text(u)))E.r.forEach(r=>{if(r[0]<=e&&r[1]>=s)join.add(r[2])})});
+    for(const id in D)D[id].r.forEach(r=>{if(join.has(r[2])){r[2]=g;ids.add(id)}});
+    S.forEach(([u,s,e])=>{const id=u.dataset.hu,h=hash(text(u));let E=D[id];if(!E||E.h!==h)E=D[id]={h,r:[]};E.r.push([s,e,g]);ids.add(id)});
+    ids.forEach(id=>{D[id].r=merge(D[id].r)});
+    save();repaint([...ids])}
+  function drop(g){const ids=[];for(const id in D){const E=D[id],n=E.r.length;E.r=E.r.filter(r=>r[2]!==g);if(E.r.length!==n)ids.push(id);if(!E.r.length)delete D[id]}save();repaint(ids)}
+  function dropAll(){const ids=Object.keys(D);D={};save();repaint(ids)}
+
+  /* ---- find the blocks of the page and draw their saved highlights (after every re-render) ---- */
+  function scan(){if(!O||O.off)return;if(menu){menu.remove();menu=null}sel=null;if(drag)cancel();
+    const k=O.key()||null;if(k!==K){K=k;load()}
+    units=[];shown=[];const root=document.querySelector(O.root);
+    if(K&&root){
+      const c=[...root.querySelectorAll(O.units)].filter(u=>!u.closest(O.out)),set=new Set(c);
+      units=c.filter(u=>{for(let p=u.parentElement;p&&p!==root;p=p.parentElement)if(set.has(p))return false;return text(u).trim()!==''});
+      units.forEach((u,i)=>u.dataset.hu='m'+i);
+      for(const z in O.sub||{})root.querySelectorAll(O.sub[z]).forEach((u,i)=>{u.dataset.hu=z+i;units.push(u)});
+      let gone=false;
+      units.forEach(u=>{const E=D[u.dataset.hu];if(!E){unwrap(u);return}const t=text(u);
+        if(E.h!==hash(t)||!Array.isArray(E.r)||E.r.some(r=>!(r[0]>=0&&r[0]<r[1]&&r[1]<=t.length))){delete D[u.dataset.hu];unwrap(u);gone=true;return}
+        show(u)});
+      if(gone)save()}}
+
+  /* ---- the selection (blue) and the small menu: "Highlight" on a selection, "Clear" / "Clear all" on a highlight ---- */
+  function select(S){sel={S};S.forEach(([u,s,e])=>show(u,[s,e]))}
+  function closeMenu(keep){if(menu){menu.remove();menu=null}if(!keep&&sel){const S=sel.S;sel=null;S.forEach(([u])=>show(u))}}
+  const lim=()=>({t:(O.top?O.top():0)+6,b:innerHeight-(O.bottom?O.bottom():0)-6});   // the free screen between the bars
+  // the line of the selection / highlight nearest to (x,y)
+  function lineBox(ms,x,y){let best=null,bd=1e9;ms.forEach(m=>{for(const r of m.getClientRects()){if(!r.width)continue;
+      const d=(y<r.top?r.top-y:y>r.bottom?y-r.bottom:0)*4+(x<r.left?r.left-x:x>r.right?x-r.right:0);if(d<bd){bd=d;best=r}}});return best}
+  // computer: the menu opens at the pointer, like a right-click menu; touch: above the whole selection (below it when there is
+  // no room), or above the tapped line of a highlight, where the finger does not cover it
+  function openMenu(kind,x,y,touch,g){closeMenu(kind==='sel');if(kind==='sel'&&!sel)return;
+    const ms=[...document.querySelectorAll(kind==='sel'?'mark.uh.sel':'mark.uh[data-g="'+g+'"]')];if(!ms.length)return;
+    menu=document.createElement('div');menu.className='uhm';menu.setAttribute('role','menu');
+    menu.innerHTML=kind==='sel'?'<button type="button" role="menuitem" data-a="hl"><span class="uhsw" aria-hidden="true"></span>Highlight</button>'
+      :'<button type="button" role="menuitem" data-a="clr">Clear</button><button type="button" role="menuitem" data-a="all">Clear all</button>';
+    menu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.a==='hl'){const S=sel?sel.S:[];if(menu){menu.remove();menu=null}sel=null;commit(S)}
+      else{closeMenu();if(b.dataset.a==='clr')drop(g);else dropAll()}});
+    document.body.appendChild(menu);
+    const L=lim(),mw=menu.offsetWidth,mh=menu.offsetHeight;let left,top;
+    if(touch){left=x-mw/2;const near=()=>{const r=lineBox(ms,x,y)||{top:y,bottom:y};top=r.top-mh-12;if(top<L.t)top=r.bottom+12};
+      if(kind==='sel'){const rs=ms.flatMap(m=>[...m.getClientRects()].filter(r=>r.width));
+        top=Math.min(...rs.map(r=>r.top))-mh-12;if(top<L.t){top=Math.max(...rs.map(r=>r.bottom))+12;if(top+mh>L.b)near()}}
+      else near()}
+    else{left=x+2;top=y+2;if(left+mw>innerWidth-8)left=x-mw-2;if(top+mh>L.b)top=y-mh-2}
+    left=Math.max(8,Math.min(innerWidth-mw-8,left));top=Math.max(L.t,Math.min(L.b-mh,top));
+    menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';
+    menu._a=ms[0];menu._r=ms[0].getBoundingClientRect();menu._p=[left,top]}
+  // the menu stays next to its text while the page or the passage scrolls (hidden while it would sit under the bars)
+  function follow(){mr=0;if(!menu)return;const a=menu._a;if(!a||!a.isConnected){closeMenu();return}
+    const r=a.getBoundingClientRect(),L=lim(),left=menu._p[0]+r.left-menu._r.left,top=menu._p[1]+r.top-menu._r.top;
+    menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';menu.classList.toggle('hid',top<L.t||top+menu.offsetHeight>L.b)}
+
+  /* ---- gestures ---- */
+  function scroller(u){for(let p=u.parentElement;p&&p!==document.body&&p!==document.documentElement;p=p.parentElement){
+      const s=getComputedStyle(p).overflowY;if((s==='auto'||s==='scroll')&&p.scrollHeight>p.clientHeight+1)return p}return null}
+  function view(sc){const L=lim();if(!sc)return L;const r=sc.getBoundingClientRect();return {t:Math.max(r.top,L.t),b:Math.min(r.bottom,L.b)}}
+  function begin(){closeMenu();drag.on=true;drag.sc=scroller(drag.u0);drag.oa=hit(drag.u0,drag.x0,drag.y0,true);drag.ub=drag.u0;drag.ob=hit(drag.u0,drag.x0,drag.y0);document.body.classList.add('uh-on')}
+  function step(){raf=0;if(!drag||!drag.on)return;const v=view(drag.sc),x=drag.x,y=Math.min(Math.max(drag.y,v.t+3),v.b-3);
+    const u=unitAt(x,y);if(u&&cont(u)===cont(drag.u0)){drag.ub=u;drag.ob=hit(u,x,y)}
+    const S=segs(drag.u0,drag.oa,drag.ub,drag.ob),nw=new Set(S.map(s=>s[0]));
+    shown.forEach(u=>{if(!nw.has(u))show(u)});S.forEach(([u,s,e])=>show(u,[s,e]));shown=[...nw];drag.S=S}
+  const later=()=>{if(!raf)raf=requestAnimationFrame(step);if(!ar)ar=requestAnimationFrame(roll)};
+  // dragging into the top or bottom edge of the text scrolls it, faster the deeper the pointer goes
+  function roll(){ar=0;if(!drag||!drag.on)return;const v=view(drag.sc),y=drag.y;let d=0;
+    if(y<v.t+EDGE)d=y-(v.t+EDGE);else if(y>v.b-EDGE)d=y-(v.b-EDGE);if(!d)return;
+    d=Math.sign(d)*Math.min(20,Math.ceil(Math.abs(d)/EDGE*16));
+    const el=drag.sc||document.scrollingElement,t0=el.scrollTop;el.scrollTop=t0+d;if(el.scrollTop===t0)return;
+    step();ar=requestAnimationFrame(roll)}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=0}if(ar){cancelAnimationFrame(ar);ar=0}if(drag)clearTimeout(drag.tm);document.body.classList.remove('uh-on')}
+  // the selection that stays is exactly what the student saw while dragging
+  function finish(){if(raf){cancelAnimationFrame(raf);raf=0;step()}else if(!drag.S)step();const S=drag.S||[];stop();shown=[];drag=null;return S}
+  function cancel(){stop();const s=shown;shown=[];drag=null;s.forEach(u=>show(u))}
+  // mouse: press and drag (from 5 px on); a plain click selects nothing
+  function mDown(e){if(e.pointerType!=='mouse'||e.button!==0||!K)return;if(drag)cancel();const u=unitFrom(e.target);if(!u)return;
+    drag={u0:u,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY,on:false};
+    addEventListener('pointermove',mMove,true);addEventListener('pointerup',mUp,true);addEventListener('pointercancel',mUp,true)}
+  function mMove(e){if(!drag||drag.touch)return;drag.x=e.clientX;drag.y=e.clientY;if(!drag.on){if(Math.hypot(drag.x-drag.x0,drag.y-drag.y0)<5)return;begin()}later()}
+  function mUp(e){removeEventListener('pointermove',mMove,true);removeEventListener('pointerup',mUp,true);removeEventListener('pointercancel',mUp,true);
+    if(!drag||drag.touch)return;if(!drag.on||e.type!=='pointerup'){cancel();return}
+    drag.x=e.clientX;drag.y=e.clientY;const S=finish();eat=true;   // the click that ends a drag does nothing
+    if(S.length){select(S);openMenu('sel',e.clientX,e.clientY,false)}}
+  // touch: hold still for HOLD ms, then the finger selects instead of scrolling; a moving finger scrolls as always
+  function tStart(e){if(!K)return;if(drag)cancel();if(e.touches.length!==1)return;const u=unitFrom(e.target);if(!u)return;const t=e.touches[0];
+    drag={touch:true,u0:u,x0:t.clientX,y0:t.clientY,x:t.clientX,y:t.clientY,on:false};
+    drag.tm=setTimeout(()=>{if(!drag||!drag.touch||drag.on)return;begin();step();if(typeof FEEL!=='undefined')try{FEEL.play('tick')}catch(x){}},HOLD)}
+  function tMove(e){if(!drag||!drag.touch)return;const t=e.touches[0];if(!t)return;
+    if(!drag.on){if(Math.hypot(t.clientX-drag.x0,t.clientY-drag.y0)>9){clearTimeout(drag.tm);drag=null}return}
+    if(e.cancelable)e.preventDefault();drag.x=t.clientX;drag.y=t.clientY;later()}
+  function tEnd(e){if(!drag||!drag.touch)return;clearTimeout(drag.tm);if(!drag.on){drag=null;return}if(e.cancelable)e.preventDefault();
+    const x=drag.x,y=drag.y,S=finish();if(S.length){select(S);openMenu('sel',x,y,true)}}
+  function tCancel(){if(drag&&drag.touch)cancel()}
+  // any press outside the menu closes it and drops the selection; that press does nothing else (a press on a highlight opens its menu)
+  function onDown(e){lastPT=e.pointerType||'mouse';eat=false;if(menu&&!menu.contains(e.target)&&e.button!==2){closeMenu();eat=!(e.target.closest&&e.target.closest('mark.uh[data-g]'))}}
+  function onClickCap(e){if(menu&&menu.contains(e.target))return;if(eat){eat=false;e.preventDefault();e.stopPropagation()}}
+  function onClick(e){if(!K)return;const t=e.target,m=t.closest&&t.closest('mark.uh[data-g]');if(!m||t.closest(NOGO))return;
+    openMenu('mark',e.clientX,e.clientY,lastPT==='touch'||lastPT==='pen',m.dataset.g)}
+  function onDbl(e){if(!K||e.button!==0)return;const t=e.target;if(t.closest&&t.closest('mark.uh[data-g]'))return;const u=unitFrom(t);if(!u)return;
+    const c=hit(u,e.clientX,e.clientY,true),S=segs(u,c,u,c);if(!S.length)return;closeMenu();select(S);openMenu('sel',e.clientX,e.clientY,lastPT==='touch')}
+  // right-click, as in the exam: on the selection → "Highlight"; on a highlight → "Clear" / "Clear all"
+  function onCtx(e){if(!K)return;const t=e.target;if(t.closest&&t.closest('input,textarea'))return;e.preventDefault();if(drag)return;
+    const touch=lastPT==='touch'||lastPT==='pen';
+    if(sel&&t.closest&&t.closest('mark.uh.sel')){openMenu('sel',e.clientX,e.clientY,touch);return}
+    const m=t.closest&&t.closest('mark.uh[data-g]');if(m&&!t.closest(NOGO)){openMenu('mark',e.clientX,e.clientY,touch,m.dataset.g);return}
+    closeMenu()}
+
+  function clear(p){if(!O||O.off)return;closeMenu();
+    if(p==null){if(K){const ids=Object.keys(D);D={};lset(K,null);repaint(ids)}return}
+    try{const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(p)===0)ks.push(k)}ks.forEach(k=>localStorage.removeItem(k))}catch(e){}
+    if(K&&K.indexOf(p)===0){const ids=Object.keys(D);D={};repaint(ids)}}
+
+  /* o: {ns, root, key()→storage key or null (null = no highlighting here), units (selector), sub {zone: selector},
+         out (selector: blocks inside these are not used), top()→bottom edge of the bars at the top,
+         bottom()→height of the bars at the bottom, off (true = engine not used on this page)} */
+  function init(o){O=o;if(o.ns){lset(o.ns+'hlc',null);lset(o.ns+'hltip',null)}   // leftovers of the first version (pen colour, hint closed)
+    if(o.off)return;const root=document.querySelector(o.root);if(!root)return;W=innerWidth;
+    new MutationObserver(()=>scan()).observe(root,{childList:true});
+    root.addEventListener('pointerdown',mDown);
+    root.addEventListener('touchstart',tStart,{passive:true});root.addEventListener('touchmove',tMove,{passive:false});
+    root.addEventListener('touchend',tEnd,{passive:false});root.addEventListener('touchcancel',tCancel);
+    root.addEventListener('click',onClick);root.addEventListener('dblclick',onDbl);root.addEventListener('contextmenu',onCtx);
+    addEventListener('pointerdown',onDown,true);addEventListener('click',onClickCap,true);
+    addEventListener('keydown',e=>{if(e.key==='Escape'){if(drag)cancel();closeMenu()}});
+    addEventListener('scroll',()=>{if(menu&&!mr)mr=requestAnimationFrame(follow)},{capture:true,passive:true});
+    // phones change the height while the address bar slides away: only a new width (turning the phone) closes things
+    addEventListener('resize',()=>{if(innerWidth!==W){W=innerWidth;if(drag)cancel();closeMenu()}else if(menu&&!mr)mr=requestAnimationFrame(follow)});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&drag)cancel()});
+    scan()}
+  return {on:true,init,scan,clear};
+})();
+
 const PREVIEW=null;   /* the stand-alone preview file carries its tests and audio here; null on the platform */
 const ST=PREVIEW?'edunest_lbdemo:':'edunest_mlb:';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -229,7 +466,8 @@ const ICP={arr:'<path d="M5 12h14M13 6l6 6-6 6"/>',check:'<path d="M5 12.5l4.5 4
   up:'<path d="M5 16l5-5 3.5 3.5L19 9"/><path d="M14.5 9H19v4.5"/>',
   redo:'<path d="M4 12a8 8 0 1 0 2.6-5.9L4 8.5"/><path d="M4 4v4.5h4.5"/>',
   eye:'<path d="M3 3l18 18"/><path d="M10.6 6.2A9.6 9.6 0 0 1 12 6c5.5 0 9 6 9 6a15.6 15.6 0 0 1-3 3.7M6.3 7.7A15.4 15.4 0 0 0 3 12s3.5 6 9 6a9 9 0 0 0 3.3-.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
-  list:'<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>'};
+  list:'<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+  hl:'<path d="M9 13.5l6.6-8.1a1.7 1.7 0 0 1 2.5-.1l1 1a1.7 1.7 0 0 1-.1 2.5L10.9 15.4z"/><path d="M9 13.5l-2.6 2.9L8 18l2.9-2.6"/><path d="M4 21h16"/>'};
 const ic=n=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICP[n]}</svg>`;
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const norm=s=>String(s||'').toLowerCase().replace(/[’‘`]/g,"'").replace(/^[\s"'.,;:!?()]+|[\s"'.,;:!?()]+$/g,'').replace(/\s+/g,' ');
@@ -242,7 +480,8 @@ let TM=[];const later=(f,ms)=>{const id=setTimeout(f,ms);TM.push(id);return id};
 function clearTimers(){TM.forEach(clearTimeout);TM=[]}
 let LEAVE=null;   /* {h,p} while a timed stage runs: going back asks first (the stage itself is saved and continues later) */
 function setDock(html){dock.hidden=!html;dockin.className='in';dockin.innerHTML=html||''}
-function view(html,dk){stopAu();clearTimers();closeModal();const ts=$('#toast');if(ts)ts.classList.remove('on');main.innerHTML='<div class="vin">'+html+'</div>';setDock(dk);scrollTo(0,0)}
+let HLK=null;   /* the highlighter's place: '<test>:<stage>' while a view with highlightable text is shown (the paper's notes in a Part 2 test), else null */
+function view(html,dk,hk){stopAu();clearTimers();closeModal();const ts=$('#toast');if(ts)ts.classList.remove('on');HLK=hk||null;main.innerHTML='<div class="vin">'+html+'</div>';setDock(dk);scrollTo(0,0)}
 function pane(html){clearTimers();const p=$('#pane');p.classList.remove('pin');p.innerHTML=html;void p.offsetWidth;p.classList.add('pin');if(scrollY>8)scrollTo({top:0,behavior:'smooth'})}
 function closeModal(){const m=$('#mbg');if(m)m.remove()}
 function modal(h,p,btns){closeModal();const bg=document.createElement('div');bg.className='mbg';bg.id='mbg';
@@ -561,6 +800,231 @@ function report(t,fresh){const d=sget(t.id),a=d.a,e=d.e,tr=trapsOf(t,a.ans),tr2=
   const dn=$('#dn');if(dn)dn.onclick=goDone;
   const b=$('#nt');if(b)b.onclick=()=>go(nx.id);const h=$('#hm');if(h)h.onclick=()=>go('')}
 
+/* ======================================================================================================================
+   LISTENING PART 2 BOOSTER (doc kind lb2): one talk, notes with 6 gaps (ONE WORD and / or A NUMBER)
+   A Test (time to read, the talk twice, one attempt) -> B Bo‘sh joy turi -> C Kalit so‘zlar -> D Eshitib yozing -> E Tezkor raund
+   The whole talk is one audio file per test (audio/lb2-<src>.mp3); excerpts are parts of it (from .. until).
+   ====================================================================================================================== */
+const P2STG=[['A','Test','head'],['B','Bo‘sh joy turi','target'],['C','Kalit so‘zlar','msg'],['D','Eshitib yozing','pen'],['E','Tezkor raund','bolt']];
+const P2CAT={ok:'To‘g‘ri',blank:'Bo‘sh qoldirilgan',trap:'Tuzoq',plural:'Birlik / ko‘plik xatosi',spell:'Imlo xatosi',multi:'Ortiqcha so‘z',wrong:'Boshqa so‘z'};
+/* answers are compared without capitals, spaces, dots and hyphens (make-up = makeup = make up); a time keeps its
+   separator, written either way (8.40 = 8:40, but not 840) */
+const canon=s=>String(s==null?'':s).toLowerCase().replace(/[’‘`']/g,'').replace(/(\d)\s*[.:]\s*(?=\d)/g,'$1:').replace(/[\s.,;\-–]/g,'');
+function lev(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
+/* what kind of answer it is: right, empty, a trap (something else the speaker says), plural, spelling, too many words, another word */
+function p2cls(it,u){const c=canon(u);if(!c)return'blank';const acc=it.acc.map(canon);if(acc.includes(c))return'ok';
+  if(Object.keys(it.traps||{}).map(canon).includes(c))return'trap';
+  if(acc.some(a=>c+'s'===a||a+'s'===c||c+'es'===a||a+'es'===c))return'plural';
+  if(String(u).trim().split(/\s+/).length>Math.max(...it.acc.map(x=>x.split(/\s+/).length)))return'multi';
+  if(acc.some(a=>/^[a-z]+$/.test(a)&&a.length>=4&&lev(c,a)<=(a.length>=6?2:1)))return'spell';return'wrong'}
+const p2trap=(it,u)=>{const k=Object.keys(it.traps||{}).find(x=>canon(x)===canon(u));return k?it.traps[k]:''};
+const tm=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const p2cnt=cat=>{const c={};Object.values(cat).forEach(k=>c[k]=(c[k]||0)+1);return c};
+/* the paper's notes; gap(n) gives the html of gap n */
+function p2notes(t,gap){const part=p=>typeof p==='number'?gap(p):esc(p);
+  const body=t.lay==='table'?`<div class="ntab">${t.notes.map(([lab,ps])=>`<div class="lab">${esc(lab)}</div><div>${ps.map(part).join('')}</div>`).join('')}</div>`
+    :t.notes.map(l=>`<p class="nl${l.some(p=>typeof p==='number')?'':' ex0'}">${l.map(part).join('')}</p>`).join('');
+  return `<section class="card notes"><span class="eb">${esc(t.mock)} · Part 2</span><h3>${esc(t.topic)}</h3>${body}</section>`}
+/* the one line of the notes that has gap n */
+function p2line(t,n,fill){const part=p=>typeof p==='number'?(p===n?fill:'…'):esc(p);
+  if(t.lay==='table'){const r=t.notes.find(([,ps])=>ps.includes(n));return esc(r[0])+' '+r[1].map(part).join('')}
+  return t.notes.find(l=>l.includes(n)).map(part).join('')}
+/* "num" on the number badge: the highlighter never takes it as text (as in the test player) */
+const gIn=n=>`<span class="gw"><i class="gn num">${n}</i><input class="gin" data-n="${n}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" aria-label="${n}-savol javobi"></span>`;
+const gDots=(n,on)=>`<span class="gw"><i class="gn num">${n}</i><span class="gap0${on?' on':''}"></span></span>`;
+const gVal=(n,v)=>`<span class="gw"><i class="gn num">${n}</i><span class="gval">${esc(v)}</span></span>`;
+const p2ex=it=>{let h=esc(it.ex);it.hl.forEach(x=>{h=h.replace(esc(x),'<mark>'+esc(x)+'</mark>')});return h};
+/* the stage card of a whole talk: one long wave and the time */
+function p2card(t){return `<section class="stage" id="stage" data-ph="0" aria-label="Audio">
+  <div class="sg-top"><b>${esc(t.topic)}</b><span class="segs"></span><span class="tt" id="tt">0:00 / ${tm(t.dur)}</span></div>
+  <div class="trks one"><div class="trk" id="tk1"><div class="wv">${bars(t.pk,64)}</div></div></div>
+  <div class="sg-foot"><span class="live"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="sgt" aria-live="polite"></span></span>
+    <span class="cd" id="cd" hidden><svg viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="19"/><circle cx="23" cy="23" r="19" class="cdr" id="cdr"/></svg><b id="cdn"></b></span></div>
+  <button type="button" class="tapplay" id="tap" hidden>${ic('play')} Tinglash uchun bosing</button>
+</section>`}
+/* plays a part of the talk into the stage card */
+function playSpan(k,a,b,o){const sg=$('#stage');if(!sg)return;
+  const start=()=>{const tp=$('#tap');if(tp)tp.hidden=true;sg.classList.add('play');sg.dataset.ph='1';paint('tk1',0);if(o.txt!=null)$('#sgt').textContent=o.txt;
+    playAu(k,{from:a,until:b,tick:c=>{if(sg.isConnected)paint('tk1',(c-a)/(b-a))},
+      end:()=>{if(!sg.isConnected)return;sg.classList.remove('play');sg.dataset.ph='e';paint('tk1',1);if(o.end)o.end()},
+      blocked:()=>{if(!sg.isConnected)return;sg.classList.remove('play');const t2=$('#tap');if(t2){t2.hidden=false;t2.onclick=start}}})};
+  start()}
+function p2state(t){const d=sget(t.id);
+  if(d.done)return{k:'done',st:`Bajarilgan · Test ${d.a.ok}/6 → Tezkor raund ${d.e.ok}/6`,go:'Hisobot',n:5};
+  if(d.a){const n=d.d?4:d.c?3:d.b?2:1;return{k:'run',st:`Davom etmoqda: Test ${d.a.ok}/6 bajarildi, ${d.d?'E bosqich qoldi':d.c?'D bosqichdan davom eting':d.b?'C bosqichdan davom eting':'B bosqichdan davom eting'}`,go:'Davom ettirish',n}}
+  return{k:'new',st:`Yangi · ${t.topic} · 6 ta savol · taxminan 20 daqiqa`,go:'Boshlash',n:0}}
+ENG.lb2={stg:P2STG,of:6,keys:t=>[t.src],state:p2state,
+  intro:'Nutqni tinglab, yozuvlardagi bo‘sh joylarni to‘ldirasiz. Bu shunchaki mashq emas: testdan keyin har bir javobni audio matni bilan tahlil qilasiz va shu nutq ustida yana to‘rt xil usulda ishlaysiz.',
+  how:['Imtihondagidek: savollarni o‘qish uchun vaqt, nutq ikki marta qo‘yiladi, bitta urinish. Keyin har bir javob tahlili: audio matni, tarjima va tuzoqlar.',
+    'Tinglashdan oldin taxmin qilasiz: bo‘sh joyga vaqtmi, kunmi, narsami kerak? Shunda audioda nimani kutishni bilasiz.',
+    'Savoldagi so‘zlarni audiodagi muqobili bilan juftlaysiz: javob qachon aytilishini oldindan sezasiz.',
+    'Nutqdan parchalarni tinglab, tushib qolgan so‘z yoki sonni yozasiz. Quloq aniq eshitishga o‘rganadi.',
+    'O‘sha 6 ta javob, lekin savollar boshqacha yozilgan, parcha bir marta qo‘yiladi, 12 soniya vaqt. A bosqich bilan solishtirasiz.'],
+  open(t){const d=sget(t.id);if(d.done)p2report(t,false);else if(!d.a)p2A(t);else if(!d.b)p2resA(t);else if(!d.c)p2C(t);else if(!d.d)p2D(t);else if(!d.e)p2E(t);else p2report(t,false)}};
+
+/* ----- A · the test, like the exam ----- */
+function p2A(t){LEAVE=null;
+  view(`${stepper('A')}<section class="card cover"><span class="eb">Test ${t.n} · 6 ta savol · taxminan ${Math.round((t.dur*2+70)/60)} daqiqa</span><h2>${esc(t.mock)} · Part 2</h2>
+    <p class="q">You will hear someone giving a talk. For each question, fill in the missing information in the numbered space. Write ONE WORD and / or A NUMBER for each answer.</p>
+    <ul class="rules"><li><span class="ri">${ic('clock')}</span><span>Avval savollarni o‘qish uchun <b>30 soniya</b> beriladi</span></li>
+      <li><span class="ri">${ic('rep')}</span><span>Nutq <b>ikki marta</b> qo‘yiladi, xuddi imtihondagidek</span></li>
+      <li><span class="ri">${ic('ban')}</span><span>Audioni to‘xtatib yoki qayta qo‘yib bo‘lmaydi</span></li>
+      <li><span class="ri">${ic('pen')}</span><span>Har bir javob: <b>bitta so‘z va/yoki son</b></span></li>
+      <li><span class="ri">${ic('hl')}</span><span>Matnni <b>belgilash</b> (highlight) mumkin: so‘zlarni belgilang va «Highlight»ni bosing (telefonda so‘zni bosib turing, keyin suring).</span></li>
+      <li><span class="ri">${ic('flag')}</span><span>Bitta urinish: oxirida javoblar va tahlilni ko‘rasiz</span></li></ul>
+    <div class="sndchk"><button type="button" class="btn sm" id="chk">${ic('vol')} Ovozni tekshirish</button><span>Ovoz eshitilmasa, qurilma ovozini balandlating.</span></div></section>`,
+    `<div class="dk-l" id="ld">Audio yuklanmoqda…</div><button type="button" class="btn pri" id="go" disabled>Boshlash ${ic('arr')}</button>`);
+  $('#chk').onclick=chime;
+  const ready=()=>{$('#ld').innerHTML='<b>6</b> ta savol · audio tayyor'};
+  $('#go').onclick=()=>{const b=$('#go');if(b._retry){b._retry=false;b.innerHTML='Boshlash '+ic('arr');prep(t,ready);return}p2runA(t)};
+  prep(t,ready)}
+function p2runA(t){const d0=sget(t.id),ex=d0.run&&d0.run.s==='A'?(d0.run.ex||0)+1:0;d0.run={s:'A',ex};sput(t.id,d0);
+  const t0=Date.now();let ph='read',ended=false;
+  LEAVE={h:'Test tugamagan',p:'Chiqsangiz, test boshidan boshlanadi.'};
+  HL.clear(ST+'hl:'+UID+':'+DID+':'+t.id+':');   /* a new attempt starts with a clean paper */
+  view(`${stepper('A')}${p2card(t)}${t.intro?`<p class="p2in">${esc(t.intro)}</p>`:''}${p2notes(t,gIn)}`,
+    `<div class="dk-l"><b id="dkn">0</b> / 6 javob</div><button type="button" class="btn pri" id="fin">Tinglashni boshlash ${ic('arr')}</button>`,t.id+':a');
+  const sg=$('#stage'),fin=$('#fin'),ins=$$('.gin');
+  ins.forEach((inp,q)=>{inp.oninput=()=>{$('#dkn').textContent=ins.filter(i=>canon(i.value)).length};
+    inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const nx=ins[q+1];if(nx)nx.focus();else inp.blur()}}});
+  const play=k=>{ph='p'+k;clearTimers();$('#cd').hidden=true;fin.disabled=true;fin.innerHTML='Testni tugatish';sg.classList.add('play');sg.dataset.ph=String(k);paint('tk1',0);$('#sgt').textContent='Tinglang · '+k+'-marta';
+    playAu(t.src,{len:t.dur,tick:c=>{if(!sg.isConnected)return;paint('tk1',c/t.dur);const s=tm(c)+' / '+tm(t.dur),x=$('#tt');if(x.textContent!==s)x.textContent=s},
+      end:()=>{if(!sg.isConnected)return;sg.classList.remove('play');paint('tk1',1);
+        if(k===1){ph='gap';countdown(8,()=>play(2),'Pauza. Hozir ikkinchi marta tinglaysiz')}
+        else{ph='chk';fin.disabled=false;countdown(20,finish,'Javoblarni tekshiring')}},
+      blocked:()=>{if(!sg.isConnected)return;sg.classList.remove('play');const tp=$('#tap');tp.hidden=false;tp.onclick=()=>{tp.hidden=true;play(k)}}})};
+  fin.onclick=()=>{if(ph==='read')play(1);else if(ph==='chk')finish()};
+  function finish(){if(ended)return;ended=true;LEAVE=null;clearTimers();stopAu();const ans={},cat={};
+    t.items.forEach(it=>{const v=((ins.find(i=>+i.dataset.n===it.n)||{}).value||'').trim();ans[it.n]=v;cat[it.n]=p2cls(it,v)});
+    const ok=t.items.filter(it=>cat[it.n]==='ok').length,d=sget(t.id);delete d.run;d.n=d.n||1;d.a={ans,cat,ok,secs:Math.max(1,Math.round((Date.now()-t0)/1000)),ex,at:Date.now()};sput(t.id,d);
+    sendRes({kind:'ex',doc:DID,sec:t.id,aid:isStep(t.id)?STEP.a:'',step:isStep(t.id)?STEP.s:null,title:DOC.title+' · Test '+t.n+(d.n>1?' · '+d.n+'-urinish':''),ok,of:6,secs:d.a.secs,
+      det:t.items.map(it=>[String(it.n),ans[it.n],cat[it.n]==='ok'?1:0,it.show])});
+    p2resA(t,true)}
+  countdown(30,()=>play(1),'Savollarni o‘qing')}
+function p2tips(r){const c=p2cnt(r.cat),f=[];
+  f.push(r.ok===6?['trophy','A’lo! Hamma javob to‘g‘ri.']:r.ok>=4?['check','Yaxshi! Xato javoblarni pastda audio matni bilan solishtiring.']:['pin','Bu test qiyin bo‘ldi. Pastda har bir javobni tinglab, audio matni bilan solishtiring.']);
+  if(c.trap)f.push(['warn','Tuzoq: so‘zlovchi bir nechta vaqt, kun yoki narsani aytadi. Savoldagi so‘zlarga mos kelganini yozing.']);
+  if(c.spell)f.push(['pen','Imlo: to‘g‘ri eshitilgan, lekin xato yozilgan javob hisoblanmaydi. Bu so‘zlarni daftarga yozib oling.']);
+  if(c.plural)f.push(['q','Birlik va ko‘plik: so‘z oxiridagi -s ni eshiting va savoldagi «a / an»ga qarang.']);
+  if(c.multi)f.push(['ban','Javob: bitta so‘z va/yoki son. Ortiqcha so‘z yozilsa, javob hisoblanmaydi.']);
+  if(c.wrong)f.push(['comp','Javobni eshitmay qolsangiz, to‘xtab qolmang: keyingi savolga o‘ting, ikkinchi tinglashda qaytasiz.']);
+  if(c.blank)f.push(['flag','Hech qachon bo‘sh qoldirmang: taxmin ham to‘g‘ri chiqishi mumkin.']);
+  return f}
+function p2resA(t,fresh,back){const r=sget(t.id).a,c=p2cnt(r.cat);LEAVE=null;
+  view(`${back?'':stepper('A')}<section class="card"><div class="res"><div class="ring">${ring(r.ok,6,col(r.ok,6))}<div><b>${r.ok}/6</b><small>to‘g‘ri</small></div></div>
+      <div><div class="mini"><div><b>${Math.round(r.ok/6*100)}%</b><span>aniqlik</span></div><div><b>${(c.spell||0)+(c.plural||0)}</b><span>imlo xatosi</span></div><div><b>${c.trap||0}</b><span>tuzoqqa tushish</span></div></div></div></div>
+      <ul class="tips">${p2tips(r).map(f=>`<li><span class="hi">${ic(f[0])}</span><span>${f[1]}</span></li>`).join('')}</ul></section>
+    <h2 class="sech">Javoblar va tahlil<button type="button" class="tgl" id="tgl">Hammasini ochish</button></h2>
+    <div>${t.items.map((it,i)=>{const u=r.ans[it.n],k=r.cat[it.n],good=k==='ok',tp=p2trap(it,u);return `<div class="rv ${good?'good':'open'}"><button type="button" class="rvh" aria-expanded="${good?'false':'true'}"><span class="rvn">${good?ic('check'):it.n}</span><b>${p2line(t,it.n,gVal(it.n,it.show))}</b><span class="ch">${ic('chev')}</span></button>
+      <div class="rvb"><div><div class="rvi">${good?'':`<div class="you">${u?`<span>Siz yozdingiz:</span><s>${esc(u)}</s>`:''}<span class="tg you">${P2CAT[k]}</span><span>To‘g‘ri javob:</span><b>${esc(it.show)}</b></div>`}
+        <div class="rvl"><button type="button" class="lsn" data-p="${i}" aria-label="Tinglash">${ic('vol')}</button><div class="exc">${p2ex(it)}</div></div>
+        <span class="uz">${esc(it.uz)}</span>
+        <div class="why"><b>Nega ${esc(it.show)}?</b> ${esc(it.why)}${tp?' <b style="color:var(--bad)">Siz yozgan javob:</b> '+esc(tp):''}</div></div></div></div></div>`}).join('')}</div>`,
+    back?`<div class="dk-l"></div><button type="button" class="btn pri" id="nb">Hisobotga qaytish</button>`:`<div class="dk-l">Keyingi bosqich: bo‘sh joy turi</div><button type="button" class="btn pri" id="nb">B · Bo‘sh joy turi ${ic('arr')}</button>`);
+  anim();if(fresh)FEEL.play(r.ok>=4?'success':'complete');
+  const sync=()=>{const all=$$('.rv').every(x=>x.classList.contains('open'));$('#tgl').textContent=all?'Hammasini yopish':'Hammasini ochish'};
+  $$('.rvh').forEach(h=>h.onclick=()=>{const v=h.parentElement,on=v.classList.toggle('open');h.setAttribute('aria-expanded',String(on));sync()});
+  $('#tgl').onclick=()=>{const all=$$('.rv').every(x=>x.classList.contains('open'));$$('.rv').forEach(x=>{x.classList.toggle('open',!all);x.firstElementChild.setAttribute('aria-expanded',String(!all))});sync()};sync();
+  const listen=i=>{const it=t.items[i];playAu(t.src,{from:it.a,until:it.b})};
+  $$('[data-p]').forEach(b=>b.onclick=()=>{const i=+b.dataset.p;if(AUD.has(t.src))listen(i);else ensureAudio(t).then(()=>listen(i),()=>toast('Audio yuklanmadi. Internetni tekshiring.'))});
+  ensureAudio(t).catch(()=>{});
+  $('#nb').onclick=()=>back?p2report(t,false):p2B(t)}
+
+/* ----- B · before listening: what kind of information does the gap need? ----- */
+function p2B(t){let i=0,ok=0;LEAVE=null;
+  view(`${stepper('B')}${help('target','<b>Tinglashdan oldin o‘ylang: bo‘sh joyga qanday ma’lumot kerak?</b> Vaqtmi, kunmi, narsami? Buni oldindan bilsangiz, audioda aynan shuni kutasiz.','Before you listen: what kind of information is missing?')}<div id="pane"></div>`,
+    `<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div><button type="button" class="btn pri" id="nx" disabled></button>`);
+  const nx=$('#nx');
+  const draw=()=>{const it=t.items[i],ops=shuf(it.type.map((k,j)=>[k,j===0]));let did=false;
+    pane(`<section class="card notes p2f"><span class="eb">Savol ${i+1} / 6</span><p class="nl">${p2line(t,it.n,gDots(it.n,true))}</p></section>`+optsHTML(ops.map(([k],j)=>[String(j),String(j+1),DOC.types[k]]))+`<div class="fbk" id="fb"><div></div></div>`);
+    nx.disabled=true;nx.innerHTML=(i<5?'Keyingi savol':'C · Kalit so‘zlar')+' '+ic('arr');
+    $$('.opt').forEach(b=>b.onclick=()=>{if(did)return;did=true;const good=ops[+b.dataset.v][1];if(good)ok++;FEEL.play(good?'correct':'wrong');
+      $$('.opt').forEach((x,j)=>{x.disabled=true;if(ops[j][1])x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+      $('#fb').firstElementChild.innerHTML=`<div class="cfb ${good?'ok':'no'}" role="status"><div class="hd">${ic(good?'check':'x')}<span>${good?'To‘g‘ri!':esc(DOC.types[it.type[0]])}</span></div><span class="rl">${esc(it.clue)}</span></div>`;
+      $('#fb').classList.add('on');$('#dkn').textContent=ok;nx.disabled=false});
+    nx.onclick=()=>{if(i<5){i++;draw()}else{const d=sget(t.id);d.b={ok,of:6,at:Date.now()};sput(t.id,d);p2C(t)}}};
+  draw()}
+
+/* ----- C · key words: the notes' words and what the speaker says ----- */
+function p2C(t){matchStage(t,{step:'C',rows:t.pairs,bank:'Audiodagi iboralar',pick:'Iborani bosing, keyin katakni',
+  help:help('msg','<b>Savoldagi so‘zlar audioda ko‘pincha boshqacha aytiladi.</b> Har bir satrga audiodagi muqobilini bankdan tanlab qo‘ying: shu so‘zlarni eshitsangiz, javob yaqin.','Match the words in the notes with what the speaker says.'),
+  done:(first,of)=>{const d=sget(t.id);d.c={first,of,at:Date.now()};sput(t.id,d)},nextLabel:'D · Eshitib yozing',next:()=>p2D(t)})}
+
+/* ----- D · listen to a piece of the talk and write the missing word or number ----- */
+function p2D(t){let i=0,ok=0,listens=0;LEAVE=null;
+  view(`${stepper('D')}${help('pen','<b>Nutqdan parchani tinglang va tushib qolgan so‘z yoki sonni yozing.</b> Kerak bo‘lsa, qayta tinglang. Sonlar, vaqtlar va nomlarga alohida e’tibor bering.','Listen and type the missing word or number.')}<div id="pane"></div>`,
+    `<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div><button type="button" class="btn pri" id="ck">Tekshirish</button>`);
+  const ck=$('#ck');
+  const draw=()=>{const it=t.dict[i];let did=false,heard=0;
+    pane(stageCard({n:i+1,of:6,it:{pk:[it.pk]},replay:true,lab:'Parcha'})+`<section class="card sentc"><p class="sent">${esc(it.gs).replace('___','<input class="gap" id="g" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Tushib qolgan so‘z">')}</p><div class="fbk" id="fb"><div></div></div></section>`);
+    ck.innerHTML='Tekshirish';
+    const fine=matchMedia('(hover:hover) and (pointer:fine)').matches,g=$('#g');
+    const pl=()=>{heard++;listens++;playSpan(t.src,it.a,it.b,{txt:heard+' marta tingladingiz'})};
+    $('#rp').onclick=()=>{pl();if(!did&&fine)g.focus()};
+    g.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();ck.click()}};
+    if(fine)g.focus();
+    ck.onclick=()=>{if(did){if(i<5){i++;draw()}else{const d=sget(t.id);d.d={ok,of:6,listens,at:Date.now()};sput(t.id,d);p2E(t)}return}
+      if(!canon(g.value)){FEEL.play('warn');toast('Avval so‘zni yozing');g.focus();return}
+      did=true;const good=it.gap.map(canon).includes(canon(g.value));if(good)ok++;stopAu();$('#stage').classList.remove('play');FEEL.play(good?'correct':'wrong');
+      g.readOnly=true;g.classList.add(good?'ok':'no');g.blur();
+      $('#fb').firstElementChild.innerHTML=`<div class="cfb ${good?'ok':'no'}" role="status"><div class="hd">${ic(good?'check':'x')}<span>${good?'To‘g‘ri!':'To‘g‘ri javob: '+esc(it.gap[0])}</span></div><span class="en">${esc(it.s)}</span><span class="uz">${esc(it.uz)}</span></div>`;
+      $('#fb').classList.add('on');$('#dkn').textContent=ok;ck.innerHTML=(i<5?'Keyingi parcha':'E · Tezkor raund')+' '+ic('arr')};
+    pl()};
+  ensureAudio(t).then(draw,()=>{toast('Audio yuklanmadi. Internetni tekshiring.');go('')})}
+
+/* ----- E · speed round: the six answers again, reworded notes, one listen, 12 seconds ----- */
+function p2E(t){LEAVE=null;
+  view(`${stepper('E')}<section class="card cover"><span class="eb">Tezkor raund · 6 ta savol</span><h2>O‘sha javoblar, lekin endi tezroq</h2>
+    <ul class="rules"><li><span class="ri">${ic('head')}</span><span>Har bir parcha <b>bir marta</b> qo‘yiladi</span></li>
+      <li><span class="ri">${ic('shuf')}</span><span>Savollar <b>boshqacha so‘zlar bilan</b> yozilgan, tartibi aralashtirilgan</span></li>
+      <li><span class="ri">${ic('clock')}</span><span>Javobni yozish uchun <b>12 soniya</b></span></li>
+      <li><span class="ri">${ic('up')}</span><span>Natija A bosqichdagi testingiz bilan solishtiriladi</span></li></ul></section>`,
+    `<div class="dk-l" id="ld">Audio yuklanmoqda…</div><button type="button" class="btn pri" id="go" disabled>Boshlash ${ic('arr')}</button>`);
+  const ready=()=>{$('#ld').innerHTML='<b>6</b> ta savol · audio tayyor'};
+  $('#go').onclick=()=>{const b=$('#go');if(b._retry){b._retry=false;b.innerHTML='Boshlash '+ic('arr');prep(t,ready);return}p2runE(t)};
+  prep(t,ready)}
+function p2runE(t){const order=shuf([...Array(6).keys()]),ans={},cat={};let p=0;
+  const score=()=>Object.values(cat).filter(k=>k==='ok').length;
+  LEAVE={h:'Tezkor raund tugamagan',p:'Chiqsangiz, tezkor raund boshidan boshlanadi.'};
+  view(`${stepper('E')}<div id="pane"></div>`,`<div class="dk-l"><b id="dkn">0</b> to‘g‘ri</div><button type="button" class="btn pri" id="sb">Javobni yuborish</button>`);
+  const sb=$('#sb');
+  const next=()=>{p++;if(p>=6){LEAVE=null;const d=sget(t.id);d.e={ans,cat,ok:score(),at:Date.now()};d.done=true;d.at=Date.now();
+      d.r={ok:d.a.ok,of:6,inf:`A ${d.a.ok}/6 · B ${d.b.ok}/6 · C ${d.c.first}/${d.c.of} · D ${d.d.ok}/6 · E ${d.e.ok}/6`};sput(t.id,d);p2report(t,true);return}draw()};
+  function draw(){const it=t.items[order[p]];let did=false;
+    pane(stageCard({n:p+1,of:6,it:{pk:[it.pk]},lab:'Savol'})+`<section class="card sentc"><p class="sent">${esc(it.rw[0])}<input class="gap" id="g" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Javob">${esc(it.rw[1])}</p><div class="fbk" id="fb"><div></div></div></section>`);
+    const g=$('#g');sb.disabled=false;
+    const submit=()=>{if(did)return;did=true;clearTimers();stopAu();const sg=$('#stage');if(sg)sg.classList.remove('play');const v=g.value.trim(),k=p2cls(it,v),good=k==='ok';ans[it.n]=v;cat[it.n]=k;
+      g.readOnly=true;g.classList.add(good?'ok':'no');g.blur();sb.disabled=true;FEEL.play(good?'correct':'wrong');
+      $('#fb').firstElementChild.innerHTML=`<div class="cfb ${good?'ok':'no'}" role="status"><div class="hd">${ic(good?'check':'x')}<span>${good?'To‘g‘ri!':'To‘g‘ri javob: '+esc(it.show)}</span>${good?'':`<span class="tg you">${P2CAT[k]}</span>`}</div></div>`;
+      $('#fb').classList.add('on');$('#dkn').textContent=score();later(next,good?900:2200)};
+    g.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();submit()}};sb.onclick=submit;
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches)g.focus();
+    playSpan(t.src,it.ea,it.eb,{txt:'Tinglang',end:()=>{if(!did)countdown(12,submit,'Javobni yozing')}})}
+  draw()}
+
+/* ----- the report of one test ----- */
+function p2report(t,fresh){const d=sget(t.id),a=d.a,e=d.e,ca=p2cnt(a.cat),ce=p2cnt(e.cat),nx=DOC.tests[DOC.tests.indexOf(t)+1],up=e.ok-a.ok,st=isStep(t.id);LEAVE=null;
+  const tl=Object.keys(P2CAT).filter(k=>k!=='ok'&&(ca[k]||ce[k])).map(k=>`<tr><td><b>${P2CAT[k]}</b></td><td class="c">${ca[k]||0}</td><td class="c">${ce[k]||0}</td></tr>`).join('');
+  const sb=[['A','Test',a.ok,6],['B','Bo‘sh joy turi',d.b.ok,6],['C','Kalit so‘zlar',d.c.first,d.c.of],['D','Eshitib yozing',d.d.ok,6],['E','Tezkor raund',e.ok,6]];
+  const scr=t.script.map(s=>{let h=esc(s);t.items.forEach(it=>it.hl.forEach(x=>{h=h.replace(esc(x),'<mark>'+esc(x)+'</mark>')}));return h});
+  view(`<section class="win"><span class="eb">Test ${t.n} · ${esc(t.mock)}</span><h1>${fresh?'Test yakunlandi!':'Bu test bajarilgan'}</h1>
+      <div class="cmp"><div class="cb"><small>Test</small><b>${a.ok}<em>/6</em></b></div>${ic('arr')}<div class="cb"><small>Tezkor raund</small><b>${e.ok}<em>/6</em></b></div></div>
+      ${up>0?`<span class="upb">${ic('up')} +${up} o‘sish</span>`:up===0&&e.ok===6?`<span class="upb">${ic('check')} barqaror a’lo</span>`:''}</section>
+    <section class="card"><h3>Bosqichlar natijasi</h3><div class="sbars">${sb.map(([k,l,v,m])=>`<div class="sb"><div class="col"><i data-h="${Math.max(7,Math.round(v/m*100))}%"></i></div><b>${v}/${m}</b><small>${k} · ${l}</small></div>`).join('')}</div>
+      <p class="sub" style="margin:12px 0 0">C bosqich: birinchi urinishdagi natija. D bosqichda ${d.d.listens} marta tingladingiz.</p></section>
+    ${tl?`<section class="card"><h3>Mening xatolarim</h3><div class="tw"><table><thead><tr><th>Xato turi</th><th class="c">A · Test</th><th class="c">E · Tezkor raund</th></tr></thead><tbody>${tl}</tbody></table></div></section>`:''}
+    <section class="card"><h3>Mening kalit so‘zlar jadvalim</h3><p class="sub">Bu jadvalni lug‘at daftaringizga ko‘chiring.</p>
+      <div class="tw"><table><thead><tr><th>#</th><th>Savolda</th><th>Audioda</th></tr></thead><tbody>${t.pairs.map((r,i)=>`<tr><td class="n">${i+1}</td><td><b>${esc(r[0])}</b></td><td class="u">${esc(r[1])}</td></tr>`).join('')}</tbody></table></div></section>
+    <section class="card scr"><h3>Audio matni</h3><p class="sub">Javoblar sariq rangda. <button type="button" class="btn sm" id="pa" style="margin-left:6px">${ic('vol')} Nutqni tinglash</button></p>${scr.map(s=>`<p>${s}</p>`).join('')}</section>`,
+    `<button type="button" class="btn" id="ra">${ic('list')}<span>Tahlil</span></button><button type="button" class="btn" id="again">${ic('redo')}<span>Qayta<span class="lg"> ishlash</span></span></button>`+
+    (st?`<button type="button" class="btn pri" id="dn">Bajardim ${ic('check')}</button>`:nx?`<button type="button" class="btn pri" id="nt">Test ${nx.n} ${ic('arr')}</button>`:`<button type="button" class="btn pri" id="hm">Testlar</button>`));
+  dockin.classList.add('three');anim();
+  if(fresh){FEEL.play('celebrate');confetti()}
+  $('#pa').onclick=()=>{if(AUP){stopAu();return}ensureAudio(t).then(()=>playAu(t.src,{len:t.dur}),()=>toast('Audio yuklanmadi. Internetni tekshiring.'))};
+  $('#ra').onclick=()=>p2resA(t,false,true);
+  $('#again').onclick=()=>modal('Qayta ishlaysizmi?','Bu testning natijalari shu qurilmada o‘chadi va A bosqichdan boshlanadi.',[{t:'Bekor qilish'},{t:'Qayta ishlash',cls:'pri',f:()=>{sput(t.id,{n:(d.n||1)+1});openTest(t)}}]);
+  const dn=$('#dn');if(dn)dn.onclick=goDone;
+  const b=$('#nt');if(b)b.onclick=()=>go(nx.id);const h=$('#hm');if(h)h.onclick=()=>go('')}
 /* ================= router, keys, start ================= */
 function route(){const t=DOC.tests.find(x=>x.id===(H.x||''));if(t)openTest(t);else hub()}
 addEventListener('hashchange',()=>{const h=hp();if(!PREVIEW&&h.d!==DID){location.reload();return}H=h;if(DOC)route()});
@@ -579,4 +1043,10 @@ async function boot(){
   watermark();route();
 }
 FEEL.init({ns:ST,quiet:()=>AUP});   /* sound, vibration and press feedback (FEEL, top of this script); the page's own sounds wait while a sentence plays */
+/* text highlighter (HL, top of this script; the same engine as the test player: select words → "Highlight", a highlight → "Clear"):
+   on the question paper of a test (the notes of a Part 2 test). Kept per student, booster and test; "Qayta ishlash" clears it. */
+HL.init({ns:ST,root:'#main',key:()=>HLK?ST+'hl:'+UID+':'+DID+':'+HLK:null,
+  units:'.p2in,.notes h3,.notes .nl,.notes .ntab>div',out:'.rv,.scr,.p2f',
+  top:()=>{const b=$('.bar');return b?b.getBoundingClientRect().bottom:0},
+  bottom:()=>dock.hidden?0:Math.max(0,innerHeight-dock.getBoundingClientRect().top)});
 boot();

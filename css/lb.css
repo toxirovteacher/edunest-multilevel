@@ -290,6 +290,34 @@ td .rpl{display:block;color:var(--ok);margin-top:2px}
   .tc .go{width:40px;padding:0;justify-content:center;border-radius:50%}.tc .go span{display:none}
   .bank{padding:10px 0 12px}.bank .bh{padding:0 14px}
   .chips{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);justify-content:start;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.chips::-webkit-scrollbar{display:none}.chip{white-space:nowrap}}
+/* ===== Listening Part 2 Booster (doc kind lb2): the notes with their gaps, excerpts of the talk ===== */
+.notes{margin-top:12px}
+.notes h3{font-size:19px;line-height:1.25;margin:4px 0 12px}
+.p2in{margin:12px 4px 0;font-size:14.5px;line-height:1.5;color:var(--slate);border-left:3px solid var(--vio);padding-left:12px}
+.nl{font-size:16.5px;line-height:2.2;color:var(--ink)}
+.nl.ex0{color:var(--slate)}
+.ntab{display:grid;grid-template-columns:minmax(0,40%) minmax(0,1fr);gap:6px 14px;align-items:center;font-size:16px;line-height:2.1}
+.ntab .lab{color:var(--ink2);font-weight:600;line-height:1.35}
+.gw{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;vertical-align:middle}
+.gn{font-style:normal;display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border-radius:9px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.gin{width:7.8em;max-width:42vw;height:34px;border:0;border-bottom:2.5px solid var(--ink);background:var(--mist);border-radius:9px 9px 0 0;padding:0 8px;font:700 16.5px "Onest",system-ui,sans-serif;color:var(--ink);text-align:center}
+.gap0{display:inline-block;min-width:5.4em;height:28px;border-bottom:2.5px dotted #B7BFD1}
+.gap0.on{border-bottom:2.5px solid var(--vio);background:var(--viobg);border-radius:8px 8px 0 0}
+.gval{display:inline-block;padding:0 9px;border-radius:9px;background:var(--okbg);color:var(--ok);font-weight:800;line-height:1.5}
+.rvh b .gw{white-space:normal}.rvh b .gn{min-width:22px;height:22px;font-size:11.5px;border-radius:7px}
+.you{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14.5px;margin-bottom:10px}
+.you s{color:var(--bad);font-weight:700;text-decoration-thickness:2px}
+.you b{color:var(--ok)}
+.exc{flex:1;min-width:0;background:var(--mist);border-radius:14px;padding:10px 13px;font-size:15px;line-height:1.55;color:var(--ink2)}
+.exc mark,.scr mark{background:#FFE95C;color:var(--ink);border-radius:4px;padding:0 3px;font-weight:700}
+.rvi .uz{display:block;margin:10px 0}
+.p2f .nl{font-size:18px;line-height:2}
+.scr p{font-size:15px;line-height:1.65;color:var(--ink2)}
+.scr p+p{margin-top:.55em}
+.tt{flex:none;font-size:13px;font-weight:700;opacity:.8;font-variant-numeric:tabular-nums}
+.stage .sg-top b{overflow:hidden;text-overflow:ellipsis}
+.nl+.nl{margin-top:4px}
+@media(max-width:560px){.nl{font-size:16px;line-height:1.95}.nl+.nl{margin-top:10px}.gin{height:32px;width:7em}.ntab{grid-template-columns:1fr;gap:0 0;line-height:1.9}.ntab .lab{margin-top:8px}.p2f .nl{font-size:17px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}}
 /* ===== FEEL (26.11.2026): touch feedback styles; only while the engine runs on the page (html.fx) ===== */
 /* no grey tap flash (the press animation is the feedback), no double-tap zoom delay */
@@ -311,4 +339,18 @@ html.fx :is(button,[role="button"],[role="tab"],[data-go]){-webkit-user-select:n
 .fxsw:focus-visible{outline:2px solid #2457D6;outline-offset:3px}
 body.dark .fxsw{background:#3A4458}
 body.dark .fxsw:checked{background:var(--green)}
+
+/* ===== HL · text highlighter (v2 27.11.2026 evening, like the computer IELTS test): yellow highlights, the blue selection, the small menu ===== */
+mark.uh{background:#FFEB3B;color:inherit;border-radius:2px;padding:.06em 0;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+mark.uh.sel{background:#B4D5FE}
+.script mark.uh{background:#FFEB3B;margin:0;padding:.06em 0;border-radius:2px;box-shadow:none}
+.script mark.uh.sel{background:#B4D5FE}
+[data-hu]{overflow-anchor:none}   /* the browser's scroll anchoring must not pick a text that is being re-drawn (the page drifted) */
+@media(hover:hover) and (pointer:fine){[data-hu]{cursor:text}mark.uh[data-g]{cursor:pointer}}
+body.uh-on,body.uh-on *{cursor:text!important}
+.uhm{position:fixed;z-index:55;min-width:150px;display:flex;flex-direction:column;padding:5px;border-radius:12px;background:#fff;border:1px solid #D5DBE6;box-shadow:0 12px 30px rgba(20,27,45,.24)}
+.uhm.hid{visibility:hidden}
+.uhm button{display:flex;align-items:center;gap:10px;height:42px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:#141B2D;font:inherit;font-size:15px;font-weight:700;text-align:left;white-space:nowrap;cursor:pointer}
+.uhm button:hover,.uhm button:focus-visible{background:#EEF2F8;outline:none}
+.uhm .uhsw{flex:none;width:16px;height:16px;border-radius:4px;background:#FFEB3B;box-shadow:inset 0 0 0 1px rgba(20,27,45,.2)}
 
